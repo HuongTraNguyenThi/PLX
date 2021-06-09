@@ -6,12 +6,12 @@ namespace PLX.API.Data.Models
     [Table("Ward")]
     public class Ward : BaseEntity
     {
-        
+
         [Required]
         [Column("Name")]
         public string Name { get; set; }
-        public int DistrictId {get; set;}
+        public int DistrictId { get; set; }
         [ForeignKey("DistrictId")]
-        public District district {get; set;}
+        public District district { get; set; }
     }
 }

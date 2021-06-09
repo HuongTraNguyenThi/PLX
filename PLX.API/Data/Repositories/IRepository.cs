@@ -5,7 +5,7 @@ using PLX.API.Data.Models;
 
 namespace PLX.API.Data.Repositories
 {
-     public interface IRepository<T> where T: BaseEntity
+    public interface IRepository<T> where T : BaseEntity
     {
         //T:generic type
         Task<List<T>> ListAsync();

@@ -7,14 +7,14 @@ namespace PLX.API.Data.Models
     [Table("Question")]
     public class Question : BaseEntity
     {
-        public Question() 
+        public Question()
         {
             this.Customers = new HashSet<CustomerQuestion>();
         }
         [Required]
         [Column("Question")]
-       
+
         public string Content { get; set; }
-         public virtual ICollection<CustomerQuestion> Customers { get; set; }
+        public virtual ICollection<CustomerQuestion> Customers { get; set; }
     }
 }

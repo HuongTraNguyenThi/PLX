@@ -14,14 +14,14 @@ namespace PLX.API.Controllers
     [Route("api")]
     public class CustomerController : ControllerBase
     {
-      
+
         private readonly ILogger<CustomerController> _logger;
 
-        private  ICustomerService _iCustomerService;
-        
+        private ICustomerService _iCustomerService;
 
 
-        public CustomerController(ILogger<CustomerController> logger, ICustomerService iCustomerService )
+
+        public CustomerController(ILogger<CustomerController> logger, ICustomerService iCustomerService)
         {
             _logger = logger;
             _iCustomerService = iCustomerService;
@@ -36,21 +36,21 @@ namespace PLX.API.Controllers
         }
         [HttpGet]
         [Route("staticlist")]
-        public async Task<IActionResult> GetCustomerStaticList ()
+        public async Task<IActionResult> GetCustomerStaticList()
         {
             var response = await _iCustomerService.GetLists();
             return Ok(response);
         }
         [HttpGet]
         [Route("districtlist")]
-        public async Task<IActionResult> GetDistrictList (int id)
+        public async Task<IActionResult> GetDistrictList(int id)
         {
             var response = await _iCustomerService.GetListDistricts(id);
             return Ok(response);
         }
         [HttpGet]
         [Route("wardlist")]
-        public async Task<IActionResult> GetWardList (int id)
+        public async Task<IActionResult> GetWardList(int id)
         {
             var response = await _iCustomerService.GetListWards(id);
             return Ok(response);

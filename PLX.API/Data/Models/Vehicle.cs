@@ -14,10 +14,10 @@ namespace PLX.API.Data.Models
         [Column("License Plate")]
         [MaxLength(11)]
         public string LicensePlate { get; set; }
-      
+
         [ForeignKey("CustomerId")]
         public Customer Customer { get; set; }
         [ForeignKey("VehicleTypeId")]
-        public VehicleType VehicleType {get; set; }
+        public VehicleType VehicleType { get; set; }
     }
 }

@@ -6,6 +6,6 @@ namespace PLX.API.Data.DTO
         public string ResponseTime { get; set; }
         public string ErrorCode { get; set; }
         public string ErrorMessage { get; set; }
-       
+
     }
 }

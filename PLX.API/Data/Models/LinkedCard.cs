@@ -13,10 +13,10 @@ namespace PLX.API.Data.Models
         public string Name { get; set; }
         [Required]
         [Column("CardNumber")]
-        
+
         public string CardNumber { get; set; }
         [ForeignKey("CustomerId")]
         public Customer Customer { get; set; }
-  
+
     }
 }

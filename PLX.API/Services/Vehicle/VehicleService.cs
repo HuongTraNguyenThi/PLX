@@ -6,14 +6,15 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 namespace PLX.API.Services
 {
-    
-    public class VehicleService 
+
+    public class VehicleService
     {
-       private readonly IRepository<Vehicle> _vehicleRepository;
+        private readonly IRepository<Vehicle> _vehicleRepository;
         private readonly IUnitOfWork _unitOfWork;
-         private IMapper _mapper;
+        private IMapper _mapper;
         public VehicleService(IRepository<Vehicle> vehicleRepository, IUnitOfWork unitOfWork,
-        IMapper mapper) {
+        IMapper mapper)
+        {
             _vehicleRepository = vehicleRepository;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
@@ -23,7 +24,8 @@ namespace PLX.API.Services
             var vehicleList = await _vehicleRepository.ListAsync();
             return vehicleList;
         }
-        public async Task<Vehicle> FindById(int id) {
+        public async Task<Vehicle> FindById(int id)
+        {
             var vehicle = await _vehicleRepository.FindAsync(id);
             return vehicle;
         }

@@ -7,10 +7,10 @@ namespace PLX.API.Data.Models
     [Table("VehicleType")]
     public class VehicleType : BaseEntity
     {
-        
+
         [Required]
         [Column("Name")]
         public string Name { get; set; }
-        public virtual ICollection<Vehicle> Vehicles {get; set;}
+        public virtual ICollection<Vehicle> Vehicles { get; set; }
     }
 }

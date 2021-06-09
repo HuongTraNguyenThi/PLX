@@ -9,7 +9,7 @@ namespace PLX.API.Data.DTO.Customer
         public string Email { get; set; }
         public string Password { get; set; }
         public List<QuestionDTO> Questions { get; set; }
-        public int CustomerTypeId {get; set; }
-      
+        public int CustomerTypeId { get; set; }
+
     }
 }

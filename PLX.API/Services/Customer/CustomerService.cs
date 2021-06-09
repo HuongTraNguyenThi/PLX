@@ -9,7 +9,7 @@ using PLX.API.Data.Repositories;
 
 namespace PLX.API.Services
 {
-    
+
     public class CustomerService : ICustomerService
     {
         private readonly IRepository<Customer> _customerRepository;
@@ -22,7 +22,7 @@ namespace PLX.API.Services
         private readonly IRepository<Question> _questionsRepository;
 
 
-       
+
         private readonly IUnitOfWork _unitOfWork;
         private IMapper _mapper;
 
@@ -30,7 +30,8 @@ namespace PLX.API.Services
             IRepository<Customer> customerRepository, IRepository<Vehicle> vehicleRepository,
             IRepository<LinkedCard> linkedCardRepository, IRepository<CustomerQuestion> customerQuestionsRepository,
             IRepository<Question> questionsRepository, IRepository<Province> provinceRepository,
-            IRepository<District> districtRepository, IRepository<Ward> wardRepository) {
+            IRepository<District> districtRepository, IRepository<Ward> wardRepository)
+        {
             _customerRepository = customerRepository;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
@@ -43,12 +44,13 @@ namespace PLX.API.Services
             _wardRepository = wardRepository;
         }
 
-         public async Task<List<Customer>> ListAsync()
+        public async Task<List<Customer>> ListAsync()
         {
             var customerList = await _customerRepository.ListAsync();
             return customerList;
         }
-        public async Task<Customer> FindById(int id) {
+        public async Task<Customer> FindById(int id)
+        {
             var customer = await _customerRepository.FindAsync(id);
             return customer;
         }
@@ -71,135 +73,135 @@ namespace PLX.API.Services
             await _unitOfWork.CompleteAsync();
             return new BaseResponse<Customer>(customer);
         }
-         public async Task<CustomerResponse> RegisterAsync(CustomerRegister customerRegister)
+        public async Task<CustomerResponse> RegisterAsync(CustomerRegister customerRegister)
         {
             var result = new CustomerResponse();
             var customer = _mapper.Map<CustomerRegister, Customer>(customerRegister);
 
-            if(customer.CustomerTypeId == 1 )
+            if (customer.CustomerTypeId == 1)
             {
-                if(customer.Name == null || customer.Name == "") 
+                if (customer.Name == null || customer.Name == "")
                 {
                     result.ErrorMessage = "Tên không được trống";
                     return result;
-                } 
-                if(customer.Phone == null || customer.Phone == "") 
+                }
+                if (customer.Phone == null || customer.Phone == "")
                 {
                     result.ErrorMessage = "Số điện thoại không được trống";
                     return result;
-                } 
-                if(customer.Password == null || customer.Password == "") 
+                }
+                if (customer.Password == null || customer.Password == "")
                 {
                     result.ErrorMessage = "Mật khẩu không được trống";
                     return result;
-                } 
-                
+                }
+
                 foreach (var item in customer.Questions)
                 {
-                    if(item.Question.Content == null || item.Question.Content == "")
+                    if (item.Question.Content == null || item.Question.Content == "")
                     {
                         result.ErrorMessage = "Câu hỏi bí mật không được trống";
                         return result;
                     }
-                        
+
                 }
-                
-                if(customer.Date == null || customer.Date == "") 
+
+                if (customer.Date == null || customer.Date == "")
                 {
                     result.ErrorMessage = "Ngày sinh không được trống";
                     return result;
-                } 
-                if(customer.ProvinceId == 0) 
+                }
+                if (customer.ProvinceId == 0)
                 {
                     result.ErrorMessage = "Tỉnh không được trống";
                     return result;
-                } 
-                if(customer.DistrictId == 0) 
+                }
+                if (customer.DistrictId == 0)
                 {
                     result.ErrorMessage = "Quận/Huyện không được trống";
                     return result;
-                } 
-                if(customer.WardId == 0) 
+                }
+                if (customer.WardId == 0)
                 {
                     result.ErrorMessage = "Phường/Xã không được trống";
                     return result;
-                } 
-                if(customer.Address == null || customer.Address == "") 
+                }
+                if (customer.Address == null || customer.Address == "")
                 {
                     result.ErrorMessage = "Địa chỉ không được trống";
                     return result;
-                } 
-                if(customer.CardID == null || customer.CardID == "") 
+                }
+                if (customer.CardID == null || customer.CardID == "")
                 {
                     result.ErrorMessage = "Số CMND/CCCD không được trống";
                     return result;
-                } 
-                if(customer.Gender == null || customer.Gender == "") 
+                }
+                if (customer.Gender == null || customer.Gender == "")
                 {
                     result.ErrorMessage = "Giới tính không được trống";
                     return result;
-                } 
+                }
             }
-            if(customer.CustomerTypeId == 2 )
+            if (customer.CustomerTypeId == 2)
             {
-                if(customer.Name == null || customer.Name == "") 
+                if (customer.Name == null || customer.Name == "")
                 {
                     result.ErrorMessage = "Tên không được trống";
                     return result;
-                } 
-                if(customer.Phone == null || customer.Phone == "") 
+                }
+                if (customer.Phone == null || customer.Phone == "")
                 {
                     result.ErrorMessage = "Số điện thoại không được trống";
                     return result;
-                } 
-                if(customer.Password == null || customer.Password == "") 
+                }
+                if (customer.Password == null || customer.Password == "")
                 {
                     result.ErrorMessage = "Mật khẩu không được trống";
                     return result;
-                } 
+                }
                 foreach (var item in customer.Questions)
                 {
-                    if(item.Question.Content == null || item.Question.Content == "")
+                    if (item.Question.Content == null || item.Question.Content == "")
                     {
                         result.ErrorMessage = "Câu hỏi bí mật không được trống";
                         return result;
                     }
                 }
-                if(customer.Date == null || customer.Date == "") 
+                if (customer.Date == null || customer.Date == "")
                 {
                     result.ErrorMessage = "Ngày sinh không được trống";
                     return result;
-                } 
-                 if(customer.ProvinceId == 0 ) 
+                }
+                if (customer.ProvinceId == 0)
                 {
                     result.ErrorMessage = "Tỉnh không được trống";
                     return result;
-                } 
-                if(customer.DistrictId == 0) 
+                }
+                if (customer.DistrictId == 0)
                 {
                     result.ErrorMessage = "Quận/Huyện không được trống";
                     return result;
-                } 
-                if(customer.WardId == 0) 
+                }
+                if (customer.WardId == 0)
                 {
                     result.ErrorMessage = "Phường/Xã không được trống";
                     return result;
-                } 
-                if(customer.Address == null || customer.Address == "")
+                }
+                if (customer.Address == null || customer.Address == "")
                 {
                     result.ErrorMessage = "Địa chỉ không được trống";
                     return result;
-                } 
-                if(customer.Email == null || customer.Email == "") 
+                }
+                if (customer.Email == null || customer.Email == "")
                 {
                     result.ErrorMessage = "Email không được trống";
                     return result;
-                } 
-                if(customer.TaxCode == null || customer.TaxCode == "") 
+                }
+                if (customer.TaxCode == null || customer.TaxCode == "")
                 {
                     result.ErrorMessage = "Mã số thuế không được trống";
                     return result;
-                } 
+                }
             }
             var vehicles = _mapper.Map<List<VehicleDTO>, List<Vehicle>>(customerRegister.Vehicles);
             vehicles.ForEach(vehicle => vehicle.Customer = customer);
@@ -210,15 +212,15 @@ namespace PLX.API.Services
             questions.ForEach(questions => questions.Customer = customer);
 
             await _customerRepository.AddAsync(customer);
-            
+
             await _vehicleRepository.AddRangeAsync(vehicles);
-            
+
             await _linkedCardRepository.AddRangeAsync(linkedCards);
 
             await _customerQuestionsRepository.AddRangeAsync(questions);
 
             await _unitOfWork.CompleteAsync();
-            
+
             result.IdCustomer = customer.Id;
             return result;
         }
@@ -232,7 +234,8 @@ namespace PLX.API.Services
             var genderList = new List<ListItem>();
             genderList.Add(new ListItem("male", "Nam"));
             genderList.Add(new ListItem("female", "Nu"));
-            var customerStaticList = new CustomerStaticList{
+            var customerStaticList = new CustomerStaticList
+            {
                 Questions = questionList,
                 Provinces = provinceList,
                 Genders = genderList
@@ -244,7 +247,7 @@ namespace PLX.API.Services
             var all = await _districtRepository.ListAsync();
             var districts = all.Where(x => x.ProvinceId == provinceId).ToList();
             var districtList = _mapper.Map<List<District>, List<ListItem>>(districts);
-            return districtList ;
+            return districtList;
         }
 
         public async Task<List<ListItem>> GetListWards(int districtId)
@@ -252,7 +255,7 @@ namespace PLX.API.Services
             var all = await _wardRepository.ListAsync();
             var wards = all.Where(x => x.DistrictId == districtId).ToList();
             var wardList = _mapper.Map<List<Ward>, List<ListItem>>(wards);
-            return wardList ;
+            return wardList;
         }
     }
 }

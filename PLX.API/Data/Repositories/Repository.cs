@@ -5,13 +5,15 @@ using Microsoft.EntityFrameworkCore;
 using PLX.API.Data.Contexts;
 using PLX.API.Data.Models;
 
-namespace PLX.API.Data.Repositories {
+namespace PLX.API.Data.Repositories
+{
     public class Repository<T> : IRepository<T> where T : BaseEntity
     {
         private readonly PLXDbContext _context;
         private DbSet<T> _entities;
         string errorMessage = string.Empty;
-        public Repository(PLXDbContext context) {
+        public Repository(PLXDbContext context)
+        {
             _context = context;
             _entities = _context.Set<T>();
         }
@@ -44,6 +46,6 @@ namespace PLX.API.Data.Repositories {
             throw new System.NotImplementedException();
         }
 
-       
+
     }
 }

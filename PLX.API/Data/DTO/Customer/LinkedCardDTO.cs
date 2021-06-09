@@ -4,6 +4,6 @@ namespace PLX.API.Data.DTO.Customer
     {
         public string Name { get; set; }
         public string CardNumber { get; set; }
-       
+
     }
 }

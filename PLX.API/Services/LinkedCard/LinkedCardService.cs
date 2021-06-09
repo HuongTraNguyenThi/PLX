@@ -6,14 +6,15 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 namespace PLX.API.Services
 {
-    
-    public class LinkedCardService 
+
+    public class LinkedCardService
     {
-       private readonly IRepository<LinkedCard> _linkedCardRepository;
+        private readonly IRepository<LinkedCard> _linkedCardRepository;
         private readonly IUnitOfWork _unitOfWork;
-         private IMapper _mapper;
+        private IMapper _mapper;
         public LinkedCardService(IRepository<LinkedCard> linkedCardRepository, IUnitOfWork unitOfWork,
-        IMapper mapper) {
+        IMapper mapper)
+        {
             _linkedCardRepository = linkedCardRepository;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
@@ -23,7 +24,8 @@ namespace PLX.API.Services
             var linkedCardList = await _linkedCardRepository.ListAsync();
             return linkedCardList;
         }
-        public async Task<LinkedCard> FindById(int id) {
+        public async Task<LinkedCard> FindById(int id)
+        {
             var linkedCard = await _linkedCardRepository.FindAsync(id);
             return linkedCard;
         }
