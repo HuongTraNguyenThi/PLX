@@ -13,5 +13,6 @@ namespace PLX.API.Services
         Task<CustomerStaticList> GetLists();
         Task<List<ListItem>> GetListDistricts(int proviceId);
         Task<List<ListItem>> GetListWards(int districtId);
+        Task<CustomerDTO> GetCustomerById(int id);
     }
 }

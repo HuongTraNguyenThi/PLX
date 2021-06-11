@@ -265,5 +265,12 @@ namespace PLX.API.Services
             var wardList = _mapper.Map<List<Ward>, List<ListItem>>(wards);
             return wardList;
         }
+
+        public async Task<CustomerDTO> GetCustomerById(int id)
+        {
+            var all = await _customerRepository.FindAsync(id);
+            var customerDto = _mapper.Map<Customer, CustomerDTO>(all);
+            return customerDto;
+        }
     }
 }

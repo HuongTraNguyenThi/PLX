@@ -60,5 +60,12 @@ namespace PLX.API.Controllers
             var response = await _iCustomerService.GetListWards(id);
             return Ok(response);
         }
+        [HttpGet("{id}")]
+        [Route("getcustomer/{id?}")]
+        public async Task<IActionResult> GetCustomerById(int id)
+        {
+            var response = await _iCustomerService.GetCustomerById(id);
+            return Ok(response);
+        }
     }
 }
