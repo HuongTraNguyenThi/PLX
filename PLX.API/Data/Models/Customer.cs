@@ -1,12 +1,15 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Collections.Generic;
+using System;
+using NpgsqlTypes;
 
 namespace PLX.API.Data.Models
 {
     [Table("Customer")]
     public class Customer : BaseEntity
     {
+
         public Customer()
         {
             this.Questions = new HashSet<CustomerQuestion>();
@@ -29,14 +32,14 @@ namespace PLX.API.Data.Models
         [MaxLength(200)]
         public string Password { get; set; }
 
-
         [Column("CardID")]
         [MaxLength(12)]
         public string CardID { get; set; }
+
         [Required]
-        [Column("Date")]
-        [MaxLength(10)]
-        public string Date { get; set; }
+        [Column(TypeName = "date")]
+        public DateTime Date { get; set; }
+
         [Required]
         [Column("Gender")]
         public string Gender { get; set; }

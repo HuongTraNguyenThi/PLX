@@ -12,7 +12,8 @@ namespace PLX.API.Data.Mapping
         public ModelToDTOProfile()
         {
             CreateMap<Customer, CustomerResponse>();
-
+            CreateMap<Customer, CustomerDTO>();
+            //.ForMember(customerDto => customerDto.Date, opt => opt.MapFrom(customer => DateTime.Today.Date.ToString("dd/MM/yyyyy")(customer.Date));
             CreateMap<Question, ListItem>()
             .ForMember(listItem => listItem.Value, opt => opt.MapFrom(question => question.Id))
             .ForMember(listItem => listItem.Display, opt => opt.MapFrom(question => question.Content));

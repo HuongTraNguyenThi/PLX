@@ -25,6 +25,8 @@ namespace PLX.API.Data.Contexts
             modelBuilder.Entity<District>();
             modelBuilder.Entity<Ward>();
             modelBuilder.Entity<CustomerType>();
+            modelBuilder.Entity<LogAPI>();
+            modelBuilder.Entity<OTP>();
         }
     }
 }

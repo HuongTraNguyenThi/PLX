@@ -10,7 +10,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/PLX.API/bin/Debug/net5.0/PLX.API.dll",
+            "program": "${workspaceFolder}/PLX.API/bin/Debug/netcoreapp3.1/PLX.API.dll",
             "args": [],
             "cwd": "${workspaceFolder}/PLX.API",
             "stopAtEntry": false,

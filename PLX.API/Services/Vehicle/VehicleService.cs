@@ -4,6 +4,8 @@ using PLX.API.Data.Repositories;
 using PLX.API.Data.DTO;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using PLX.API.Data.DTO.Customer;
+
 namespace PLX.API.Services
 {
 
@@ -29,24 +31,27 @@ namespace PLX.API.Services
             var vehicle = await _vehicleRepository.FindAsync(id);
             return vehicle;
         }
-        public async Task<BaseResponse<Vehicle>> AddAsync(Vehicle vehicle)
+        public async Task<APIResponse> AddAsync(VehicleDTO vehicleDTO)
         {
+            var vehicle = _mapper.Map<VehicleDTO, Vehicle>(vehicleDTO);
             await _vehicleRepository.AddAsync(vehicle);
             await _unitOfWork.CompleteAsync();
-            return new BaseResponse<Vehicle>(vehicle);
+            return new APIResponse(vehicleDTO);
         }
-        public async Task<BaseResponse<Vehicle>> UpdateAsync(int id, Vehicle vehicle)
+        public async Task<APIResponse> UpdateAsync(int id, VehicleDTO vehicleDTO)
         {
+            var vehicle = _mapper.Map<VehicleDTO, Vehicle>(vehicleDTO);
             _vehicleRepository.Update(vehicle);
             await _unitOfWork.CompleteAsync();
-            return new BaseResponse<Vehicle>(vehicle);
+            return new APIResponse(vehicleDTO);
         }
-        public async Task<BaseResponse<Vehicle>> DeleteAsync(int id)
+        public async Task<APIResponse> DeleteAsync(int id)
         {
             var vehicle = await _vehicleRepository.FindAsync(id);
+            var vehicleDTO = _mapper.Map<Vehicle, VehicleDTO>(vehicle);
             _vehicleRepository.Remove(vehicle);
             await _unitOfWork.CompleteAsync();
-            return new BaseResponse<Vehicle>(vehicle);
+            return new APIResponse(vehicleDTO);
         }
     }
 }

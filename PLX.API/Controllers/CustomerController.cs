@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PLX.API.Data.DTO.Customer;
@@ -10,6 +11,7 @@ using PLX.API.Services;
 
 namespace PLX.API.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api")]
     public class CustomerController : ControllerBase
@@ -26,13 +28,16 @@ namespace PLX.API.Controllers
             _logger = logger;
             _iCustomerService = iCustomerService;
         }
-
+        [AllowAnonymous]
         [HttpPost]
         [Route("register")]
         public async Task<IActionResult> Register(CustomerRegister dto)
         {
             var response = await _iCustomerService.RegisterAsync(dto);
-            return Ok(response);
+            if (response.Success)
+                return Ok(response.Resource);
+
+            return BadRequest(response.ErrorMessage);
         }
         [HttpGet]
         [Route("staticlist")]
