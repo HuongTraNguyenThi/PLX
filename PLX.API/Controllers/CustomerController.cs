@@ -47,20 +47,20 @@ namespace PLX.API.Controllers
             return Ok(response);
         }
         [HttpGet]
-        [Route("districtlist")]
+        [Route("districtlist/{id?}")]
         public async Task<IActionResult> GetDistrictList(int id)
         {
             var response = await _iCustomerService.GetListDistricts(id);
             return Ok(response);
         }
         [HttpGet]
-        [Route("wardlist")]
+        [Route("wardlist/{id?}")]
         public async Task<IActionResult> GetWardList(int id)
         {
             var response = await _iCustomerService.GetListWards(id);
             return Ok(response);
         }
-        [HttpGet("{id}")]
+        [HttpGet]
         [Route("getcustomer/{id?}")]
         public async Task<IActionResult> GetCustomerById(int id)
         {

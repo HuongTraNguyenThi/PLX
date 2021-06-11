@@ -98,6 +98,13 @@ namespace PLX.API.Services
                     return new APIResponse(1, "Mật khẩu không được trống");
 
                 }
+                if (customerRegister.CustomerInfo.CustomerBasic.ConfirmPassword != customer.Password)
+                {
+
+                    return new APIResponse(1, "Mật khẩu không khớp");
+
+                }
+
 
                 foreach (var item in customer.Questions)
                 {
@@ -163,7 +170,12 @@ namespace PLX.API.Services
                     return new APIResponse(1, "Mật khẩu không được trống");
 
                 }
+                if (customerRegister.CustomerInfo.CustomerBasic.ConfirmPassword != customer.Password)
+                {
 
+                    return new APIResponse(1, "Mật khẩu không khớp");
+
+                }
                 foreach (var item in customer.Questions)
                 {
                     if (item.Question.Content == null || item.Question.Content == "")

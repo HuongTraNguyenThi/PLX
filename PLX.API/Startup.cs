@@ -14,10 +14,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using PLX.API.Data.Contexts;
 using PLX.API.Data.Repositories;
 using PLX.API.Helpers;
 using PLX.API.Services;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace PLX.API
 {
@@ -35,7 +37,10 @@ namespace PLX.API
         {
 
             services.AddControllers();
-
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "PLX.API", Version = "v1" });
+            });
             services.AddScoped<ICustomerService, CustomerService>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
@@ -68,10 +73,12 @@ namespace PLX.API
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+
             }
 
             app.UseHttpsRedirection();
-
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "PLX.API v1"));
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
