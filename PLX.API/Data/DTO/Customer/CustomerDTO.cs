@@ -1,3 +1,7 @@
+using System;
+using System.ComponentModel.DataAnnotations;
+using PLX.API.Extensions.Converters;
+
 namespace PLX.API.Data.DTO.Customer
 {
     public class CustomerDTO : BaseResponse
@@ -6,7 +10,10 @@ namespace PLX.API.Data.DTO.Customer
         public string Phone { get; set; }
         public string Email { get; set; }
         public string CardId { get; set; }
-        public string Date { get; set; }
+
+        [DataType(DataType.Date)]
+        [DateMMYYMMMM]
+        public DateTime Date { get; set; }
         public string Gender { get; set; }
         public string TaxCode { get; set; }
         public int ProvinceId { get; set; }

@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Collections.Generic;
 using System;
 using NpgsqlTypes;
+using PLX.API.Extensions.Converters;
 
 namespace PLX.API.Data.Models
 {
@@ -37,7 +38,8 @@ namespace PLX.API.Data.Models
         public string CardID { get; set; }
 
         [Required]
-        [Column(TypeName = "date")]
+        [DataType(DataType.Date)]
+        [DateMMYYMMMM]
         public DateTime Date { get; set; }
 
         [Required]
