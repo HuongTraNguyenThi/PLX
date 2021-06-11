@@ -9,7 +9,7 @@ namespace PLX.API.Services
     public interface ICustomerService
     {
 
-        Task<CustomerResponse> RegisterAsync(CustomerRegister customer);
+        Task<APIResponse> RegisterAsync(CustomerRegister customer);
         Task<CustomerStaticList> GetLists();
         Task<List<ListItem>> GetListDistricts(int proviceId);
         Task<List<ListItem>> GetListWards(int districtId);

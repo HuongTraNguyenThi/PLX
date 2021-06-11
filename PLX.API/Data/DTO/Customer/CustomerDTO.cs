@@ -1,11 +1,12 @@
-using System;
-
 namespace PLX.API.Data.DTO.Customer
 {
-    public class CustomerCard
+    public class CustomerDTO : BaseResponse
     {
+        public string Name { get; set; }
+        public string Phone { get; set; }
+        public string Email { get; set; }
         public string CardId { get; set; }
-        public DateTime Date { get; set; }
+        public string Date { get; set; }
         public string Gender { get; set; }
         public string TaxCode { get; set; }
         public int ProvinceId { get; set; }

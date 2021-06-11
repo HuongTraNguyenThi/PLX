@@ -4,6 +4,7 @@ using PLX.API.Data.Models;
 using PLX.API.Data.DTO;
 using PLX.API.Data.DTO.Customer;
 using System.Collections.Generic;
+using BC = BCrypt.Net.BCrypt;
 
 namespace Supermarket.API.Data.Mapping
 {
@@ -14,7 +15,7 @@ namespace Supermarket.API.Data.Mapping
             CreateMap<CustomerRegister, Customer>()
             .ForMember(customer => customer.Name, opt => opt.MapFrom(custReg => custReg.CustomerInfo.CustomerBasic.Name))
             .ForMember(customer => customer.Phone, opt => opt.MapFrom(custReg => custReg.CustomerInfo.CustomerBasic.Phone))
-            .ForMember(customer => customer.Password, opt => opt.MapFrom(custReg => custReg.CustomerInfo.CustomerBasic.Password))
+            .ForMember(customer => customer.Password, opt => opt.MapFrom(custReg => BC.HashPassword(custReg.CustomerInfo.CustomerBasic.Password)))
             .ForMember(customer => customer.Email, opt => opt.MapFrom(custReg => custReg.CustomerInfo.CustomerBasic.Email))
             .ForMember(customer => customer.CardID, opt => opt.MapFrom(custReg => custReg.CustomerInfo.CustomerCard.CardId))
             .ForMember(customer => customer.Date, opt => opt.MapFrom(custReg => custReg.CustomerInfo.CustomerCard.Date))
@@ -30,6 +31,7 @@ namespace Supermarket.API.Data.Mapping
 
             CreateMap<VehicleDTO, Vehicle>();
             CreateMap<LinkedCardDTO, LinkedCard>();
+            CreateMap<OTPDTO, OTP>();
 
         }
     }

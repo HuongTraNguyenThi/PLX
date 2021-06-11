@@ -4,6 +4,8 @@ using PLX.API.Data.Repositories;
 using PLX.API.Data.DTO;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using PLX.API.Data.DTO.Customer;
+
 namespace PLX.API.Services
 {
 
@@ -29,24 +31,27 @@ namespace PLX.API.Services
             var linkedCard = await _linkedCardRepository.FindAsync(id);
             return linkedCard;
         }
-        public async Task<BaseResponse<LinkedCard>> AddAsync(LinkedCard linkedCard)
+        public async Task<APIResponse> AddAsync(LinkedCardDTO linkedCardDTO)
         {
+            var linkedCard = _mapper.Map<LinkedCardDTO, LinkedCard>(linkedCardDTO);
             await _linkedCardRepository.AddAsync(linkedCard);
             await _unitOfWork.CompleteAsync();
-            return new BaseResponse<LinkedCard>(linkedCard);
+            return new APIResponse(linkedCardDTO);
         }
-        public async Task<BaseResponse<LinkedCard>> UpdateAsync(int id, LinkedCard linkedCard)
+        public async Task<APIResponse> UpdateAsync(int id, LinkedCardDTO linkedCardDTO)
         {
+            var linkedCard = _mapper.Map<LinkedCardDTO, LinkedCard>(linkedCardDTO);
             _linkedCardRepository.Update(linkedCard);
             await _unitOfWork.CompleteAsync();
-            return new BaseResponse<LinkedCard>(linkedCard);
+            return new APIResponse(linkedCardDTO);
         }
-        public async Task<BaseResponse<LinkedCard>> DeleteAsync(int id)
+        public async Task<APIResponse> DeleteAsync(int id)
         {
             var linkedCard = await _linkedCardRepository.FindAsync(id);
+            var linkedCardDTO = _mapper.Map<LinkedCard, LinkedCardDTO>(linkedCard);
             _linkedCardRepository.Remove(linkedCard);
             await _unitOfWork.CompleteAsync();
-            return new BaseResponse<LinkedCard>(linkedCard);
+            return new APIResponse(linkedCardDTO);
         }
     }
 }

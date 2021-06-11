@@ -7,13 +7,15 @@ namespace PLX.API.Data.Models
     public class Vehicle : BaseEntity
     {
         [Required]
-        [Column("Driver Name")]
+        [Column("DriverName")]
         [MaxLength(200)]
         public string Name { get; set; }
         [Required]
-        [Column("License Plate")]
+        [Column("LicensePlate")]
         [MaxLength(11)]
         public string LicensePlate { get; set; }
+        [Required]
+        public int VehicleTypeId { get; set; }
 
         [ForeignKey("CustomerId")]
         public Customer Customer { get; set; }

@@ -11,11 +11,15 @@ namespace PLX.API.Data.Repositories
     {
         private readonly PLXDbContext _context;
         private DbSet<T> _entities;
+        public DbSet<T> Entities { get; }
         string errorMessage = string.Empty;
+
+
         public Repository(PLXDbContext context)
         {
             _context = context;
             _entities = _context.Set<T>();
+            Entities = _entities;
         }
         public async Task<List<T>> ListAsync()
         {

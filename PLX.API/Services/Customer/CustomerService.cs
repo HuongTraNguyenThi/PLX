@@ -20,9 +20,6 @@ namespace PLX.API.Services
         private readonly IRepository<District> _districtRepository;
         private readonly IRepository<Ward> _wardRepository;
         private readonly IRepository<Question> _questionsRepository;
-
-
-
         private readonly IUnitOfWork _unitOfWork;
         private IMapper _mapper;
 
@@ -54,153 +51,162 @@ namespace PLX.API.Services
             var customer = await _customerRepository.FindAsync(id);
             return customer;
         }
-        public async Task<BaseResponse<Customer>> AddAsync(Customer customer)
+        public async Task<APIResponse> AddAsync(CustomerDTO customerDTO)
         {
-            await _customerRepository.AddAsync(customer);
+            var cus = _mapper.Map<CustomerDTO, Customer>(customerDTO);
+            await _customerRepository.AddAsync(cus);
             await _unitOfWork.CompleteAsync();
-            return new BaseResponse<Customer>(customer);
+            return new APIResponse(customerDTO);
         }
-        public async Task<BaseResponse<Customer>> UpdateAsync(int id, Customer customer)
+        public async Task<APIResponse> UpdateAsync(int id, CustomerDTO customerDTO)
         {
-            _customerRepository.Update(customer);
+            var cus = _mapper.Map<CustomerDTO, Customer>(customerDTO);
+            _customerRepository.Update(cus);
             await _unitOfWork.CompleteAsync();
-            return new BaseResponse<Customer>(customer);
+            return new APIResponse(customerDTO);
         }
-        public async Task<BaseResponse<Customer>> DeleteAsync(int id)
+        public async Task<APIResponse> DeleteAsync(int id)
         {
+
             var customer = await _customerRepository.FindAsync(id);
+            var cus = _mapper.Map<Customer, CustomerDTO>(customer);
             _customerRepository.Remove(customer);
             await _unitOfWork.CompleteAsync();
-            return new BaseResponse<Customer>(customer);
+            return new APIResponse(cus);
         }
-        public async Task<CustomerResponse> RegisterAsync(CustomerRegister customerRegister)
+        public async Task<APIResponse> RegisterAsync(CustomerRegister customerRegister)
         {
-            var result = new CustomerResponse();
+
+
             var customer = _mapper.Map<CustomerRegister, Customer>(customerRegister);
 
             if (customer.CustomerTypeId == 1)
             {
                 if (customer.Name == null || customer.Name == "")
                 {
-                    result.ErrorMessage = "Tên không được trống";
-                    return result;
+                    return new APIResponse(1, "Tên không được trống");
+
                 }
                 if (customer.Phone == null || customer.Phone == "")
                 {
-                    result.ErrorMessage = "Số điện thoại không được trống";
-                    return result;
+                    return new APIResponse(1, "Số điện thoại không được trống");
+
                 }
                 if (customer.Password == null || customer.Password == "")
                 {
-                    result.ErrorMessage = "Mật khẩu không được trống";
-                    return result;
+
+                    return new APIResponse(1, "Mật khẩu không được trống");
+
                 }
 
                 foreach (var item in customer.Questions)
                 {
                     if (item.Question.Content == null || item.Question.Content == "")
                     {
-                        result.ErrorMessage = "Câu hỏi bí mật không được trống";
-                        return result;
+                        return new APIResponse(1, "Câu hỏi bí mật không được trống");
+
                     }
 
                 }
 
-                if (customer.Date == null || customer.Date == "")
+                if (customer.Date == null)
                 {
-                    result.ErrorMessage = "Ngày sinh không được trống";
-                    return result;
+                    return new APIResponse(1, "Ngày sinh không được trống");
+
                 }
                 if (customer.ProvinceId == 0)
                 {
-                    result.ErrorMessage = "Tỉnh không được trống";
-                    return result;
+                    return new APIResponse(1, "Tỉnh không được trống");
+
                 }
                 if (customer.DistrictId == 0)
                 {
-                    result.ErrorMessage = "Quận/Huyện không được trống";
-                    return result;
+                    return new APIResponse(1, "Quận/Huyện không được trống");
+
                 }
                 if (customer.WardId == 0)
                 {
-                    result.ErrorMessage = "Phường/Xã không được trống";
-                    return result;
+                    return new APIResponse(1, "Phường/Xã không được trống");
+
                 }
                 if (customer.Address == null || customer.Address == "")
                 {
-                    result.ErrorMessage = "Địa chỉ không được trống";
-                    return result;
+                    return new APIResponse(1, "Địa chỉ không được trống");
+
                 }
                 if (customer.CardID == null || customer.CardID == "")
                 {
-                    result.ErrorMessage = "Số CMND/CCCD không được trống";
-                    return result;
+                    return new APIResponse(1, "Số CMND/CCCD không được trống");
+
                 }
                 if (customer.Gender == null || customer.Gender == "")
                 {
-                    result.ErrorMessage = "Giới tính không được trống";
-                    return result;
+                    return new APIResponse(1, "Giới tính không được trống");
+
                 }
             }
             if (customer.CustomerTypeId == 2)
             {
                 if (customer.Name == null || customer.Name == "")
                 {
-                    result.ErrorMessage = "Tên không được trống";
-                    return result;
+                    return new APIResponse(1, "Tên không được trống");
+
                 }
                 if (customer.Phone == null || customer.Phone == "")
                 {
-                    result.ErrorMessage = "Số điện thoại không được trống";
-                    return result;
+                    return new APIResponse(1, "Số điện thoại không được trống");
+
                 }
                 if (customer.Password == null || customer.Password == "")
                 {
-                    result.ErrorMessage = "Mật khẩu không được trống";
-                    return result;
+
+                    return new APIResponse(1, "Mật khẩu không được trống");
+
                 }
+
                 foreach (var item in customer.Questions)
                 {
                     if (item.Question.Content == null || item.Question.Content == "")
                     {
-                        result.ErrorMessage = "Câu hỏi bí mật không được trống";
-                        return result;
+                        return new APIResponse(1, "Câu hỏi bí mật không được trống");
+
                     }
+
                 }
-                if (customer.Date == null || customer.Date == "")
+                if (customer.Date == null)
                 {
-                    result.ErrorMessage = "Ngày sinh không được trống";
-                    return result;
+                    return new APIResponse(1, "Ngày thành lập không được trống");
+
                 }
                 if (customer.ProvinceId == 0)
                 {
-                    result.ErrorMessage = "Tỉnh không được trống";
-                    return result;
+                    return new APIResponse(1, "Tỉnh không được trống");
+
                 }
                 if (customer.DistrictId == 0)
                 {
-                    result.ErrorMessage = "Quận/Huyện không được trống";
-                    return result;
+                    return new APIResponse(1, "Quận/Huyện không được trống");
+
                 }
                 if (customer.WardId == 0)
                 {
-                    result.ErrorMessage = "Phường/Xã không được trống";
-                    return result;
+                    return new APIResponse(1, "Phường/Xã không được trống");
+
                 }
                 if (customer.Address == null || customer.Address == "")
                 {
-                    result.ErrorMessage = "Địa chỉ không được trống";
-                    return result;
+                    return new APIResponse(1, "Địa chỉ không được trống");
+
                 }
                 if (customer.Email == null || customer.Email == "")
                 {
-                    result.ErrorMessage = "Email không được trống";
-                    return result;
+                    return new APIResponse(1, "Email không được trống");
+
                 }
                 if (customer.TaxCode == null || customer.TaxCode == "")
                 {
-                    result.ErrorMessage = "Mã số thuế không được trống";
-                    return result;
+                    return new APIResponse(1, "Mã số thuế không được trống");
+
                 }
             }
             var vehicles = _mapper.Map<List<VehicleDTO>, List<Vehicle>>(customerRegister.Vehicles);
@@ -220,8 +226,10 @@ namespace PLX.API.Services
             await _customerQuestionsRepository.AddRangeAsync(questions);
 
             await _unitOfWork.CompleteAsync();
-
-            result.IdCustomer = customer.Id;
+            var result = new APIResponse(new CustomerResponse()
+            {
+                IdCustomer = customer.Id
+            });
             return result;
         }
 
