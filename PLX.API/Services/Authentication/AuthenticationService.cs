@@ -35,14 +35,14 @@ namespace PLX.API.Services
         {
             var customer = await _customerRepository.FindCustomerByPhoneAndPasword(authRequest.Phone);
             if (customer == null || !BC.Verify(authRequest.Password, customer.Password))
-                return ErrorResponse("11001");
+                return ErrorResponse("10004");
             IDictionary<string, object> customerInfo = new Dictionary<string, object>();
             customerInfo.Add("Id", customer.Id.ToString());
             customerInfo.Add("Phone", customer.Phone);
             string token = JwtHelper.GenerateToken(_jwtConfig, customerInfo);
 
             AuthenticationResponse authResponse = new AuthenticationResponse() { Token = token };
-            var response = OkResponse(authResponse, "11003");
+            var response = OkResponse(authResponse, "11004");
             return response;
         }
         public async Task<APIResponse> FindUserById(int id)
@@ -69,7 +69,7 @@ namespace PLX.API.Services
             };
             await _otpRepository.AddAsync(result);
             await _unitOfWork.CompleteAsync();
-            return OkResponse(new OTPResponse("Mã OTP đã được gửi"));
+            return OkResponse(new OTPResponse("Mã OTP đã được gửi"), "11002");
         }
 
         public async Task<APIResponse> ValidateOTP(OTPValidateRequest oTPRequest)
@@ -82,9 +82,9 @@ namespace PLX.API.Services
                 if (ts.Seconds <= value)
                     return OkResponse(new OTPResponse("Xác thực thành công"));
 
-                return ErrorResponse("10003", null);
+                return ErrorResponse("10002", null);
             }
-            return ErrorResponse("10003", null);
+            return ErrorResponse("10002", null);
         }
 
     }

@@ -245,7 +245,8 @@ namespace PLX.API.Services
             var result = OkResponse(new CustomerResponse()
             {
                 IdCustomer = customer.Id
-            });
+            },
+            "11005");
             return result;
         }
 
@@ -276,7 +277,7 @@ namespace PLX.API.Services
             {
                 Districts = districtList
             };
-            return new ApiOkResponse(result);
+            return new ApiOkResponse(result, "11002");
         }
 
         public async Task<APIResponse> GetListWards(BaseRequest baseRequest, int districtId)
@@ -288,14 +289,14 @@ namespace PLX.API.Services
             {
                 Wards = wardList
             };
-            return new ApiOkResponse(result);
+            return new ApiOkResponse(result, "11002");
         }
 
         public async Task<APIResponse> GetCustomerById(BaseRequest baseRequest, int id)
         {
             var all = await _customerRepository.FindAsync(id);
             var customerDto = _mapper.Map<Customer, CustomerDTO>(all);
-            return new ApiOkResponse(customerDto);
+            return new ApiOkResponse(customerDto, "11002");
         }
 
 

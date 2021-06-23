@@ -25,7 +25,7 @@ namespace Supermarket.API.Data.Mapping
 
             .ForMember(customer => customer.Email, opt => opt.MapFrom(custReg => custReg.CustomerInfo.CustomerBasic.Email))
             .ForMember(customer => customer.CardID, opt => opt.MapFrom(custReg => custReg.CustomerInfo.CustomerCard.CardId))
-            .ForMember(customer => customer.Date, opt => opt.MapFrom(custReg => DateTimeConvert.ToDateTime(custReg.CustomerInfo.CustomerCard.Date)))
+            .ForMember(customer => customer.Date, opt => opt.MapFrom(custReg => DateTimeConvert.ToDate(custReg.CustomerInfo.CustomerCard.Date)))
 
             .ForMember(customer => customer.Gender, opt => opt.MapFrom(custReg => custReg.CustomerInfo.CustomerCard.Gender))
             .ForMember(customer => customer.TaxCode, opt => opt.MapFrom(custReg => custReg.CustomerInfo.CustomerCard.TaxCode))
