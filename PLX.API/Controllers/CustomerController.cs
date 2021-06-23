@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using PLX.API.Data.DTO;
 using PLX.API.Data.DTO.Customer;
 using PLX.API.Data.Models;
 using PLX.API.Services;
@@ -21,51 +23,59 @@ namespace PLX.API.Controllers
 
         private ICustomerService _iCustomerService;
 
-
-
         public CustomerController(ILogger<CustomerController> logger, ICustomerService iCustomerService)
         {
             _logger = logger;
             _iCustomerService = iCustomerService;
+
         }
         [AllowAnonymous]
         [HttpPost]
+        [ProducesResponseType(typeof(CustomerResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorMessageResponse), StatusCodes.Status400BadRequest)]
         [Route("register")]
         public async Task<IActionResult> Register(CustomerRegister dto)
         {
             var response = await _iCustomerService.RegisterAsync(dto);
-            if (response.Success)
-                return Ok(response.Resource);
+            if (response.Result.Success)
+                return Ok(response);
 
-            return BadRequest(response.ErrorMessage);
+            return BadRequest(response);
         }
-        [HttpGet]
+        [AllowAnonymous]
+        [HttpPost]
         [Route("staticlist")]
-        public async Task<IActionResult> GetCustomerStaticList()
+        public async Task<IActionResult> GetCustomerStaticList(BaseRequest baseRequest)
         {
-            var response = await _iCustomerService.GetLists();
+            var response = await _iCustomerService.GetLists(baseRequest);
             return Ok(response);
         }
-        [HttpGet]
+        [AllowAnonymous]
+        [HttpPost]
         [Route("districtlist/{id?}")]
-        public async Task<IActionResult> GetDistrictList(int id)
+        public async Task<IActionResult> GetDistrictList(BaseRequest baseRequest, int id)
         {
-            var response = await _iCustomerService.GetListDistricts(id);
+            var response = await _iCustomerService.GetListDistricts(baseRequest, id);
             return Ok(response);
         }
-        [HttpGet]
+        [AllowAnonymous]
+        [HttpPost]
         [Route("wardlist/{id?}")]
-        public async Task<IActionResult> GetWardList(int id)
+        public async Task<IActionResult> GetWardList(BaseRequest baseRequest, int id)
         {
-            var response = await _iCustomerService.GetListWards(id);
+
+            var response = await _iCustomerService.GetListWards(baseRequest, id);
             return Ok(response);
         }
-        [HttpGet]
+        [HttpPost]
+        [ProducesResponseType(typeof(CustomerDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorMessageResponse), StatusCodes.Status404NotFound)]
         [Route("getcustomer/{id?}")]
-        public async Task<IActionResult> GetCustomerById(int id)
+        public async Task<IActionResult> GetCustomerById(BaseRequest baseRequest, int id)
         {
-            var response = await _iCustomerService.GetCustomerById(id);
+            var response = await _iCustomerService.GetCustomerById(baseRequest, id);
             return Ok(response);
         }
+
     }
 }

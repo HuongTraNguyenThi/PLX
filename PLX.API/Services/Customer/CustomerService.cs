@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,7 +11,7 @@ using PLX.API.Data.Repositories;
 namespace PLX.API.Services
 {
 
-    public class CustomerService : ICustomerService
+    public class CustomerService : BaseService, ICustomerService
     {
         private readonly IRepository<Customer> _customerRepository;
         private readonly IRepository<Vehicle> _vehicleRepository;
@@ -20,6 +21,8 @@ namespace PLX.API.Services
         private readonly IRepository<District> _districtRepository;
         private readonly IRepository<Ward> _wardRepository;
         private readonly IRepository<Question> _questionsRepository;
+        private readonly IResultMessageService _iResultMessageService;
+
         private readonly IUnitOfWork _unitOfWork;
         private IMapper _mapper;
 
@@ -27,7 +30,7 @@ namespace PLX.API.Services
             IRepository<Customer> customerRepository, IRepository<Vehicle> vehicleRepository,
             IRepository<LinkedCard> linkedCardRepository, IRepository<CustomerQuestion> customerQuestionsRepository,
             IRepository<Question> questionsRepository, IRepository<Province> provinceRepository,
-            IRepository<District> districtRepository, IRepository<Ward> wardRepository)
+            IRepository<District> districtRepository, IRepository<Ward> wardRepository, IResultMessageService iResultMessageService)
         {
             _customerRepository = customerRepository;
             _unitOfWork = unitOfWork;
@@ -39,6 +42,7 @@ namespace PLX.API.Services
             _provinceRepository = provinceRepository;
             _districtRepository = districtRepository;
             _wardRepository = wardRepository;
+            _iResultMessageService = iResultMessageService;
         }
 
         public async Task<List<Customer>> ListAsync()
@@ -56,14 +60,14 @@ namespace PLX.API.Services
             var cus = _mapper.Map<CustomerDTO, Customer>(customerDTO);
             await _customerRepository.AddAsync(cus);
             await _unitOfWork.CompleteAsync();
-            return new APIResponse(customerDTO);
+            return OkResponse(customerDTO);
         }
         public async Task<APIResponse> UpdateAsync(int id, CustomerDTO customerDTO)
         {
             var cus = _mapper.Map<CustomerDTO, Customer>(customerDTO);
             _customerRepository.Update(cus);
             await _unitOfWork.CompleteAsync();
-            return new APIResponse(customerDTO);
+            return OkResponse(customerDTO);
         }
         public async Task<APIResponse> DeleteAsync(int id)
         {
@@ -72,11 +76,10 @@ namespace PLX.API.Services
             var cus = _mapper.Map<Customer, CustomerDTO>(customer);
             _customerRepository.Remove(customer);
             await _unitOfWork.CompleteAsync();
-            return new APIResponse(cus);
+            return OkResponse(cus);
         }
         public async Task<APIResponse> RegisterAsync(CustomerRegister customerRegister)
         {
-
 
             var customer = _mapper.Map<CustomerRegister, Customer>(customerRegister);
 
@@ -84,24 +87,20 @@ namespace PLX.API.Services
             {
                 if (customer.Name == null || customer.Name == "")
                 {
-                    return new APIResponse(1, "Tên không được trống");
+                    return ErrorResponse("10001", null);
 
                 }
                 if (customer.Phone == null || customer.Phone == "")
                 {
-                    return new APIResponse(1, "Số điện thoại không được trống");
+                    return ErrorResponse("10001", null);
+
 
                 }
                 if (customer.Password == null || customer.Password == "")
                 {
 
-                    return new APIResponse(1, "Mật khẩu không được trống");
+                    return ErrorResponse("10001", null);
 
-                }
-                if (customerRegister.CustomerInfo.CustomerBasic.ConfirmPassword != customer.Password)
-                {
-
-                    return new APIResponse(1, "Mật khẩu không khớp");
 
                 }
 
@@ -110,7 +109,8 @@ namespace PLX.API.Services
                 {
                     if (item.Question.Content == null || item.Question.Content == "")
                     {
-                        return new APIResponse(1, "Câu hỏi bí mật không được trống");
+                        return ErrorResponse("10001", null);
+
 
                     }
 
@@ -118,37 +118,42 @@ namespace PLX.API.Services
 
                 if (customer.Date == null)
                 {
-                    return new APIResponse(1, "Ngày sinh không được trống");
+                    return ErrorResponse("10001", null);
+
 
                 }
                 if (customer.ProvinceId == 0)
                 {
-                    return new APIResponse(1, "Tỉnh không được trống");
+                    return ErrorResponse("10001", null);
+
 
                 }
                 if (customer.DistrictId == 0)
                 {
-                    return new APIResponse(1, "Quận/Huyện không được trống");
+                    return ErrorResponse("10001", null);
 
                 }
                 if (customer.WardId == 0)
                 {
-                    return new APIResponse(1, "Phường/Xã không được trống");
+                    return ErrorResponse("10001", null);
+
 
                 }
                 if (customer.Address == null || customer.Address == "")
                 {
-                    return new APIResponse(1, "Địa chỉ không được trống");
+                    return ErrorResponse("10001", null);
+
 
                 }
                 if (customer.CardID == null || customer.CardID == "")
                 {
-                    return new APIResponse(1, "Số CMND/CCCD không được trống");
+                    return ErrorResponse("10001", null);
+
 
                 }
                 if (customer.Gender == null || customer.Gender == "")
                 {
-                    return new APIResponse(1, "Giới tính không được trống");
+                    return ErrorResponse("10001", null);
 
                 }
             }
@@ -156,74 +161,73 @@ namespace PLX.API.Services
             {
                 if (customer.Name == null || customer.Name == "")
                 {
-                    return new APIResponse(1, "Tên không được trống");
+                    return ErrorResponse("10001", null);
+
 
                 }
                 if (customer.Phone == null || customer.Phone == "")
                 {
-                    return new APIResponse(1, "Số điện thoại không được trống");
+                    return ErrorResponse("10001", null);
+
 
                 }
                 if (customer.Password == null || customer.Password == "")
                 {
 
-                    return new APIResponse(1, "Mật khẩu không được trống");
+                    return ErrorResponse("10001", null);
+
 
                 }
-                if (customerRegister.CustomerInfo.CustomerBasic.ConfirmPassword != customer.Password)
-                {
 
-                    return new APIResponse(1, "Mật khẩu không khớp");
-
-                }
                 foreach (var item in customer.Questions)
                 {
                     if (item.Question.Content == null || item.Question.Content == "")
                     {
-                        return new APIResponse(1, "Câu hỏi bí mật không được trống");
+                        return ErrorResponse("10001", null);
+
 
                     }
 
                 }
-                if (customer.Date == null)
-                {
-                    return new APIResponse(1, "Ngày thành lập không được trống");
-
-                }
                 if (customer.ProvinceId == 0)
                 {
-                    return new APIResponse(1, "Tỉnh không được trống");
+                    return ErrorResponse("10001", null);
+
 
                 }
                 if (customer.DistrictId == 0)
                 {
-                    return new APIResponse(1, "Quận/Huyện không được trống");
+                    return ErrorResponse("10001", null);
 
                 }
                 if (customer.WardId == 0)
                 {
-                    return new APIResponse(1, "Phường/Xã không được trống");
+                    return ErrorResponse("10001", null);
+
 
                 }
                 if (customer.Address == null || customer.Address == "")
                 {
-                    return new APIResponse(1, "Địa chỉ không được trống");
+                    return ErrorResponse("10001", null);
+
 
                 }
                 if (customer.Email == null || customer.Email == "")
                 {
-                    return new APIResponse(1, "Email không được trống");
+                    return ErrorResponse("10001", null);
+
 
                 }
                 if (customer.TaxCode == null || customer.TaxCode == "")
                 {
-                    return new APIResponse(1, "Mã số thuế không được trống");
+                    return ErrorResponse("10001", null);
+
 
                 }
             }
-            var vehicles = _mapper.Map<List<VehicleDTO>, List<Vehicle>>(customerRegister.Vehicles);
+            var vehicles = _mapper.Map<List<VehicleRequest>, List<Vehicle>>(customerRegister.Vehicles);
             vehicles.ForEach(vehicle => vehicle.Customer = customer);
-            var linkedCards = _mapper.Map<List<LinkedCardDTO>, List<LinkedCard>>(customerRegister.LinkedCards);
+            var linkedCards = _mapper.Map<List<LinkedCardRequest>, List<LinkedCard>>(customerRegister.LinkedCards);
             linkedCards.ForEach(linkedCard => linkedCard.Customer = customer);
 
             var questions = _mapper.Map<List<QuestionDTO>, List<CustomerQuestion>>(customerRegister.CustomerInfo.CustomerBasic.Questions);
@@ -238,51 +242,62 @@ namespace PLX.API.Services
             await _customerQuestionsRepository.AddRangeAsync(questions);
 
             await _unitOfWork.CompleteAsync();
-            var result = new APIResponse(new CustomerResponse()
+            var result = OkResponse(new CustomerResponse()
             {
                 IdCustomer = customer.Id
             });
             return result;
         }
 
-        public async Task<CustomerStaticList> GetLists()
+        public async Task<APIResponse> GetLists(BaseRequest baseRequest)
         {
+            //Console.WriteLine("--- Expected message = " + await _iResultMessageService.GetMessage("10001", new object[] { "Phone" }));
             var questions = await _questionsRepository.ListAsync();
             var provinces = await _provinceRepository.ListAsync();
             var questionList = _mapper.Map<List<Question>, List<ListItem>>(questions);
             var provinceList = _mapper.Map<List<Province>, List<ListItem>>(provinces);
             var genderList = new List<ListItem>();
             genderList.Add(new ListItem("male", "Nam"));
-            genderList.Add(new ListItem("female", "Nu"));
+            genderList.Add(new ListItem("female", "Nữ"));
             var customerStaticList = new CustomerStaticList
             {
                 Questions = questionList,
                 Provinces = provinceList,
                 Genders = genderList
             };
-            return customerStaticList;
+            return new ApiOkResponse(customerStaticList);
         }
-        public async Task<List<ListItem>> GetListDistricts(int provinceId)
+        public async Task<APIResponse> GetListDistricts(BaseRequest baseRequest, int provinceId)
         {
             var all = await _districtRepository.ListAsync();
             var districts = all.Where(x => x.ProvinceId == provinceId).ToList();
             var districtList = _mapper.Map<List<District>, List<ListItem>>(districts);
-            return districtList;
+            var result = new DistrictDTO
+            {
+                Districts = districtList
+            };
+            return new ApiOkResponse(result);
         }
 
-        public async Task<List<ListItem>> GetListWards(int districtId)
+        public async Task<APIResponse> GetListWards(BaseRequest baseRequest, int districtId)
         {
             var all = await _wardRepository.ListAsync();
             var wards = all.Where(x => x.DistrictId == districtId).ToList();
             var wardList = _mapper.Map<List<Ward>, List<ListItem>>(wards);
-            return wardList;
+            var result = new WardDTO
+            {
+                Wards = wardList
+            };
+            return new ApiOkResponse(result);
         }
 
-        public async Task<CustomerDTO> GetCustomerById(int id)
+        public async Task<APIResponse> GetCustomerById(BaseRequest baseRequest, int id)
         {
             var all = await _customerRepository.FindAsync(id);
             var customerDto = _mapper.Map<Customer, CustomerDTO>(all);
-            return customerDto;
+            return new ApiOkResponse(customerDto);
         }
+
+
     }
 }

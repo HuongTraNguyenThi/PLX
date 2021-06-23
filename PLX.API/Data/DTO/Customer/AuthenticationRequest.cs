@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace PLX.API.Data.DTO.Customer
 {
-    public class AuthenticationRequest
+    public class AuthenticationRequest : BaseRequest
     {
         [Required]
         public string Phone { get; set; }

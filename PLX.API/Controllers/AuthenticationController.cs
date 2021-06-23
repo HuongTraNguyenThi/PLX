@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PLX.API.Data.DTO;
@@ -23,37 +24,43 @@ namespace PLX.API.Controllers
         }
 
         [AllowAnonymous]
+        [ProducesResponseType(typeof(AuthenticationResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorMessageResponse), StatusCodes.Status400BadRequest)]
         [HttpPost("authenticate")]
         public async Task<IActionResult> Authenticate(AuthenticationRequest authRequest)
         {
             var response = await _authenticationService.Authenticate(authRequest);
-            if (response.Success)
+            if (response.Result.Success)
             {
-                return Ok(response.Resource);
+                return Ok(response);
             }
-            return BadRequest(response.ErrorMessage);
+            return BadRequest(response);
         }
         [AllowAnonymous]
-        [HttpPost("genarateotp")]
-        public async Task<IActionResult> GenerateOtp(OTPDTO oTPDTO)
+        [ProducesResponseType(typeof(OTPResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorMessageResponse), StatusCodes.Status400BadRequest)]
+        [HttpPost("generateotp")]
+        public async Task<IActionResult> GenerateOtp(OTPGenerateRequest oTPRequest)
         {
-            var response = await _authenticationService.GenerateOTP(oTPDTO);
-            if (response.Success)
+            var response = await _authenticationService.GenerateOTP(oTPRequest);
+            if (response.Result.Success)
             {
-                return Ok(response.Resource);
+                return Ok(response);
             }
-            return BadRequest(response.ErrorMessage);
+            return BadRequest(response);
         }
         [AllowAnonymous]
+        [ProducesResponseType(typeof(OTPResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorMessageResponse), StatusCodes.Status400BadRequest)]
         [HttpPost("validateotp")]
-        public async Task<IActionResult> ValidateOtp(OTPDTO oTPDTO)
+        public async Task<IActionResult> ValidateOtp(OTPValidateRequest oTPRequest)
         {
-            var response = await _authenticationService.ValidateOTP(oTPDTO);
-            if (response.Success)
+            var response = await _authenticationService.ValidateOTP(oTPRequest);
+            if (response.Result.Success)
             {
-                return Ok(response.Resource);
+                return Ok(response);
             }
-            return BadRequest(response.ErrorMessage);
+            return BadRequest(response);
         }
     }
 }

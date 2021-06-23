@@ -2,8 +2,7 @@ using System;
 using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-
-namespace PLX.API.Extensions.Converters
+namespace PLX.API.Data.Repositories.Extensions.Converters
 {
     public class JsonDateConverter : JsonConverter<DateTime>
     {

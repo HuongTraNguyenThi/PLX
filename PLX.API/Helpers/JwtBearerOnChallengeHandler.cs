@@ -19,7 +19,7 @@ namespace PLX.API.Helpers
             context.Response.StatusCode = StatusCodes.Status401Unauthorized;
 
             // Customize payload send to client here.
-            var payload = new ErrorMessageResponse(2, "Vui lòng đăng nhập");
+            var payload = new ErrorMessageResponse("2", "Vui lòng đăng nhập để thực hiện chức năng này");
             return context.Response.WriteAsync(JsonConvert.SerializeObject(payload));
         }
     }

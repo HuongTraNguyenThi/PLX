@@ -31,27 +31,27 @@ namespace PLX.API.Services
             var linkedCard = await _linkedCardRepository.FindAsync(id);
             return linkedCard;
         }
-        public async Task<APIResponse> AddAsync(LinkedCardDTO linkedCardDTO)
-        {
-            var linkedCard = _mapper.Map<LinkedCardDTO, LinkedCard>(linkedCardDTO);
-            await _linkedCardRepository.AddAsync(linkedCard);
-            await _unitOfWork.CompleteAsync();
-            return new APIResponse(linkedCardDTO);
-        }
-        public async Task<APIResponse> UpdateAsync(int id, LinkedCardDTO linkedCardDTO)
-        {
-            var linkedCard = _mapper.Map<LinkedCardDTO, LinkedCard>(linkedCardDTO);
-            _linkedCardRepository.Update(linkedCard);
-            await _unitOfWork.CompleteAsync();
-            return new APIResponse(linkedCardDTO);
-        }
-        public async Task<APIResponse> DeleteAsync(int id)
-        {
-            var linkedCard = await _linkedCardRepository.FindAsync(id);
-            var linkedCardDTO = _mapper.Map<LinkedCard, LinkedCardDTO>(linkedCard);
-            _linkedCardRepository.Remove(linkedCard);
-            await _unitOfWork.CompleteAsync();
-            return new APIResponse(linkedCardDTO);
-        }
+        // public  Task<APIResponse> AddAsync(LinkedCardDTO linkedCardDTO)
+        // {
+        //     // var linkedCard = _mapper.Map<LinkedCardDTO, LinkedCard>(linkedCardDTO);
+        //     // await _linkedCardRepository.AddAsync(linkedCard);
+        //     // await _unitOfWork.CompleteAsync();
+        //     // return new APIResponse(linkedCardDTO);
+        // }
+        // public async Task<APIResponse> UpdateAsync(int id, LinkedCardDTO linkedCardDTO)
+        // {
+        //     var linkedCard = _mapper.Map<LinkedCardDTO, LinkedCard>(linkedCardDTO);
+        //     _linkedCardRepository.Update(linkedCard);
+        //     await _unitOfWork.CompleteAsync();
+        //     return new APIResponse(linkedCardDTO);
+        // }
+        // public async Task<APIResponse> DeleteAsync(int id)
+        // {
+        //     var linkedCard = await _linkedCardRepository.FindAsync(id);
+        //     var linkedCardDTO = _mapper.Map<LinkedCard, LinkedCardDTO>(linkedCard);
+        //     _linkedCardRepository.Remove(linkedCard);
+        //     await _unitOfWork.CompleteAsync();
+        //     return new APIResponse(linkedCardDTO);
+        // }
     }
 }

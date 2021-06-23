@@ -27,6 +27,7 @@ namespace PLX.API.Data.Contexts
             modelBuilder.Entity<CustomerType>();
             modelBuilder.Entity<LogAPI>();
             modelBuilder.Entity<OTP>();
+            modelBuilder.Entity<Result>();
         }
     }
 }

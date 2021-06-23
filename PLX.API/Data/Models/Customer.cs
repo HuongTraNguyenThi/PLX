@@ -39,7 +39,7 @@ namespace PLX.API.Data.Models
 
         [Required]
         [DataType(DataType.Date)]
-        [DateMMYYMMMM]
+
         public DateTime Date { get; set; }
 
         [Required]

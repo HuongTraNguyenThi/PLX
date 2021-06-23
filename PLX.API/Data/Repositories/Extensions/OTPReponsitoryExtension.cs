@@ -14,12 +14,12 @@ namespace PLX.API.Data.Repositories
             var otp = await otpRepository.Entities.Where(x => x.Phone == phone).FirstOrDefaultAsync();
             return otp;
         }
-        public static async Task<List<OTP>> FindOTPByPhoneAndActive(this IRepository<OTP> otpRepository, string phone, bool active)
+        public static async Task<List<OTP>> FindOTPByPhoneAndActive(this IRepository<OTP> otpRepository, string phone)
         {
             var otp = await otpRepository.Entities.Where(x => x.Phone == phone && x.Active == true).ToListAsync();
             return otp;
         }
-        public static async Task<List<OTP>> FindOTPByPhoneAndOTP(this IRepository<OTP> otpRepository, string phone, int otpCode)
+        public static async Task<List<OTP>> FindOTPByPhoneAndOTP(this IRepository<OTP> otpRepository, string phone, string otpCode)
         {
             var otp = await otpRepository.Entities.Where(x => x.Phone == phone && x.Active == true && x.OTPCode == otpCode).ToListAsync();
             return otp;

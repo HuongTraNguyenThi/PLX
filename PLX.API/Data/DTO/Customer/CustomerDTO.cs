@@ -11,8 +11,6 @@ namespace PLX.API.Data.DTO.Customer
         public string Email { get; set; }
         public string CardId { get; set; }
 
-        [DataType(DataType.Date)]
-        [DateMMYYMMMM]
         public DateTime Date { get; set; }
         public string Gender { get; set; }
         public string TaxCode { get; set; }

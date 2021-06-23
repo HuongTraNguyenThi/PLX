@@ -10,7 +10,7 @@ namespace PLX.API.Services
     {
         Task<APIResponse> Authenticate(AuthenticationRequest authRequest);
         Task<APIResponse> FindUserById(int id);
-        Task<APIResponse> GenerateOTP(OTPDTO oTPDTO);
-        Task<APIResponse> ValidateOTP(OTPDTO oTPDTO);
+        Task<APIResponse> GenerateOTP(OTPGenerateRequest oTPRequest);
+        Task<APIResponse> ValidateOTP(OTPValidateRequest oTPRequest);
     }
 }

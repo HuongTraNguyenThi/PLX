@@ -4,6 +4,7 @@ using AutoMapper;
 using PLX.API.Data.Models;
 using PLX.API.Data.DTO;
 using PLX.API.Data.DTO.Customer;
+using PLX.API.Extensions.Converters;
 
 namespace PLX.API.Data.Mapping
 {
@@ -12,8 +13,8 @@ namespace PLX.API.Data.Mapping
         public ModelToDTOProfile()
         {
             CreateMap<Customer, CustomerResponse>();
-            CreateMap<Customer, CustomerDTO>();
-            //.ForMember(customerDto => customerDto.Date, opt => opt.MapFrom(customer => DateTime.Today.Date.ToString("dd/MM/yyyyy")(customer.Date));
+            CreateMap<Customer, CustomerDTO>()
+            .ForMember(customerDto => customerDto.Date, opt => opt.MapFrom(customer => DateTimeConvert.ToString(customer.Date)));
             CreateMap<Question, ListItem>()
             .ForMember(listItem => listItem.Value, opt => opt.MapFrom(question => question.Id))
             .ForMember(listItem => listItem.Display, opt => opt.MapFrom(question => question.Content));
@@ -27,6 +28,10 @@ namespace PLX.API.Data.Mapping
             CreateMap<Ward, ListItem>()
             .ForMember(listItem => listItem.Value, opt => opt.MapFrom(ward => ward.Id))
             .ForMember(listItem => listItem.Display, opt => opt.MapFrom(ward => ward.Name));
+            CreateMap<VehicleType, ListItem>()
+            .ForMember(listitem => listitem.Value, opt => opt.MapFrom(vehicleType => vehicleType.Id))
+            .ForMember(listitem => listitem.Display, opt => opt.MapFrom(vehicleType => vehicleType.Name));
+
         }
     }
 }

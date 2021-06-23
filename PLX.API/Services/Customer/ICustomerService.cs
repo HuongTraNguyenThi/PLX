@@ -10,9 +10,9 @@ namespace PLX.API.Services
     {
 
         Task<APIResponse> RegisterAsync(CustomerRegister customer);
-        Task<CustomerStaticList> GetLists();
-        Task<List<ListItem>> GetListDistricts(int proviceId);
-        Task<List<ListItem>> GetListWards(int districtId);
-        Task<CustomerDTO> GetCustomerById(int id);
+        Task<APIResponse> GetLists(BaseRequest baseRequest);
+        Task<APIResponse> GetListDistricts(BaseRequest baseRequest, int proviceId);
+        Task<APIResponse> GetListWards(BaseRequest baseRequest, int districtId);
+        Task<APIResponse> GetCustomerById(BaseRequest baseRequest, int id);
     }
 }

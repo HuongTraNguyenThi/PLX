@@ -2,22 +2,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using PLX.API.Data.Contexts;
 using PLX.API.Data.Repositories;
 using PLX.API.Helpers;
+using PLX.API.MiddleWare;
 using PLX.API.Services;
 using Swashbuckle.AspNetCore.Swagger;
 
@@ -45,6 +42,9 @@ namespace PLX.API
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IVehicleService, VehicleService>();
+
+            services.AddScoped<IResultMessageService, ResutlMessageService>();
             services.AddAutoMapper(typeof(Startup));
             services.AddDbContext<PLXDbContext>(options => options.UseNpgsql(Configuration.GetConnectionString("PLXConnection")));
             services.Configure<JwtConfig>(Configuration.GetSection("Jwt"));
@@ -82,7 +82,8 @@ namespace PLX.API
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
-
+            app.UseMiddleware<LogRequestResponseMiddleWare>();
+            app.UseMiddleware<ErrorHandlerMiddleware>();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

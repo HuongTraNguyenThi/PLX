@@ -13,7 +13,7 @@ using System;
 
 namespace PLX.API.Services
 {
-    public class AuthenticationService : IAuthenticationService
+    public class AuthenticationService : BaseService, IAuthenticationService
     {
         private readonly ILogger<AuthenticationService> _logger;
         private JwtConfig _jwtConfig;
@@ -35,57 +35,56 @@ namespace PLX.API.Services
         {
             var customer = await _customerRepository.FindCustomerByPhoneAndPasword(authRequest.Phone);
             if (customer == null || !BC.Verify(authRequest.Password, customer.Password))
-                return new APIResponse(1, "Sai thông tin đăng nhập");
+                return ErrorResponse("11001");
             IDictionary<string, object> customerInfo = new Dictionary<string, object>();
             customerInfo.Add("Id", customer.Id.ToString());
             customerInfo.Add("Phone", customer.Phone);
             string token = JwtHelper.GenerateToken(_jwtConfig, customerInfo);
 
             AuthenticationResponse authResponse = new AuthenticationResponse() { Token = token };
-            var response = new APIResponse(authResponse);
+            var response = OkResponse(authResponse, "11003");
             return response;
         }
         public async Task<APIResponse> FindUserById(int id)
         {
             var customer = await _customerRepository.FindAsync(id);
-            var userDTO = _mapper.Map<Customer, CustomerDTO>(customer);
-            return new APIResponse(userDTO);
+            var cusDTO = _mapper.Map<Customer, CustomerDTO>(customer);
+            return OkResponse(cusDTO);
         }
 
-        public async Task<APIResponse> GenerateOTP(OTPDTO oTPDTO)
+        public async Task<APIResponse> GenerateOTP(OTPGenerateRequest oTPRequest)
         {
-            int otp = new Random().Next(100000, 999999);
-            var otpRecord = await _otpRepository.FindOTPByPhoneAndActive(oTPDTO.Phone, oTPDTO.Active);
+            string otp = new Random().Next(100000, 999999).ToString();
+            var otpRecord = await _otpRepository.FindOTPByPhoneAndActive(oTPRequest.Phone);
             foreach (var item in otpRecord)
             {
                 item.Active = false;
             }
             var result = new OTP()
             {
-                Phone = oTPDTO.Phone,
+                Phone = oTPRequest.Phone,
                 OTPCode = otp,
                 CreateTime11 = DateTime.Now,
                 Active = true
             };
             await _otpRepository.AddAsync(result);
             await _unitOfWork.CompleteAsync();
-            return new APIResponse(new OTPResponse("Mã OTP đã được gửi!"));
+            return OkResponse(new OTPResponse("Mã OTP đã được gửi"));
         }
 
-        public async Task<APIResponse> ValidateOTP(OTPDTO oTPDTO)
+        public async Task<APIResponse> ValidateOTP(OTPValidateRequest oTPRequest)
         {
             int value = 30;
-            var otpRecord = await _otpRepository.FindOTPByPhoneAndOTP(oTPDTO.Phone, oTPDTO.OtpCode);
+            var otpRecord = await _otpRepository.FindOTPByPhoneAndOTP(oTPRequest.Phone, oTPRequest.OtpCode);
             foreach (var item in otpRecord)
             {
                 TimeSpan ts = DateTime.Now - item.CreateTime11;
                 if (ts.Seconds <= value)
-                    return new APIResponse(new OTPResponse("Xác thực thành công"));
+                    return OkResponse(new OTPResponse("Xác thực thành công"));
 
-                return new APIResponse(new OTPResponse("Mã OTP không đúng"));
+                return ErrorResponse("10003", null);
             }
-            return new APIResponse(new OTPResponse("Sai thông tin"));
-
+            return ErrorResponse("10003", null);
         }
 
     }

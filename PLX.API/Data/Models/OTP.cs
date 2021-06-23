@@ -11,7 +11,7 @@ namespace PLX.API.Data.Models
         [Required]
         public string Phone { get; set; }
         [Required]
-        public int OTPCode { get; set; }
+        public string OTPCode { get; set; }
         [Column("CreateTime")]
         public DateTime CreateTime11 { get; set; }
         public bool Active { get; set; }
