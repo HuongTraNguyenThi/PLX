@@ -31,6 +31,8 @@ namespace PLX.API.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType(typeof(VehicleTypeList), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorMessageResponse), StatusCodes.Status400BadRequest)]
         [Route("getvehicletypelist")]
         public async Task<IActionResult> GetVehicleTypeList(BaseRequest baseRequest)
         {

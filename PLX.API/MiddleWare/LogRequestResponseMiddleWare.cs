@@ -65,6 +65,7 @@ namespace PLX.API.MiddleWare
                                                 $"RESPONSE STATUS CODE: {context.Response.StatusCode}", null, _defaultFormatter);
             var requestContentDic = JsonConvert.DeserializeObject<Dictionary<string, object>>(requestBodyText);
             var requestId = requestContentDic.GetValueOrDefault("requestId");
+            var requestTime = requestContentDic.GetValueOrDefault("requestTime");
 
             var responseContenDic = JsonConvert.DeserializeObject<Dictionary<string, object>>(responseBody);
             var responseId = responseContenDic.GetValueOrDefault("responseId");
@@ -86,11 +87,7 @@ namespace PLX.API.MiddleWare
             await responseBodyStream.CopyToAsync(bodyStream);
             context.Request.Body = originalRequestBody;
 
-            var requestTime = requestContentDic.GetValueOrDefault("requestTime");
-
             var resultCode = responseResultContenDic.GetValueOrDefault("resultCode");
-
-
             var resultMess = await _iResultMessageService.GetMessage(resultCode as string, null);
 
 
@@ -99,8 +96,7 @@ namespace PLX.API.MiddleWare
                 RequestId = requestId.ToString(),
                 ContentRequest = requestBodyText,
                 ApiName = url,
-                // RequestTime = DateTimeConvert.ToDateTime(requestTime.ToString()),
-                RequestTime = responseTime,
+                RequestTime = DateTimeConvert.ToDateTime(requestTime.ToString()),
                 ResultCode = resultCode.ToString(),
                 ResultMessage = resultMess
             };

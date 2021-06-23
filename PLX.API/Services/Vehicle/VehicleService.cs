@@ -44,7 +44,7 @@ namespace PLX.API.Services
             {
                 VehicleTypes = vehicleTypeList
             };
-            return new ApiOkResponse(list);
+            return new ApiOkResponse(list, "11002");
         }
         // public async Task<APIResponse> AddAsync(VehicleDTO vehicleDTO)
         // {

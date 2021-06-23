@@ -10,7 +10,7 @@ namespace PLX.API.Data.DTO
         public string RequestId { get; set; }
 
         [Required]
-        public DateTime RequestTime { get; set; }
+        public string RequestTime { get; set; }
 
     }
 

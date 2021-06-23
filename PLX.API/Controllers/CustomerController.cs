@@ -44,6 +44,8 @@ namespace PLX.API.Controllers
         }
         [AllowAnonymous]
         [HttpPost]
+        [ProducesResponseType(typeof(CustomerStaticList), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorMessageResponse), StatusCodes.Status404NotFound)]
         [Route("staticlist")]
         public async Task<IActionResult> GetCustomerStaticList(BaseRequest baseRequest)
         {
@@ -52,6 +54,8 @@ namespace PLX.API.Controllers
         }
         [AllowAnonymous]
         [HttpPost]
+        [ProducesResponseType(typeof(DistrictDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorMessageResponse), StatusCodes.Status400BadRequest)]
         [Route("districtlist/{id?}")]
         public async Task<IActionResult> GetDistrictList(BaseRequest baseRequest, int id)
         {
@@ -60,6 +64,8 @@ namespace PLX.API.Controllers
         }
         [AllowAnonymous]
         [HttpPost]
+        [ProducesResponseType(typeof(WardDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorMessageResponse), StatusCodes.Status400BadRequest)]
         [Route("wardlist/{id?}")]
         public async Task<IActionResult> GetWardList(BaseRequest baseRequest, int id)
         {
