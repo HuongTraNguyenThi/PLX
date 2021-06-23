@@ -266,7 +266,7 @@ namespace PLX.API.Services
                 Provinces = provinceList,
                 Genders = genderList
             };
-            return new ApiOkResponse(customerStaticList);
+            return new ApiOkResponse(customerStaticList, "11002");
         }
         public async Task<APIResponse> GetListDistricts(BaseRequest baseRequest, int provinceId)
         {

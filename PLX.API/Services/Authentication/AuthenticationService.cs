@@ -74,12 +74,12 @@ namespace PLX.API.Services
 
         public async Task<APIResponse> ValidateOTP(OTPValidateRequest oTPRequest)
         {
-            int value = 30;
+            int value = 3;
             var otpRecord = await _otpRepository.FindOTPByPhoneAndOTP(oTPRequest.Phone, oTPRequest.OtpCode);
             foreach (var item in otpRecord)
             {
                 TimeSpan ts = DateTime.Now - item.CreateTime11;
-                if (ts.Seconds <= value)
+                if (ts.Minutes <= value)
                     return OkResponse(new OTPResponse("Xác thực thành công"));
 
                 return ErrorResponse("10002", null);
