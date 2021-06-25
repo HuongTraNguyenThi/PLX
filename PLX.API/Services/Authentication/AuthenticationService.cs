@@ -76,9 +76,10 @@ namespace PLX.API.Services
         {
             int value = 3;
             var otpRecord = await _otpRepository.FindOTPByPhoneAndOTP(oTPRequest.Phone, oTPRequest.OtpCode);
+
             foreach (var item in otpRecord)
             {
-                TimeSpan ts = DateTime.Now - item.CreateTime11;
+                TimeSpan ts = DateTime.UtcNow - item.CreateTime11;
                 if (ts.Minutes <= value)
                     return OkResponse(new OTPResponse("Xác thực thành công"));
 

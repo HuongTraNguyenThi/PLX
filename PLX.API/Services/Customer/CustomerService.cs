@@ -292,6 +292,49 @@ namespace PLX.API.Services
             return new ApiOkResponse(result, "11002");
         }
 
+        //////
+        public async Task<APIResponse> GetLists()
+        {
+            //Console.WriteLine("--- Expected message = " + await _iResultMessageService.GetMessage("10001", new object[] { "Phone" }));
+            var questions = await _questionsRepository.ListAsync();
+            var provinces = await _provinceRepository.ListAsync();
+            var questionList = _mapper.Map<List<Question>, List<ListItem>>(questions);
+            var provinceList = _mapper.Map<List<Province>, List<ListItem>>(provinces);
+            var genderList = new List<ListItem>();
+            genderList.Add(new ListItem("male", "Nam"));
+            genderList.Add(new ListItem("female", "Nữ"));
+            var customerStaticList = new CustomerStaticList
+            {
+                Questions = questionList,
+                Provinces = provinceList,
+                Genders = genderList
+            };
+            return new ApiOkResponse(customerStaticList, "11002");
+        }
+        public async Task<APIResponse> GetListDistricts(int provinceId)
+        {
+            var all = await _districtRepository.ListAsync();
+            var districts = all.Where(x => x.ProvinceId == provinceId).ToList();
+            var districtList = _mapper.Map<List<District>, List<ListItem>>(districts);
+            var result = new DistrictDTO
+            {
+                Districts = districtList
+            };
+            return new ApiOkResponse(result, "11002");
+        }
+
+        public async Task<APIResponse> GetListWards(int districtId)
+        {
+            var all = await _wardRepository.ListAsync();
+            var wards = all.Where(x => x.DistrictId == districtId).ToList();
+            var wardList = _mapper.Map<List<Ward>, List<ListItem>>(wards);
+            var result = new WardDTO
+            {
+                Wards = wardList
+            };
+            return new ApiOkResponse(result, "11002");
+        }
+
         public async Task<APIResponse> GetCustomerById(BaseRequest baseRequest, int id)
         {
             var all = await _customerRepository.FindAsync(id);

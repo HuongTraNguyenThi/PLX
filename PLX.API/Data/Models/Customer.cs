@@ -28,6 +28,7 @@ namespace PLX.API.Data.Models
         [Column("Email")]
         [MaxLength(100)]
         public string Email { get; set; }
+
         [Required]
         [Column("Password")]
         [MaxLength(200)]
@@ -42,7 +43,6 @@ namespace PLX.API.Data.Models
 
         public DateTime Date { get; set; }
 
-        [Required]
         [Column("Gender")]
         public string Gender { get; set; }
 

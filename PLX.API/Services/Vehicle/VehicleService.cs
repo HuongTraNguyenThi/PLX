@@ -46,6 +46,18 @@ namespace PLX.API.Services
             };
             return new ApiOkResponse(list, "11002");
         }
+        public async Task<APIResponse> GetListVehicleType()
+        {
+            var vehicleTypes = await _vehicleTypeReponsitry.ListAsync();
+
+            var vehicleTypeList = _mapper.Map<List<VehicleType>, List<ListItem>>(vehicleTypes);
+
+            var list = new VehicleTypeList
+            {
+                VehicleTypes = vehicleTypeList
+            };
+            return new ApiOkResponse(list, "11002");
+        }
         // public async Task<APIResponse> AddAsync(VehicleDTO vehicleDTO)
         // {
         //     var vehicle = _mapper.Map<VehicleDTO, Vehicle>(vehicleDTO);

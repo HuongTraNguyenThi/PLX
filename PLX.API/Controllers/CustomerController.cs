@@ -82,6 +82,39 @@ namespace PLX.API.Controllers
             var response = await _iCustomerService.GetCustomerById(baseRequest, id);
             return Ok(response);
         }
+        ///////
+        [AllowAnonymous]
+        [HttpGet]
+        [ProducesResponseType(typeof(CustomerStaticList), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorMessageResponse), StatusCodes.Status404NotFound)]
+        [Route("staticlist")]
+        public async Task<IActionResult> GetStaticList()
+        {
+            var response = await _iCustomerService.GetLists();
+            return Ok(response);
+        }
+        [AllowAnonymous]
+        [HttpGet]
+        [ProducesResponseType(typeof(DistrictDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorMessageResponse), StatusCodes.Status400BadRequest)]
+        [Route("districtlist/{id?}")]
+        public async Task<IActionResult> GetDistrict(int id)
+        {
+            var response = await _iCustomerService.GetListDistricts(id);
+            return Ok(response);
+        }
+        [AllowAnonymous]
+        [HttpGet]
+        [ProducesResponseType(typeof(WardDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorMessageResponse), StatusCodes.Status400BadRequest)]
+        [Route("wardlist/{id?}")]
+        public async Task<IActionResult> GetWard(int id)
+        {
+
+            var response = await _iCustomerService.GetListWards(id);
+            return Ok(response);
+        }
+
 
     }
 }

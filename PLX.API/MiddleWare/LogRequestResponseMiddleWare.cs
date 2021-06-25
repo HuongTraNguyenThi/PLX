@@ -28,8 +28,6 @@ namespace PLX.API.MiddleWare
         {
             _next = next;
             _logger = logger;
-
-
         }
 
         public async Task Invoke(HttpContext context, IRepository<LogAPI> iLogApiRepository, IUnitOfWork unitOfWork,
@@ -47,34 +45,42 @@ namespace PLX.API.MiddleWare
             var url = context.Request.Path;
             var requestBodyText = new StreamReader(requestBodyStream).ReadToEnd();
             _logger.Log(LogLevel.Information, 1, $"REQUEST METHOD: {context.Request.Method}" +
-
                                                  $"REQUEST BODY: {requestBodyText}" +
                                                  $"REQUEST URL: {url}", null, _defaultFormatter);
             requestBodyStream.Seek(0, SeekOrigin.Begin);
             context.Request.Body = requestBodyStream;
-            var bodyStream = context.Response.Body;
 
+            var bodyStream = context.Response.Body;
             var responseBodyStream = new MemoryStream();
             context.Response.Body = responseBodyStream;
 
+
             await _next(context);
+
             responseBodyStream.Seek(0, SeekOrigin.Begin);
             var responseBody = new StreamReader(responseBodyStream).ReadToEnd();
             _logger.Log(LogLevel.Information, 1, $"RESPONSE LOG: {responseBody}" +
-                                                 $"RESPONSE CONTENT TYPE: {context.Response.ContentType} " +
-                                                $"RESPONSE STATUS CODE: {context.Response.StatusCode}", null, _defaultFormatter);
+                                                    $"RESPONSE CONTENT TYPE: {context.Response.ContentType} " +
+                                                   $"RESPONSE STATUS CODE: {context.Response.StatusCode}", null, _defaultFormatter);
+
+
+            var responseContenDic = JsonConvert.DeserializeObject<Dictionary<string, object>>(responseBody);
+
+            var responseData = JsonConvert.SerializeObject(responseContenDic["data"]);
+            var responseDataContenDic = JsonConvert.DeserializeObject<Dictionary<string, object>>(responseData);
+
+            // byte[] byteArray = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(responseDataContenDic));
+            // responseBodyStream = new MemoryStream(byteArray);
+
+            // await responseBodyStream.CopyToAsync(bodyStream);
+
             var requestContentDic = JsonConvert.DeserializeObject<Dictionary<string, object>>(requestBodyText);
             var requestId = requestContentDic.GetValueOrDefault("requestId");
             var requestTime = requestContentDic.GetValueOrDefault("requestTime");
-
-            var responseContenDic = JsonConvert.DeserializeObject<Dictionary<string, object>>(responseBody);
             var responseId = responseContenDic.GetValueOrDefault("responseId");
 
             var responseTime = DateTime.Now;
             var responseTimeConvert = DateTimeConvert.ToString(responseTime);
-
-            var responseData = JsonConvert.SerializeObject(responseContenDic["data"]);
-            var responseDataContenDic = JsonConvert.DeserializeObject<Dictionary<string, object>>(responseData);
 
             var responseResult = JsonConvert.SerializeObject(responseContenDic["result"]);
             var responseResultContenDic = JsonConvert.DeserializeObject<Dictionary<string, object>>(responseResult);
@@ -100,7 +106,7 @@ namespace PLX.API.MiddleWare
                 ResultCode = resultCode.ToString(),
                 ResultMessage = resultMess
             };
-            await _iLogApiRepository.AddAsync(rs);
+            _iLogApiRepository.AddAsync(rs);
             await _unitOfWork.CompleteAsync();
 
 

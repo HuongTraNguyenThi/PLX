@@ -39,6 +39,15 @@ namespace PLX.API.Controllers
             var response = await _iVehicleService.GetListVehicleType(baseRequest);
             return Ok(response);
         }
+        [HttpGet]
+        [ProducesResponseType(typeof(VehicleTypeList), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorMessageResponse), StatusCodes.Status400BadRequest)]
+        [Route("getvehicletypelist")]
+        public async Task<IActionResult> GetVehicleType()
+        {
+            var response = await _iVehicleService.GetListVehicleType();
+            return Ok(response);
+        }
     }
 }
 
