@@ -22,6 +22,7 @@ namespace PLX.API
 {
     public class Startup
     {
+        readonly string allowSpecificOrigins = "_allowSpecificOrigins";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -43,7 +44,24 @@ namespace PLX.API
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IVehicleService, VehicleService>();
-            services.AddCors();
+            services.AddCors(options =>
+
+            {
+
+                options.AddPolicy(allowSpecificOrigins,
+
+                builder =>
+
+                {
+
+                    builder.WithOrigins("http://localhost:3000")
+
+                            .AllowAnyHeader()
+                            .AllowCredentials()
+                            .AllowAnyMethod();
+
+                });
+            });
 
             services.AddScoped<IResultMessageService, ResutlMessageService>();
             services.AddAutoMapper(typeof(Startup));
@@ -76,11 +94,15 @@ namespace PLX.API
                 app.UseDeveloperExceptionPage();
 
             }
-            app.UseCors(x => x
-                        .AllowAnyMethod()
-                        .AllowAnyHeader()
-                        .SetIsOriginAllowed(origin => true) // allow any origin
-                        .AllowCredentials()); // allow credentials
+            // app.UseCors(x => x
+            //             .AllowAnyMethod()
+            //             .AllowAnyHeader()
+            //             //.SetIsOriginAllowed(origin =>true) // allow any origin
+            //
+            //             .AllowAnyOrigin()
+            //             .AllowCredentials()); // allow credentials
+
+            app.UseCors(allowSpecificOrigins);
             app.UseHttpsRedirection();
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "PLX.API v1"));
