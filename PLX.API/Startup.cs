@@ -33,7 +33,13 @@ namespace PLX.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.AddCors(options =>
+            {
+                options.AddPolicy(allowSpecificOrigins, builder =>
+                {
+                    builder.WithOrigins("http://localhost:4300").AllowAnyHeader().AllowAnyMethod();
+                });
+            });
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -44,24 +50,6 @@ namespace PLX.API
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IVehicleService, VehicleService>();
-            services.AddCors(options =>
-
-            {
-
-                options.AddPolicy(allowSpecificOrigins,
-
-                builder =>
-
-                {
-
-                    builder.WithOrigins("http://localhost:3000")
-
-                            .AllowAnyHeader()
-                            .AllowCredentials()
-                            .AllowAnyMethod();
-
-                });
-            });
 
             services.AddScoped<IResultMessageService, ResutlMessageService>();
             services.AddAutoMapper(typeof(Startup));
@@ -94,19 +82,11 @@ namespace PLX.API
                 app.UseDeveloperExceptionPage();
 
             }
-            // app.UseCors(x => x
-            //             .AllowAnyMethod()
-            //             .AllowAnyHeader()
-            //             //.SetIsOriginAllowed(origin =>true) // allow any origin
-            //
-            //             .AllowAnyOrigin()
-            //             .AllowCredentials()); // allow credentials
-
-            app.UseCors(allowSpecificOrigins);
             app.UseHttpsRedirection();
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "PLX.API v1"));
             app.UseRouting();
+            app.UseCors(allowSpecificOrigins);
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseMiddleware<LogRequestResponseMiddleWare>();
