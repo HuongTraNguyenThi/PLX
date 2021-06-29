@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using PLX.API.Data.DTO;
 using PLX.API.Data.Models;
 using PLX.API.Data.Repositories;
 using PLX.API.Extensions.Converters;
@@ -103,10 +104,11 @@ namespace PLX.API.MiddleWare
                 ContentRequest = requestBodyText,
                 ApiName = url,
                 RequestTime = DateTimeConvert.ToDateTime(requestTime.ToString()),
+                ResponseTime = DateTimeConvert.ToDateTime(responseTime.ToString()),
                 ResultCode = resultCode.ToString(),
                 ResultMessage = resultMess
             };
-            _iLogApiRepository.AddAsync(rs);
+            await _iLogApiRepository.AddAsync(rs);
             await _unitOfWork.CompleteAsync();
 
 

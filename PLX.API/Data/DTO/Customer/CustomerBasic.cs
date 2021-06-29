@@ -5,9 +5,9 @@ namespace PLX.API.Data.DTO.Customer
 {
     public class CustomerBasic
     {
-        [Required]
+        //[Required]
         public string Name { get; set; }
-        [Required]
+        //[Required]
         public string Phone { get; set; }
 
         public string Email { get; set; }

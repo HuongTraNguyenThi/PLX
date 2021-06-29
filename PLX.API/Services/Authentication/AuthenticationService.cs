@@ -40,8 +40,13 @@ namespace PLX.API.Services
             customerInfo.Add("Id", customer.Id.ToString());
             customerInfo.Add("Phone", customer.Phone);
             string token = JwtHelper.GenerateToken(_jwtConfig, customerInfo);
+            var customerDto = _mapper.Map<Customer, CustomerDTO>(customer);
 
-            AuthenticationResponse authResponse = new AuthenticationResponse() { Token = token };
+            AuthenticationResponse authResponse = new AuthenticationResponse()
+            {
+                Token = token,
+                Customer = customerDto
+            };
             var response = OkResponse(authResponse, "11004");
             return response;
         }
@@ -80,6 +85,7 @@ namespace PLX.API.Services
             foreach (var item in otpRecord)
             {
                 TimeSpan ts = DateTime.UtcNow - item.CreateTime11;
+                var otp = item.OTPCode;
                 if (ts.Minutes <= value)
                     return OkResponse(new OTPResponse("Xác thực thành công"));
 

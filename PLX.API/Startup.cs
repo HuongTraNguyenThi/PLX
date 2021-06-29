@@ -37,7 +37,7 @@ namespace PLX.API
             {
                 options.AddPolicy(allowSpecificOrigins, builder =>
                 {
-                    builder.WithOrigins("http://localhost:4300").AllowAnyHeader().AllowAnyMethod();
+                    builder.WithOrigins("http://localhost:3000").AllowAnyHeader().AllowAnyMethod();
                 });
             });
             services.AddControllers();
