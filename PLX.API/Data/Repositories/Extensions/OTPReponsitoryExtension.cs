@@ -19,7 +19,7 @@ namespace PLX.API.Data.Repositories
             var otp = await otpRepository.Entities.Where(x => x.Phone == phone && x.Active == true).ToListAsync();
             return otp;
         }
-        public static async Task<List<OTP>> FindOTPByPhoneAndOTP(this IRepository<OTP> otpRepository, string phone, string otpCode = "123456")
+        public static async Task<List<OTP>> FindOTPByPhoneAndOTP(this IRepository<OTP> otpRepository, string phone, string otpCode)
         {
             var otp = await otpRepository.Entities.Where(x => x.Phone == phone && x.Active == true && x.OTPCode == otpCode).ToListAsync();
             return otp;
