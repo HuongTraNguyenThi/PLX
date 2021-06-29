@@ -75,11 +75,12 @@ namespace PLX.API.MiddleWare
             var resultCode = apiResult.ResultCode;
             var resultArgs = apiResult.Arguments;
             var resultMessage = await resultMessageService.GetMessage(apiResult.ResultCode as string, apiResult.Arguments);
-            var responseTime = DateTimeConvert.ToString(DateTime.Now);
+            var responseDateTime = DateTime.Now;
+            var responseTimeStr = DateTimeConvert.ToString(responseDateTime);
 
             // Update response data
             apiResponseData.ResponseId = requestId;
-            apiResponseData.ResponseTime = responseTime;
+            apiResponseData.ResponseTime = responseTimeStr;
 
             // Update error message
             if (!apiResult.Success)
@@ -100,7 +101,8 @@ namespace PLX.API.MiddleWare
                 ApiName = requestUri,
                 ContentRequest = requestBodyText,
                 ResultCode = resultCode,
-                ResultMessage = resultMessage
+                ResultMessage = resultMessage,
+                ResponseTime = responseDateTime
             };
 
             await logApiRepository.AddAsync(logApi);
