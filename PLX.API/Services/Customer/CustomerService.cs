@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Newtonsoft.Json;
 using PLX.API.Data.DTO;
 using PLX.API.Data.DTO.Customer;
 using PLX.API.Data.Models;
@@ -87,7 +88,8 @@ namespace PLX.API.Services
             {
                 if (customer.Name == null || customer.Name == "")
                 {
-                    return ErrorResponse("10001", null);
+
+                    return ErrorResponse("10001", new object[] { "Name" });
 
                 }
                 if (customer.Phone == null || customer.Phone == "")
@@ -295,7 +297,7 @@ namespace PLX.API.Services
         //////
         public async Task<APIResponse> GetLists()
         {
-            //Console.WriteLine("--- Expected message = " + await _iResultMessageService.GetMessage("10001", new object[] { "Phone" }));
+
             var questions = await _questionsRepository.ListAsync();
             var provinces = await _provinceRepository.ListAsync();
             var questionList = _mapper.Map<List<Question>, List<ListItem>>(questions);

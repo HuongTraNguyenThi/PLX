@@ -4,14 +4,14 @@ using PLX.API.Extensions.Converters;
 
 namespace PLX.API.Data.DTO.Customer
 {
-    public class CustomerDTO : BaseResponse
+    public class CustomerDTO
     {
         public string Name { get; set; }
         public string Phone { get; set; }
         public string Email { get; set; }
         public string CardId { get; set; }
 
-        public DateTime Date { get; set; }
+        public string Date { get; set; }
         public string Gender { get; set; }
         public string TaxCode { get; set; }
         public int ProvinceId { get; set; }
