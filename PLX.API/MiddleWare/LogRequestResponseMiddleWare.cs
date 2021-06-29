@@ -47,7 +47,9 @@ namespace PLX.API.MiddleWare
             var requestBodyText = new StreamReader(requestBodyStream).ReadToEnd();
             _logger.Log(LogLevel.Information, 1, $"REQUEST METHOD: {context.Request.Method}" +
                                                  $"REQUEST BODY: {requestBodyText}" +
+
                                                  $"REQUEST URL: {url}", null, _defaultFormatter);
+
             requestBodyStream.Seek(0, SeekOrigin.Begin);
             context.Request.Body = requestBodyStream;
 
@@ -80,14 +82,14 @@ namespace PLX.API.MiddleWare
             var requestTime = requestContentDic.GetValueOrDefault("requestTime");
             var responseId = responseContenDic.GetValueOrDefault("responseId");
 
-            var responseTime = DateTime.Now;
-            var responseTimeConvert = DateTimeConvert.ToString(responseTime);
+            var responseTime = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
+            //var responseTimeConvert = DateTimeConvert.ToString(responseTime);
 
             var responseResult = JsonConvert.SerializeObject(responseContenDic["result"]);
             var responseResultContenDic = JsonConvert.DeserializeObject<Dictionary<string, object>>(responseResult);
 
             responseDataContenDic["responseId"] = requestId;
-            responseDataContenDic["responseTime"] = responseTimeConvert;
+            responseDataContenDic["responseTime"] = responseTime;
             byte[] byteArray = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(responseDataContenDic));
             responseBodyStream = new MemoryStream(byteArray);
 
@@ -95,7 +97,7 @@ namespace PLX.API.MiddleWare
             context.Request.Body = originalRequestBody;
 
             var resultCode = responseResultContenDic.GetValueOrDefault("resultCode");
-            var resultMess = await _iResultMessageService.GetMessage(resultCode as string, null);
+            var resultMess = await _iResultMessageService.GetMessage(resultCode as string, new object[] { "Name", "Phone" });
 
 
             var rs = new LogAPI
@@ -104,7 +106,7 @@ namespace PLX.API.MiddleWare
                 ContentRequest = requestBodyText,
                 ApiName = url,
                 RequestTime = DateTimeConvert.ToDateTime(requestTime.ToString()),
-                ResponseTime = DateTimeConvert.ToDateTime(responseTime.ToString()),
+                ResponseTime = DateTimeConvert.ToDateTime(responseTime),
                 ResultCode = resultCode.ToString(),
                 ResultMessage = resultMess
             };
