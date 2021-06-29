@@ -8,7 +8,8 @@ namespace PLX.API.Data.DTO
             {
                 Success = true,
                 ResultCode = resultCode,
-                Arguments = arguments
+                Arguments = arguments,
+                DataType = data.GetType().FullName
             };
             Data = data;
         }

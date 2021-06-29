@@ -30,7 +30,7 @@ namespace PLX.API.Services
         {
             var resultRecord = await _resultRepository.FindFormatMessageByCode(resultCode);
             var args = arguments ??= new object[] { };
-            string format = resultRecord.Message;
+            string format = resultRecord?.Message ?? "";
             string resultMessage = string.Format(format, arguments);
             return resultMessage;
         }

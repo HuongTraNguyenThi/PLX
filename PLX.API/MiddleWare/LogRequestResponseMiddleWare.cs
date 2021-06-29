@@ -8,8 +8,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using PLX.API.Data.DTO;
 using PLX.API.Data.Models;
 using PLX.API.Data.Repositories;
+using PLX.API.Extensions;
 using PLX.API.Extensions.Converters;
 using PLX.API.Services;
 
@@ -19,99 +22,89 @@ namespace PLX.API.MiddleWare
     {
         private readonly RequestDelegate _next;
         private readonly ILogger<LogRequestResponseMiddleWare> _logger;
-        private IRepository<LogAPI> _iLogApiRepository;
-        private IUnitOfWork _unitOfWork;
-        private IResultMessageService _iResultMessageService;
-        private Func<string, Exception, string> _defaultFormatter = (state, exception) => state;
-
         public LogRequestResponseMiddleWare(RequestDelegate next, ILogger<LogRequestResponseMiddleWare> logger)
         {
             _next = next;
             _logger = logger;
         }
 
-        public async Task Invoke(HttpContext context, IRepository<LogAPI> iLogApiRepository, IUnitOfWork unitOfWork,
-        IResultMessageService iResultMessageService)
+        public async Task Invoke(HttpContext context)
         {
-            _iLogApiRepository = iLogApiRepository;
-            _unitOfWork = unitOfWork;
-            _iResultMessageService = iResultMessageService;
+            // Parse request body to check if api-call
             var requestBodyStream = new MemoryStream();
-            var originalRequestBody = context.Request.Body;
-            var services = context.RequestServices;
-            var logRepo = services.GetService(typeof(IRepository<LogAPI>));
-            await context.Request.Body.CopyToAsync(requestBodyStream);
+            var originRequestBodyStream = context.Request.Body;
+            await originRequestBodyStream.CopyToAsync(requestBodyStream);
             requestBodyStream.Seek(0, SeekOrigin.Begin);
-            var url = context.Request.Path;
             var requestBodyText = new StreamReader(requestBodyStream).ReadToEnd();
-            _logger.Log(LogLevel.Information, 1, $"REQUEST METHOD: {context.Request.Method}" +
-                                                 $"REQUEST BODY: {requestBodyText}" +
-                                                 $"REQUEST URL: {url}", null, _defaultFormatter);
             requestBodyStream.Seek(0, SeekOrigin.Begin);
             context.Request.Body = requestBodyStream;
 
-            var bodyStream = context.Response.Body;
+            var baseRequest = JsonConvert.DeserializeObject<BaseRequest>(requestBodyText);
+            if (baseRequest == null)
+            {
+                await _next(context);
+                return;
+            }
+
+            var originResponseBodyStream = context.Response.Body;
             var responseBodyStream = new MemoryStream();
             context.Response.Body = responseBodyStream;
-
 
             await _next(context);
 
             responseBodyStream.Seek(0, SeekOrigin.Begin);
-            var responseBody = new StreamReader(responseBodyStream).ReadToEnd();
-            _logger.Log(LogLevel.Information, 1, $"RESPONSE LOG: {responseBody}" +
-                                                    $"RESPONSE CONTENT TYPE: {context.Response.ContentType} " +
-                                                   $"RESPONSE STATUS CODE: {context.Response.StatusCode}", null, _defaultFormatter);
+            var responseBodyText = new StreamReader(responseBodyStream).ReadToEnd();
 
+            // Request information
+            var requestId = baseRequest.RequestId;
+            var requestTime = DateTimeConvert.ToDateTime(baseRequest.RequestTime);
+            var requestUri = context.Request.Path;
 
-            var responseContenDic = JsonConvert.DeserializeObject<Dictionary<string, object>>(responseBody);
+            // Get app services
+            var services = context.RequestServices;
+            var unitOfWork = services.GetService(typeof(IUnitOfWork)) as IUnitOfWork;
+            var logApiRepository = services.GetService(typeof(IRepository<LogAPI>)) as IRepository<LogAPI>;
+            var resultMessageService = services.GetService(typeof(IResultMessageService)) as IResultMessageService;
 
-            var responseData = JsonConvert.SerializeObject(responseContenDic["data"]);
-            var responseDataContenDic = JsonConvert.DeserializeObject<Dictionary<string, object>>(responseData);
+            // Response information
+            var apiResponse = JsonConvert.DeserializeObject<APIResponse>(responseBodyText);
+            var apiResult = apiResponse.Result;
+            var dataType = Type.GetType(apiResult.DataType);
+            var apiResponseDataJObject = apiResponse.Data as JObject;
+            var apiResponseData = apiResponseDataJObject.ToObject(dataType) as BaseResponse;
+            var resultCode = apiResult.ResultCode;
+            var resultArgs = apiResult.Arguments;
+            var resultMessage = await resultMessageService.GetMessage(apiResult.ResultCode as string, apiResult.Arguments);
+            var responseTime = DateTimeConvert.ToString(DateTime.Now);
 
-            // byte[] byteArray = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(responseDataContenDic));
-            // responseBodyStream = new MemoryStream(byteArray);
+            // Update response data
+            apiResponseData.ResponseId = requestId;
+            apiResponseData.ResponseTime = responseTime;
 
-            // await responseBodyStream.CopyToAsync(bodyStream);
-
-            var requestContentDic = JsonConvert.DeserializeObject<Dictionary<string, object>>(requestBodyText);
-            var requestId = requestContentDic.GetValueOrDefault("requestId");
-            var requestTime = requestContentDic.GetValueOrDefault("requestTime");
-            var responseId = responseContenDic.GetValueOrDefault("responseId");
-
-            var responseTime = DateTime.Now;
-            var responseTimeConvert = DateTimeConvert.ToString(responseTime);
-
-            var responseResult = JsonConvert.SerializeObject(responseContenDic["result"]);
-            var responseResultContenDic = JsonConvert.DeserializeObject<Dictionary<string, object>>(responseResult);
-
-            responseDataContenDic["responseId"] = requestId;
-            responseDataContenDic["responseTime"] = responseTimeConvert;
-            byte[] byteArray = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(responseDataContenDic));
-            responseBodyStream = new MemoryStream(byteArray);
-
-            await responseBodyStream.CopyToAsync(bodyStream);
-            context.Request.Body = originalRequestBody;
-
-            var resultCode = responseResultContenDic.GetValueOrDefault("resultCode");
-            var resultMess = await _iResultMessageService.GetMessage(resultCode as string, null);
-
-
-            var rs = new LogAPI
+            // Update error message
+            if (!apiResult.Success)
             {
-                RequestId = requestId.ToString(),
+                var errorMessageData = apiResponseData as ErrorMessageResponse;
+                errorMessageData.ErrorMessage = resultMessage;
+            }
+
+            // Send final response data
+            byte[] byteArray = Encoding.UTF8.GetBytes(apiResponseData.ToJson());
+            responseBodyStream = new MemoryStream(byteArray);
+            await responseBodyStream.CopyToAsync(originResponseBodyStream);
+
+            var logApi = new LogAPI
+            {
+                RequestId = requestId,
+                RequestTime = requestTime,
+                ApiName = requestUri,
                 ContentRequest = requestBodyText,
-                ApiName = url,
-                RequestTime = DateTimeConvert.ToDateTime(requestTime.ToString()),
-                ResultCode = resultCode.ToString(),
-                ResultMessage = resultMess
+                ResultCode = resultCode,
+                ResultMessage = resultMessage
             };
-            _iLogApiRepository.AddAsync(rs);
-            await _unitOfWork.CompleteAsync();
 
-
+            await logApiRepository.AddAsync(logApi);
+            await unitOfWork.CompleteAsync();
         }
-
-
     }
 }

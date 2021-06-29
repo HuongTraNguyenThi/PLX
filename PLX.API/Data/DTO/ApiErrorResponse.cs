@@ -8,7 +8,8 @@ namespace PLX.API.Data.DTO
             {
                 Success = false,
                 ResultCode = resultCode,
-                Arguments = arguments
+                Arguments = arguments,
+                DataType = typeof(ErrorMessageResponse).FullName
             };
             Data = new ErrorMessageResponse(resultCode);
         }

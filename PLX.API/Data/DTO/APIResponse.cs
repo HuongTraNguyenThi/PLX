@@ -1,6 +1,6 @@
 namespace PLX.API.Data.DTO
 {
-    public abstract class APIResponse
+    public class APIResponse
     {
 
         public ApiResponseResult Result { get; set; }
