@@ -10,6 +10,7 @@ using PLX.API.Data.DTO.Customer;
 using AutoMapper;
 using BC = BCrypt.Net.BCrypt;
 using System;
+using System.Text.RegularExpressions;
 
 namespace PLX.API.Services
 {
@@ -59,6 +60,10 @@ namespace PLX.API.Services
 
         public async Task<APIResponse> GenerateOTP(OTPGenerateRequest oTPRequest)
         {
+            Regex regex = new Regex(@"^[0-9]{10}$");
+            bool isValid = regex.IsMatch(oTPRequest.Phone);
+            if (!isValid)
+                return ErrorResponse("10006");
             string otp = new Random().Next(100000, 999999).ToString();
             var otpRecord = await _otpRepository.FindOTPByPhoneAndActive(oTPRequest.Phone);
             foreach (var item in otpRecord)
@@ -92,8 +97,10 @@ namespace PLX.API.Services
             //     return ErrorResponse("10002", null);
             // }
             var otp = "123456";
-            if (oTPRequest.Phone == null)
-                return ErrorResponse("10001", new object[] { "Phone" });
+            Regex regex = new Regex(@"^[0-9]{10}$");
+            bool isValid = regex.IsMatch(oTPRequest.Phone);
+            if (oTPRequest.Phone == null || oTPRequest.Phone == "" || !isValid)
+                return ErrorResponse("10006");
             if (otp == oTPRequest.OtpCode)
                 return OkResponse(new OTPResponse("Xác thực thành công"));
             return ErrorResponse("10002", null);

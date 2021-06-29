@@ -12,11 +12,11 @@ namespace PLX.API.Data.DTO.Customer
         public string Phone { get; set; }
 
         public string Email { get; set; }
-        [Required]
+        //[Required]
         public string Password { get; set; }
-        [Required]
+        //[Required]
         public List<QuestionDTO> Questions { get; set; }
-        [Required]
+        //[Required]
         public int CustomerTypeId { get; set; }
 
     }
