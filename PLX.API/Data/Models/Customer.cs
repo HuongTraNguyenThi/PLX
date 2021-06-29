@@ -21,6 +21,7 @@ namespace PLX.API.Data.Models
         [MaxLength(200)]
         public string Name { get; set; }
         [Required]
+
         [Column("Phone")]
         [MaxLength(10)]
         public string Phone { get; set; }

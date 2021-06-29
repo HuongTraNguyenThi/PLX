@@ -2,6 +2,8 @@ namespace PLX.API.Data.DTO
 {
     public class ApiErrorResponse : APIResponse
     {
+        private string message;
+
         public ApiErrorResponse(string resultCode, object[] arguments = null)
         {
             Result = new ApiResponseResult
@@ -11,7 +13,7 @@ namespace PLX.API.Data.DTO
                 Arguments = arguments,
                 DataType = typeof(ErrorMessageResponse).FullName
             };
-            Data = new ErrorMessageResponse(resultCode);
+            Data = new ErrorMessageResponse(resultCode, message);
         }
     }
 }

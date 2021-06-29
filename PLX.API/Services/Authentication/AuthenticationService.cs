@@ -92,6 +92,8 @@ namespace PLX.API.Services
             //     return ErrorResponse("10002", null);
             // }
             var otp = "123456";
+            if (oTPRequest.Phone == null)
+                return ErrorResponse("10001", new object[] { "Phone" });
             if (otp == oTPRequest.OtpCode)
                 return OkResponse(new OTPResponse("Xác thực thành công"));
             return ErrorResponse("10002", null);
