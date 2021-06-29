@@ -8,6 +8,7 @@ namespace PLX.API.Data.DTO.Customer
         //[Required]
         public string Name { get; set; }
         //[Required]
+        [RegularExpression(@"^[0-9]{10}$", ErrorMessage = "Số điện thoại không hợp lệ")]
         public string Phone { get; set; }
 
         public string Email { get; set; }

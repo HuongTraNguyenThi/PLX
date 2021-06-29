@@ -82,8 +82,9 @@ namespace PLX.API.MiddleWare
             var requestTime = requestContentDic.GetValueOrDefault("requestTime");
             var responseId = responseContenDic.GetValueOrDefault("responseId");
 
-            var responseTime = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
-            //var responseTimeConvert = DateTimeConvert.ToString(responseTime);
+            //var responseTime = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
+            var responseTime = DateTime.Now;
+            var responseTimeConvert = DateTimeConvert.ToString(responseTime);
 
             var responseResult = JsonConvert.SerializeObject(responseContenDic["result"]);
             var responseResultContenDic = JsonConvert.DeserializeObject<Dictionary<string, object>>(responseResult);
@@ -97,7 +98,7 @@ namespace PLX.API.MiddleWare
             context.Request.Body = originalRequestBody;
 
             var resultCode = responseResultContenDic.GetValueOrDefault("resultCode");
-            var resultMess = await _iResultMessageService.GetMessage(resultCode as string, new object[] { "Name", "Phone" });
+            var resultMess = await _iResultMessageService.GetMessage(resultCode as string, new object[] { "Phone" });
 
 
             var rs = new LogAPI
@@ -106,7 +107,7 @@ namespace PLX.API.MiddleWare
                 ContentRequest = requestBodyText,
                 ApiName = url,
                 RequestTime = DateTimeConvert.ToDateTime(requestTime.ToString()),
-                ResponseTime = DateTimeConvert.ToDateTime(responseTime),
+                ResponseTime = DateTimeConvert.ToDateTime(responseTimeConvert.ToString()),
                 ResultCode = resultCode.ToString(),
                 ResultMessage = resultMess
             };
