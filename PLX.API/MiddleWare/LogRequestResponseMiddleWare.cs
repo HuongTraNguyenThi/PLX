@@ -74,7 +74,7 @@ namespace PLX.API.MiddleWare
             var apiResponseData = apiResponseDataJObject.ToObject(dataType) as BaseResponse;
             var resultCode = apiResult.ResultCode;
             var resultArgs = apiResult.Arguments;
-            var resultMessage = await resultMessageService.GetMessage(apiResult.ResultCode as string, apiResult.Arguments);
+            var resultMessage = await resultMessageService.GetMessage(resultCode as string, resultArgs);
             var responseDateTime = DateTime.Now;
             var responseTimeStr = DateTimeConvert.ToString(responseDateTime);
 
