@@ -242,8 +242,8 @@ namespace PLX.API.Services
             var questionList = _mapper.Map<List<Question>, List<ListItem>>(questions);
             var provinceList = _mapper.Map<List<Province>, List<ListItem>>(provinces);
             var genderList = new List<ListItem>();
-            genderList.Add(new ListItem("male", "Nam"));
-            genderList.Add(new ListItem("female", "Nữ"));
+            genderList.Add(new ListItem("0", "Nam"));
+            genderList.Add(new ListItem("1", "Nữ"));
             var customerStaticList = new CustomerStaticList
             {
                 Questions = questionList,
