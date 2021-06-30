@@ -115,13 +115,12 @@ namespace PLX.API.Services
                     }
                 }
 
-                if (!isValid)
-                    return ErrorResponse(ResultCodeConstants.ErrorValideDate, new object[] { "Ngày sinh" });
-
-                if (customerRegister.CustomerInfo.CustomerCard.Date == null)
+                if (customerRegister.CustomerInfo.CustomerCard.Date == null || customerRegister.CustomerInfo.CustomerCard.Date == "")
                 {
                     return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Ngày sinh" });
                 }
+                if (!isValid)
+                    return ErrorResponse(ResultCodeConstants.ErrorValideDate, new object[] { "Ngày sinh" });
 
                 if (customerRegister.CustomerInfo.CustomerCard.ProvinceId == 0)
                 {
@@ -169,6 +168,10 @@ namespace PLX.API.Services
                 if (customerRegister.CustomerInfo.CustomerBasic.Password == null || customerRegister.CustomerInfo.CustomerBasic.Password == "")
                 {
                     return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Mật khẩu" });
+                }
+                if (customerRegister.CustomerInfo.CustomerCard.Date == null || customerRegister.CustomerInfo.CustomerCard.Date == "")
+                {
+                    return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Ngày thành lập" });
                 }
                 if (!isValid)
                     return ErrorResponse(ResultCodeConstants.ErrorValideDate, new object[] { "Ngày thành lập" });

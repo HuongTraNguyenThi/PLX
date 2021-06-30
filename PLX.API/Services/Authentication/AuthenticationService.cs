@@ -35,11 +35,10 @@ namespace PLX.API.Services
         public async Task<APIResponse> Authenticate(AuthenticationRequest authRequest)
         {
             var isValid = ValidatePhoneNumber.IsValid(authRequest.Phone);
-            if (!isValid)
-                return ErrorResponse(ResultCodeConstants.ErrorValidePhone);
             if (authRequest.Phone == null || authRequest.Phone == "")
                 return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Số điện thoại" });
-
+            if (!isValid)
+                return ErrorResponse(ResultCodeConstants.ErrorValidePhone);
             var customer = await _customerRepository.FindCustomerByPhoneAndPasword(authRequest.Phone);
             IDictionary<string, object> customerInfo = new Dictionary<string, object>();
             customerInfo.Add("Id", customer.Id.ToString());
@@ -65,6 +64,8 @@ namespace PLX.API.Services
         public async Task<APIResponse> GenerateOTP(OTPGenerateRequest oTPRequest)
         {
             var isValid = ValidatePhoneNumber.IsValid(oTPRequest.Phone);
+            if (oTPRequest.Phone == null || oTPRequest.Phone == "")
+                return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Số điện thoại" });
             if (!isValid)
                 return ErrorResponse(ResultCodeConstants.ErrorValidePhone);
             string otp = new Random().Next(100000, 999999).ToString();
@@ -101,10 +102,11 @@ namespace PLX.API.Services
             // }
             var otp = "123456";
             var isValid = ValidatePhoneNumber.IsValid(oTPRequest.Phone);
-            if (!isValid)
-                return ErrorResponse(ResultCodeConstants.ErrorValidePhone);
             if (oTPRequest.Phone == null || oTPRequest.Phone == "")
                 return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Số điện thoại" });
+            if (!isValid)
+                return ErrorResponse(ResultCodeConstants.ErrorValidePhone);
+
             if (otp == oTPRequest.OtpCode)
                 return OkResponse(new OTPResponse("Xác thực thành công"), ResultCodeConstants.SuccessValideOtp);
             return ErrorResponse(ResultCodeConstants.ErrorValideOtp, null);

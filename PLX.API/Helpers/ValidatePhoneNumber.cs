@@ -11,7 +11,7 @@ namespace PLX.API.Helpers
         public static bool IsValid(string phone)
         {
             Regex regex = new Regex(@"^[0-9]{10}$");
-            bool isValid = regex.IsMatch(phone);
+            bool isValid = regex.IsMatch(phone ?? "");
             if (!isValid)
                 return false;
             return true;
