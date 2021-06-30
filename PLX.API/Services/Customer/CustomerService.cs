@@ -10,7 +10,8 @@ using PLX.API.Data.DTO;
 using PLX.API.Data.DTO.Customer;
 using PLX.API.Data.Models;
 using PLX.API.Data.Repositories;
-using PLX.API.Extensions.Converters;
+using PLX.API.Helpers;
+
 
 namespace PLX.API.Services
 {
@@ -29,6 +30,7 @@ namespace PLX.API.Services
 
         private readonly IUnitOfWork _unitOfWork;
         private IMapper _mapper;
+
 
         public CustomerService(IUnitOfWork unitOfWork, IMapper mapper,
             IRepository<Customer> customerRepository, IRepository<Vehicle> vehicleRepository,
@@ -84,79 +86,71 @@ namespace PLX.API.Services
         }
         public async Task<APIResponse> RegisterAsync(CustomerRegister customerRegister)
         {
-
-            Regex regex = new Regex(@"(((0|1)[0-9]|2[0-9]|3[0-1])\/(0[1-9]|1[0-2])\/((19|20)\d\d))$");
-
-            //Verify whether date entered in dd/MM/yyyy format.
-            bool isValid = regex.IsMatch(customerRegister.CustomerInfo.CustomerCard.Date);
-
-            //Verify whether entered date is Valid date.
+            var isValidPhone = ValidatePhoneNumber.IsValid(customerRegister.CustomerInfo.CustomerBasic.Phone);
             DateTime dt;
-            isValid = DateTime.TryParseExact(customerRegister.CustomerInfo.CustomerCard.Date, "dd/MM/yyyy", new CultureInfo("en-GB"), DateTimeStyles.None, out dt);
+            bool isValid = DateTime.TryParseExact(customerRegister.CustomerInfo.CustomerCard.Date, "dd/MM/yyyy", new CultureInfo("en-GB"), DateTimeStyles.None, out dt);
 
             if (customerRegister.CustomerInfo.CustomerBasic.CustomerTypeId == 1)
             {
                 if (customerRegister.CustomerInfo.CustomerBasic.Name == null || customerRegister.CustomerInfo.CustomerBasic.Name == "")
                 {
-
-                    return ErrorResponse("10001", new object[] { "Tên" });
-
+                    return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Tên" });
                 }
                 if (customerRegister.CustomerInfo.CustomerBasic.Phone == null || customerRegister.CustomerInfo.CustomerBasic.Phone == "")
                 {
-                    return ErrorResponse("10001", new object[] { "Số điện thoại" });
-
-
+                    return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Số điện thoại" });
                 }
+                if (!isValidPhone)
+                    return ErrorResponse(ResultCodeConstants.ErrorValidePhone);
                 if (customerRegister.CustomerInfo.CustomerBasic.Password == null || customerRegister.CustomerInfo.CustomerBasic.Password == "")
                 {
-                    return ErrorResponse("10001", new object[] { "Mật khẩu" });
+                    return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Mật khẩu" });
                 }
 
                 foreach (var item in customerRegister.CustomerInfo.CustomerBasic.Questions)
                 {
                     if (item.QuestionId == 0)
                     {
-                        return ErrorResponse("10001", new object[] { "Câu hỏi bí mật" });
+                        return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Câu hỏi bí mật" });
                     }
                 }
 
                 if (!isValid)
-                    return ErrorResponse("10005", new object[] { "Ngày sinh" });
+                    return ErrorResponse(ResultCodeConstants.ErrorValideDate, new object[] { "Ngày sinh" });
 
                 if (customerRegister.CustomerInfo.CustomerCard.Date == null)
                 {
-                    return ErrorResponse("10001", new object[] { "Ngày sinh" });
+                    return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Ngày sinh" });
                 }
 
                 if (customerRegister.CustomerInfo.CustomerCard.ProvinceId == 0)
                 {
-                    return ErrorResponse("10001", new object[] { "Tỉnh" });
+                    return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Tỉnh" });
                 }
 
                 if (customerRegister.CustomerInfo.CustomerCard.DistrictId == 0)
                 {
-                    return ErrorResponse("10001", new object[] { "Quận/Huyện" });
+                    return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Quận/Huyện" });
                 }
 
                 if (customerRegister.CustomerInfo.CustomerCard.WardId == 0)
                 {
-                    return ErrorResponse("10001", new object[] { "Phường/Xã" });
+                    return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Phường/Xã" });
                 }
 
                 if (customerRegister.CustomerInfo.CustomerCard.Address == null || customerRegister.CustomerInfo.CustomerCard.Address == "")
                 {
-                    return ErrorResponse("10001", new object[] { "Địa chỉ liên hệ" });
+                    return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Địa chỉ liên hệ" });
                 }
 
                 if (customerRegister.CustomerInfo.CustomerCard.CardId == null || customerRegister.CustomerInfo.CustomerCard.CardId == "")
                 {
-                    return ErrorResponse("10001", new object[] { "Số CMND/CCCD" });
+                    return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Số CMND/CCCD" });
                 }
 
                 if (customerRegister.CustomerInfo.CustomerCard.Gender == null || customerRegister.CustomerInfo.CustomerCard.Gender == "")
                 {
-                    return ErrorResponse("10001", new object[] { "Giới tính" });
+                    return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Giới tính" });
                 }
             }
 
@@ -164,48 +158,50 @@ namespace PLX.API.Services
             {
                 if (customerRegister.CustomerInfo.CustomerBasic.Name == null || customerRegister.CustomerInfo.CustomerBasic.Name == "")
                 {
-                    return ErrorResponse("10001", new object[] { "Tên đơn vị" });
+                    return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Tên đơn vị" });
                 }
                 if (customerRegister.CustomerInfo.CustomerBasic.Phone == null || customerRegister.CustomerInfo.CustomerBasic.Phone == "")
                 {
-                    return ErrorResponse("10001", new object[] { "Số điện thoại" });
+                    return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Số điện thoại" });
                 }
+                if (!isValidPhone)
+                    return ErrorResponse(ResultCodeConstants.ErrorValideDate);
                 if (customerRegister.CustomerInfo.CustomerBasic.Password == null || customerRegister.CustomerInfo.CustomerBasic.Password == "")
                 {
-                    return ErrorResponse("10001", new object[] { "Mật khẩu" });
+                    return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Mật khẩu" });
                 }
                 if (!isValid)
-                    return ErrorResponse("10005", new object[] { "Ngày thành lập" });
+                    return ErrorResponse(ResultCodeConstants.ErrorValideDate, new object[] { "Ngày thành lập" });
                 foreach (var item in customerRegister.CustomerInfo.CustomerBasic.Questions)
                 {
                     if (item.QuestionId == 0)
                     {
-                        return ErrorResponse("10001", new object[] { "Câu hỏi bí mật" });
+                        return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Câu hỏi bí mật" });
                     }
                 }
                 if (customerRegister.CustomerInfo.CustomerCard.ProvinceId == 0)
                 {
-                    return ErrorResponse("10001", new object[] { "Tỉnh" });
+                    return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Tỉnh" });
                 }
                 if (customerRegister.CustomerInfo.CustomerCard.DistrictId == 0)
                 {
-                    return ErrorResponse("10001", new object[] { "Quận/Huyện" });
+                    return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Quận/Huyện" });
                 }
                 if (customerRegister.CustomerInfo.CustomerCard.WardId == 0)
                 {
-                    return ErrorResponse("10001", new object[] { "Phường/Xã" });
+                    return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Phường/Xã" });
                 }
                 if (customerRegister.CustomerInfo.CustomerCard.Address == null || customerRegister.CustomerInfo.CustomerCard.Address == "")
                 {
-                    return ErrorResponse("10001", new object[] { "Địa chỉ liên hệ" });
+                    return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Địa chỉ liên hệ" });
                 }
                 if (customerRegister.CustomerInfo.CustomerBasic.Email == null || customerRegister.CustomerInfo.CustomerBasic.Email == "")
                 {
-                    return ErrorResponse("10001", new object[] { "Email" });
+                    return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Email" });
                 }
                 if (customerRegister.CustomerInfo.CustomerCard.TaxCode == null || customerRegister.CustomerInfo.CustomerCard.TaxCode == "")
                 {
-                    return ErrorResponse("10001", new object[] { "Mã số thuế" });
+                    return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Mã số thuế" });
                 }
             }
             var customer = _mapper.Map<CustomerRegister, Customer>(customerRegister);
@@ -229,14 +225,12 @@ namespace PLX.API.Services
             var result = OkResponse(new CustomerResponse()
             {
                 IdCustomer = customer.Id
-            },
-            "11005");
+            }, ResultCodeConstants.SuccessRegister);
             return result;
         }
 
         public async Task<APIResponse> GetLists(BaseRequest baseRequest)
         {
-            //Console.WriteLine("--- Expected message = " + await _iResultMessageService.GetMessage("10001", new object[] { "Phone" }));
             var questions = await _questionsRepository.ListAsync();
             var provinces = await _provinceRepository.ListAsync();
             var questionList = _mapper.Map<List<Question>, List<ListItem>>(questions);
@@ -244,13 +238,14 @@ namespace PLX.API.Services
             var genderList = new List<ListItem>();
             genderList.Add(new ListItem("0", "Nam"));
             genderList.Add(new ListItem("1", "Nữ"));
+            genderList.Add(new ListItem("Other", "Khác"));
             var customerStaticList = new CustomerStaticList
             {
                 Questions = questionList,
                 Provinces = provinceList,
                 Genders = genderList
             };
-            return new ApiOkResponse(customerStaticList, "11002");
+            return new ApiOkResponse(customerStaticList, ResultCodeConstants.Success);
         }
         public async Task<APIResponse> GetListDistricts(BaseRequest baseRequest, int provinceId)
         {
@@ -261,7 +256,7 @@ namespace PLX.API.Services
             {
                 Districts = districtList
             };
-            return new ApiOkResponse(result, "11002");
+            return new ApiOkResponse(result, ResultCodeConstants.Success);
         }
 
         public async Task<APIResponse> GetListWards(BaseRequest baseRequest, int districtId)
@@ -273,7 +268,7 @@ namespace PLX.API.Services
             {
                 Wards = wardList
             };
-            return new ApiOkResponse(result, "11002");
+            return new ApiOkResponse(result, ResultCodeConstants.Success);
         }
 
         //////
@@ -293,7 +288,7 @@ namespace PLX.API.Services
                 Provinces = provinceList,
                 Genders = genderList
             };
-            return new ApiOkResponse(customerStaticList, "11002");
+            return new ApiOkResponse(customerStaticList, ResultCodeConstants.Success);
         }
         public async Task<APIResponse> GetListDistricts(int provinceId)
         {
@@ -304,7 +299,7 @@ namespace PLX.API.Services
             {
                 Districts = districtList
             };
-            return new ApiOkResponse(result, "11002");
+            return new ApiOkResponse(result, ResultCodeConstants.Success);
         }
 
         public async Task<APIResponse> GetListWards(int districtId)
@@ -316,14 +311,14 @@ namespace PLX.API.Services
             {
                 Wards = wardList
             };
-            return new ApiOkResponse(result, "11002");
+            return new ApiOkResponse(result, ResultCodeConstants.Success);
         }
 
         public async Task<APIResponse> GetCustomerById(BaseRequest baseRequest, int id)
         {
             var all = await _customerRepository.FindAsync(id);
             var customerDto = _mapper.Map<Customer, CustomerDTO>(all);
-            return new ApiOkResponse(customerDto, "11002");
+            return new ApiOkResponse(customerDto, ResultCodeConstants.Success);
         }
 
 

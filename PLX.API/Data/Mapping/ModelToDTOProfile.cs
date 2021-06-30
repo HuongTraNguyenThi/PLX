@@ -4,7 +4,7 @@ using AutoMapper;
 using PLX.API.Data.Models;
 using PLX.API.Data.DTO;
 using PLX.API.Data.DTO.Customer;
-using PLX.API.Extensions.Converters;
+using PLX.API.Helpers;
 
 namespace PLX.API.Data.Mapping
 {

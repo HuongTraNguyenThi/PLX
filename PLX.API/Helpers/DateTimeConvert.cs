@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace PLX.API.Extensions.Converters
+namespace PLX.API.Helpers
 {
     public class DateTimeConvert
     {

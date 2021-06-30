@@ -34,9 +34,13 @@ namespace PLX.API.Services
         }
         public async Task<APIResponse> Authenticate(AuthenticationRequest authRequest)
         {
+            var isValid = ValidatePhoneNumber.IsValid(authRequest.Phone);
+            if (!isValid)
+                return ErrorResponse(ResultCodeConstants.ErrorValidePhone);
+            if (authRequest.Phone == null || authRequest.Phone == "")
+                return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Số điện thoại" });
+
             var customer = await _customerRepository.FindCustomerByPhoneAndPasword(authRequest.Phone);
-            if (customer == null || !BC.Verify(authRequest.Password, customer.Password))
-                return ErrorResponse("10004");
             IDictionary<string, object> customerInfo = new Dictionary<string, object>();
             customerInfo.Add("Id", customer.Id.ToString());
             customerInfo.Add("Phone", customer.Phone);
@@ -48,7 +52,7 @@ namespace PLX.API.Services
                 Token = token,
                 Customer = customerDto
             };
-            var response = OkResponse(authResponse, "11004");
+            var response = OkResponse(authResponse, ResultCodeConstants.SuccessAuthenticate);
             return response;
         }
         public async Task<APIResponse> FindUserById(int id)
@@ -60,10 +64,9 @@ namespace PLX.API.Services
 
         public async Task<APIResponse> GenerateOTP(OTPGenerateRequest oTPRequest)
         {
-            Regex regex = new Regex(@"^[0-9]{10}$");
-            bool isValid = regex.IsMatch(oTPRequest.Phone);
+            var isValid = ValidatePhoneNumber.IsValid(oTPRequest.Phone);
             if (!isValid)
-                return ErrorResponse("10006");
+                return ErrorResponse(ResultCodeConstants.ErrorValidePhone);
             string otp = new Random().Next(100000, 999999).ToString();
             var otpRecord = await _otpRepository.FindOTPByPhoneAndActive(oTPRequest.Phone);
             foreach (var item in otpRecord)
@@ -79,7 +82,7 @@ namespace PLX.API.Services
             };
             await _otpRepository.AddAsync(result);
             await _unitOfWork.CompleteAsync();
-            return OkResponse(new OTPResponse("Mã OTP đã được gửi"), "11002");
+            return OkResponse(new OTPResponse("Mã OTP đã được gửi"), ResultCodeConstants.Success);
         }
 
         public async Task<APIResponse> ValidateOTP(OTPValidateRequest oTPRequest)
@@ -97,13 +100,14 @@ namespace PLX.API.Services
             //     return ErrorResponse("10002", null);
             // }
             var otp = "123456";
-            Regex regex = new Regex(@"^[0-9]{10}$");
-            bool isValid = regex.IsMatch(oTPRequest.Phone);
-            if (oTPRequest.Phone == null || oTPRequest.Phone == "" || !isValid)
-                return ErrorResponse("10006");
+            var isValid = ValidatePhoneNumber.IsValid(oTPRequest.Phone);
+            if (!isValid)
+                return ErrorResponse(ResultCodeConstants.ErrorValidePhone);
+            if (oTPRequest.Phone == null || oTPRequest.Phone == "")
+                return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Số điện thoại" });
             if (otp == oTPRequest.OtpCode)
-                return OkResponse(new OTPResponse("Xác thực thành công"));
-            return ErrorResponse("10002", null);
+                return OkResponse(new OTPResponse("Xác thực thành công"), ResultCodeConstants.SuccessValideOtp);
+            return ErrorResponse(ResultCodeConstants.ErrorValideOtp, null);
         }
 
     }

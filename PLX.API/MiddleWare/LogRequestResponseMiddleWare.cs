@@ -13,7 +13,7 @@ using PLX.API.Data.DTO;
 using PLX.API.Data.Models;
 using PLX.API.Data.Repositories;
 using PLX.API.Extensions;
-using PLX.API.Extensions.Converters;
+using PLX.API.Helpers;
 using PLX.API.Services;
 
 namespace PLX.API.MiddleWare
@@ -59,6 +59,7 @@ namespace PLX.API.MiddleWare
             var requestId = baseRequest.RequestId;
             var requestTime = DateTimeConvert.ToDateTime(baseRequest.RequestTime);
             var requestUri = context.Request.Path;
+
 
             // Get app services
             var services = context.RequestServices;

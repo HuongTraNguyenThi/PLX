@@ -8,7 +8,7 @@ using BC = BCrypt.Net.BCrypt;
 using PLX.API.Data.Repositories.Extensions.Converters;
 using System.Text.Json;
 using System;
-using PLX.API.Extensions.Converters;
+using PLX.API.Helpers;
 
 namespace Supermarket.API.Data.Mapping
 {
