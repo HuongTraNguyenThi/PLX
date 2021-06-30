@@ -86,68 +86,68 @@ namespace PLX.API.Services
         }
         public async Task<APIResponse> RegisterAsync(CustomerRegister customerRegister)
         {
-            var isValidPhone = ValidatePhoneNumber.IsValid(customerRegister.CustomerInfo.CustomerBasic.Phone);
-            DateTime dt;
-            bool isValid = DateTime.TryParseExact(customerRegister.CustomerInfo.CustomerCard.Date, "dd/MM/yyyy", new CultureInfo("en-GB"), DateTimeStyles.None, out dt);
+            var isValidPhone = Validation.CheckPhone(customerRegister.CustomerInfo.CustomerBasic.Phone);
+            var isValidDate = Validation.CheckDate(customerRegister.CustomerInfo.CustomerCard.Date);
+
 
             if (customerRegister.CustomerInfo.CustomerBasic.CustomerTypeId == 1)
             {
-                if (customerRegister.CustomerInfo.CustomerBasic.Name == null || customerRegister.CustomerInfo.CustomerBasic.Name == "")
+                if (!(Validation.IsNullOrEmpty(customerRegister.CustomerInfo.CustomerBasic.Name)))
                 {
                     return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Tên" });
                 }
-                if (customerRegister.CustomerInfo.CustomerBasic.Phone == null || customerRegister.CustomerInfo.CustomerBasic.Phone == "")
+                if (!(Validation.IsNullOrEmpty(customerRegister.CustomerInfo.CustomerBasic.Phone)))
                 {
                     return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Số điện thoại" });
                 }
                 if (!isValidPhone)
                     return ErrorResponse(ResultCodeConstants.ErrorValidePhone);
-                if (customerRegister.CustomerInfo.CustomerBasic.Password == null || customerRegister.CustomerInfo.CustomerBasic.Password == "")
+                if (!(Validation.IsNullOrEmpty(customerRegister.CustomerInfo.CustomerBasic.Password)))
                 {
                     return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Mật khẩu" });
                 }
 
                 foreach (var item in customerRegister.CustomerInfo.CustomerBasic.Questions)
                 {
-                    if (item.QuestionId == 0)
+                    if (!Validation.IsNullOrEmpty(item.QuestionId))
                     {
                         return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Câu hỏi bí mật" });
                     }
                 }
 
-                if (customerRegister.CustomerInfo.CustomerCard.Date == null || customerRegister.CustomerInfo.CustomerCard.Date == "")
+                if (!(Validation.IsNullOrEmpty(customerRegister.CustomerInfo.CustomerCard.Date)))
                 {
                     return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Ngày sinh" });
                 }
-                if (!isValid)
+                if (!isValidDate)
                     return ErrorResponse(ResultCodeConstants.ErrorValideDate, new object[] { "Ngày sinh" });
 
-                if (customerRegister.CustomerInfo.CustomerCard.ProvinceId == 0)
+                if (!Validation.IsNullOrEmpty(customerRegister.CustomerInfo.CustomerCard.ProvinceId))
                 {
                     return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Tỉnh" });
                 }
 
-                if (customerRegister.CustomerInfo.CustomerCard.DistrictId == 0)
+                if (!Validation.IsNullOrEmpty(customerRegister.CustomerInfo.CustomerCard.DistrictId))
                 {
                     return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Quận/Huyện" });
                 }
 
-                if (customerRegister.CustomerInfo.CustomerCard.WardId == 0)
+                if (!Validation.IsNullOrEmpty(customerRegister.CustomerInfo.CustomerCard.WardId))
                 {
                     return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Phường/Xã" });
                 }
 
-                if (customerRegister.CustomerInfo.CustomerCard.Address == null || customerRegister.CustomerInfo.CustomerCard.Address == "")
+                if (!(Validation.IsNullOrEmpty(customerRegister.CustomerInfo.CustomerCard.Address)))
                 {
                     return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Địa chỉ liên hệ" });
                 }
 
-                if (customerRegister.CustomerInfo.CustomerCard.CardId == null || customerRegister.CustomerInfo.CustomerCard.CardId == "")
+                if (!(Validation.IsNullOrEmpty(customerRegister.CustomerInfo.CustomerCard.CardId)))
                 {
                     return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Số CMND/CCCD" });
                 }
 
-                if (customerRegister.CustomerInfo.CustomerCard.Gender == null || customerRegister.CustomerInfo.CustomerCard.Gender == "")
+                if (!(Validation.IsNullOrEmpty(customerRegister.CustomerInfo.CustomerCard.Gender)))
                 {
                     return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Giới tính" });
                 }
@@ -155,11 +155,11 @@ namespace PLX.API.Services
 
             if (customerRegister.CustomerInfo.CustomerBasic.CustomerTypeId == 2)
             {
-                if (customerRegister.CustomerInfo.CustomerBasic.Name == null || customerRegister.CustomerInfo.CustomerBasic.Name == "")
+                if (!(Validation.IsNullOrEmpty(customerRegister.CustomerInfo.CustomerBasic.Name)))
                 {
                     return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Tên đơn vị" });
                 }
-                if (customerRegister.CustomerInfo.CustomerBasic.Phone == null || customerRegister.CustomerInfo.CustomerBasic.Phone == "")
+                if (!(Validation.IsNullOrEmpty(customerRegister.CustomerInfo.CustomerBasic.Phone)))
                 {
                     return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Số điện thoại" });
                 }
@@ -169,40 +169,40 @@ namespace PLX.API.Services
                 {
                     return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Mật khẩu" });
                 }
-                if (customerRegister.CustomerInfo.CustomerCard.Date == null || customerRegister.CustomerInfo.CustomerCard.Date == "")
+                if (!(Validation.IsNullOrEmpty(customerRegister.CustomerInfo.CustomerCard.Date)))
                 {
                     return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Ngày thành lập" });
                 }
-                if (!isValid)
+                if (!isValidDate)
                     return ErrorResponse(ResultCodeConstants.ErrorValideDate, new object[] { "Ngày thành lập" });
                 foreach (var item in customerRegister.CustomerInfo.CustomerBasic.Questions)
                 {
-                    if (item.QuestionId == 0)
+                    if (!Validation.IsNullOrEmpty(item.QuestionId))
                     {
                         return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Câu hỏi bí mật" });
                     }
                 }
-                if (customerRegister.CustomerInfo.CustomerCard.ProvinceId == 0)
+                if (!Validation.IsNullOrEmpty(customerRegister.CustomerInfo.CustomerCard.ProvinceId))
                 {
                     return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Tỉnh" });
                 }
-                if (customerRegister.CustomerInfo.CustomerCard.DistrictId == 0)
+                if (!Validation.IsNullOrEmpty(customerRegister.CustomerInfo.CustomerCard.DistrictId))
                 {
                     return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Quận/Huyện" });
                 }
-                if (customerRegister.CustomerInfo.CustomerCard.WardId == 0)
+                if (!Validation.IsNullOrEmpty(customerRegister.CustomerInfo.CustomerCard.WardId))
                 {
                     return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Phường/Xã" });
                 }
-                if (customerRegister.CustomerInfo.CustomerCard.Address == null || customerRegister.CustomerInfo.CustomerCard.Address == "")
+                if (!(Validation.IsNullOrEmpty(customerRegister.CustomerInfo.CustomerCard.Address)))
                 {
                     return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Địa chỉ liên hệ" });
                 }
-                if (customerRegister.CustomerInfo.CustomerBasic.Email == null || customerRegister.CustomerInfo.CustomerBasic.Email == "")
+                if (!(Validation.IsNullOrEmpty(customerRegister.CustomerInfo.CustomerBasic.Email)))
                 {
                     return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Email" });
                 }
-                if (customerRegister.CustomerInfo.CustomerCard.TaxCode == null || customerRegister.CustomerInfo.CustomerCard.TaxCode == "")
+                if (!(Validation.IsNullOrEmpty(customerRegister.CustomerInfo.CustomerCard.TaxCode)))
                 {
                     return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Mã số thuế" });
                 }

@@ -42,6 +42,7 @@ namespace PLX.API.Controllers
 
             return BadRequest(response);
         }
+
         [AllowAnonymous]
         [HttpPost]
         [ProducesResponseType(typeof(CustomerStaticList), StatusCodes.Status200OK)]
@@ -52,6 +53,7 @@ namespace PLX.API.Controllers
             var response = await _iCustomerService.GetLists(baseRequest);
             return Ok(response);
         }
+
         [AllowAnonymous]
         [HttpPost]
         [ProducesResponseType(typeof(DistrictDTO), StatusCodes.Status200OK)]
@@ -62,6 +64,7 @@ namespace PLX.API.Controllers
             var response = await _iCustomerService.GetListDistricts(baseRequest, id);
             return Ok(response);
         }
+
         [AllowAnonymous]
         [HttpPost]
         [ProducesResponseType(typeof(WardDTO), StatusCodes.Status200OK)]
@@ -73,6 +76,7 @@ namespace PLX.API.Controllers
             var response = await _iCustomerService.GetListWards(baseRequest, id);
             return Ok(response);
         }
+
         [HttpPost]
         [ProducesResponseType(typeof(CustomerDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorMessageResponse), StatusCodes.Status404NotFound)]
@@ -82,6 +86,7 @@ namespace PLX.API.Controllers
             var response = await _iCustomerService.GetCustomerById(baseRequest, id);
             return Ok(response);
         }
+
         ///////
         [AllowAnonymous]
         [HttpGet]

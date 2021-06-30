@@ -34,10 +34,10 @@ namespace PLX.API.Services
         }
         public async Task<APIResponse> Authenticate(AuthenticationRequest authRequest)
         {
-            var isValid = ValidatePhoneNumber.IsValid(authRequest.Phone);
+            var CheckPhone = Validation.CheckPhone(authRequest.Phone);
             if (authRequest.Phone == null || authRequest.Phone == "")
                 return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Số điện thoại" });
-            if (!isValid)
+            if (!CheckPhone)
                 return ErrorResponse(ResultCodeConstants.ErrorValidePhone);
             var customer = await _customerRepository.FindCustomerByPhoneAndPasword(authRequest.Phone);
             IDictionary<string, object> customerInfo = new Dictionary<string, object>();
@@ -63,10 +63,10 @@ namespace PLX.API.Services
 
         public async Task<APIResponse> GenerateOTP(OTPGenerateRequest oTPRequest)
         {
-            var isValid = ValidatePhoneNumber.IsValid(oTPRequest.Phone);
+            var CheckPhone = Validation.CheckPhone(oTPRequest.Phone);
             if (oTPRequest.Phone == null || oTPRequest.Phone == "")
                 return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Số điện thoại" });
-            if (!isValid)
+            if (!CheckPhone)
                 return ErrorResponse(ResultCodeConstants.ErrorValidePhone);
             string otp = new Random().Next(100000, 999999).ToString();
             var otpRecord = await _otpRepository.FindOTPByPhoneAndActive(oTPRequest.Phone);
@@ -101,10 +101,10 @@ namespace PLX.API.Services
             //     return ErrorResponse("10002", null);
             // }
             var otp = "123456";
-            var isValid = ValidatePhoneNumber.IsValid(oTPRequest.Phone);
+            var CheckPhone = Validation.CheckPhone(oTPRequest.Phone);
             if (oTPRequest.Phone == null || oTPRequest.Phone == "")
                 return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Số điện thoại" });
-            if (!isValid)
+            if (!CheckPhone)
                 return ErrorResponse(ResultCodeConstants.ErrorValidePhone);
 
             if (otp == oTPRequest.OtpCode)
