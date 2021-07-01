@@ -203,6 +203,24 @@ namespace PLX.API.Services
             return new ApiOkResponse(customerDto, ResultCodeConstants.Success);
         }
 
+        public async Task<APIResponse> UpdateCustomer(int id, CustomerUpdateRequest customerUpdateRequest)
+        {
+            var customer = await _customerRepository.FindAsync(id);
+            if (!Validation.IsNullOrEmpty(customerUpdateRequest.Customer.Name))
+            {
+                customer.Name = customerUpdateRequest.Customer.Name;
+            }
+
+            if (!Validation.IsNullOrEmpty(customerUpdateRequest.Customer.Address))
+            {
+                customer.Address = customerUpdateRequest.Customer.Address;
+            }
+
+            await this._unitOfWork.CompleteAsync();
+            var customerDto = _mapper.Map<Customer, CustomerDTO>(customer);
+            return OkResponse(new CustomerUpdateResponse() { Customer = customerDto });
+        }
+
         private ApiErrorResponse validateCustomer(CustomerInfo customerInfo)
         {
             var customerBasic = customerInfo.CustomerBasic;

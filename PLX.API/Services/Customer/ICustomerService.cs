@@ -17,5 +17,6 @@ namespace PLX.API.Services
         Task<APIResponse> GetListDistricts(int proviceId);
         Task<APIResponse> GetListWards(int districtId);
         Task<APIResponse> GetCustomerById(BaseRequest baseRequest, int id);
+        Task<APIResponse> UpdateCustomer(int id, CustomerUpdateRequest customerUpdateRequest);
     }
 }

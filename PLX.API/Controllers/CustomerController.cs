@@ -21,12 +21,12 @@ namespace PLX.API.Controllers
 
         private readonly ILogger<CustomerController> _logger;
 
-        private ICustomerService _iCustomerService;
+        private ICustomerService _customerService;
 
         public CustomerController(ILogger<CustomerController> logger, ICustomerService iCustomerService)
         {
             _logger = logger;
-            _iCustomerService = iCustomerService;
+            _customerService = iCustomerService;
 
         }
         [AllowAnonymous]
@@ -36,7 +36,7 @@ namespace PLX.API.Controllers
         [Route("register")]
         public async Task<IActionResult> Register(CustomerRegister dto)
         {
-            var response = await _iCustomerService.RegisterAsync(dto);
+            var response = await _customerService.RegisterAsync(dto);
             if (response.Result.Success)
                 return Ok(response);
 
@@ -50,7 +50,7 @@ namespace PLX.API.Controllers
         [Route("staticlist")]
         public async Task<IActionResult> GetCustomerStaticList(BaseRequest baseRequest)
         {
-            var response = await _iCustomerService.GetLists(baseRequest);
+            var response = await _customerService.GetLists(baseRequest);
             return Ok(response);
         }
 
@@ -61,7 +61,7 @@ namespace PLX.API.Controllers
         [Route("districtlist/{id?}")]
         public async Task<IActionResult> GetDistrictList(BaseRequest baseRequest, int id)
         {
-            var response = await _iCustomerService.GetListDistricts(baseRequest, id);
+            var response = await _customerService.GetListDistricts(baseRequest, id);
             return Ok(response);
         }
 
@@ -73,7 +73,7 @@ namespace PLX.API.Controllers
         public async Task<IActionResult> GetWardList(BaseRequest baseRequest, int id)
         {
 
-            var response = await _iCustomerService.GetListWards(baseRequest, id);
+            var response = await _customerService.GetListWards(baseRequest, id);
             return Ok(response);
         }
 
@@ -83,7 +83,7 @@ namespace PLX.API.Controllers
         [Route("getcustomer/{id?}")]
         public async Task<IActionResult> GetCustomerById(BaseRequest baseRequest, int id)
         {
-            var response = await _iCustomerService.GetCustomerById(baseRequest, id);
+            var response = await _customerService.GetCustomerById(baseRequest, id);
             return Ok(response);
         }
 
@@ -95,7 +95,7 @@ namespace PLX.API.Controllers
         [Route("staticlist")]
         public async Task<IActionResult> GetStaticList()
         {
-            var response = await _iCustomerService.GetLists();
+            var response = await _customerService.GetLists();
             return Ok(response);
         }
         [AllowAnonymous]
@@ -105,7 +105,7 @@ namespace PLX.API.Controllers
         [Route("districtlist/{id?}")]
         public async Task<IActionResult> GetDistrict(int id)
         {
-            var response = await _iCustomerService.GetListDistricts(id);
+            var response = await _customerService.GetListDistricts(id);
             return Ok(response);
         }
         [AllowAnonymous]
@@ -116,7 +116,18 @@ namespace PLX.API.Controllers
         public async Task<IActionResult> GetWard(int id)
         {
 
-            var response = await _iCustomerService.GetListWards(id);
+            var response = await _customerService.GetListWards(id);
+            return Ok(response);
+        }
+
+        [HttpPost]
+        [ProducesResponseType(typeof(CustomerUpdateResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorMessageResponse), StatusCodes.Status400BadRequest)]
+        [Route("customer/update/{customerId?}")]
+        public async Task<IActionResult> UpdateCustomer(int customerId, CustomerUpdateRequest customerUpdateRequest)
+        {
+
+            var response = await _customerService.UpdateCustomer(customerId, customerUpdateRequest);
             return Ok(response);
         }
     }
