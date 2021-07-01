@@ -26,7 +26,7 @@ namespace PLX.API.Data.Contexts
             modelBuilder.Entity<Ward>();
             modelBuilder.Entity<CustomerType>();
             modelBuilder.Entity<LogAPI>();
-            modelBuilder.Entity<OTP>();
+            modelBuilder.Entity<OTP>().Property("Active").HasDefaultValue(true);
             modelBuilder.Entity<Result>();
             modelBuilder.Entity<CustomerLog>();
         }
