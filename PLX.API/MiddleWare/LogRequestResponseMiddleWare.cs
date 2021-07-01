@@ -71,6 +71,8 @@ namespace PLX.API.MiddleWare
             // Response information
             var apiResponse = JsonConvert.DeserializeObject<APIResponse>(responseBodyText);
             var apiResult = apiResponse.Result;
+            if (apiResult == null) return;
+
             var dataType = Type.GetType(apiResult.DataType);
             var apiResponseDataJObject = apiResponse.Data as JObject;
             var apiResponseData = apiResponseDataJObject.ToObject(dataType) as BaseResponse;
@@ -79,7 +81,6 @@ namespace PLX.API.MiddleWare
             var resultMessage = await resultMessageService.GetMessage(resultCode as string, resultArgs);
             var responseDateTime = DateTime.Now;
             var responseTimeStr = DateTimeConvert.ToString(responseDateTime);
-
 
             // Update response data
             apiResponseData.ResponseId = requestId;
