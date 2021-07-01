@@ -14,10 +14,10 @@ namespace PLX.API.Services
     public class ResutlMessageService : IResultMessageService
     {
         private readonly ILogger<ResutlMessageService> _logger;
-        private readonly IRepository<Result> _resultRepository;
+        private readonly IApiResultRepository _resultRepository;
         private IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
-        public ResutlMessageService(ILogger<ResutlMessageService> logger, IRepository<Result> resultRepository,
+        public ResutlMessageService(ILogger<ResutlMessageService> logger, IApiResultRepository resultRepository,
         IMapper mapper, IUnitOfWork unitOfWork)
         {
             _logger = logger;
@@ -28,7 +28,7 @@ namespace PLX.API.Services
 
         public async Task<string> GetMessage(string resultCode, params object[] arguments)
         {
-            var resultRecord = await _resultRepository.FindFormatMessageByCode(resultCode);
+            var resultRecord = await _resultRepository.FindByCode(resultCode);
             var args = arguments ??= new object[] { };
             string format = resultRecord?.Message ?? "";
             string resultMessage = string.Format(format, arguments);

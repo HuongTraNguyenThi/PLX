@@ -1,13 +1,8 @@
 using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Hosting;
-using PLX.API.Exceptions;
-using PLX.API.Helpers;
 
 namespace PLX.API.MiddleWare
 {
@@ -33,14 +28,6 @@ namespace PLX.API.MiddleWare
 
                 switch (error)
                 {
-                    case AppException e:
-                        // custom application error
-                        response.StatusCode = (int)HttpStatusCode.BadRequest;
-                        break;
-                    case KeyNotFoundException e:
-                        // not found error
-                        response.StatusCode = (int)HttpStatusCode.NotFound;
-                        break;
                     default:
                         // unhandled error
                         response.StatusCode = (int)HttpStatusCode.InternalServerError;

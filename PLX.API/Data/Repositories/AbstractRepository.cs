@@ -1,4 +1,4 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -7,49 +7,43 @@ using PLX.API.Data.Models;
 
 namespace PLX.API.Data.Repositories
 {
-    public class Repository<T> : IRepository<T> where T : BaseEntity
+    public abstract class AbstractRepository<T> where T : BaseEntity
     {
         private readonly PLXDbContext _context;
-        private DbSet<T> _entities;
-        public DbSet<T> Entities { get; }
-        string errorMessage = string.Empty;
-
-
-        public Repository(PLXDbContext context)
+        protected readonly DbSet<T> _dbSet;
+        public AbstractRepository(PLXDbContext context)
         {
             _context = context;
-            _entities = _context.Set<T>();
-            Entities = _entities;
+            _dbSet = _context.Set<T>();
         }
+
         public async Task<List<T>> ListAsync()
         {
-            return await _entities.ToListAsync();
+            return await _dbSet.ToListAsync();
         }
         public async Task AddAsync(T entity)
         {
-            await _entities.AddAsync(entity);
+            await _dbSet.AddAsync(entity);
         }
 
         public async Task AddRangeAsync(List<T> entities)
         {
-            await _entities.AddRangeAsync(entities);
+            await _dbSet.AddRangeAsync(entities);
         }
 
         public async Task<T> FindAsync(params object[] keyValues)
         {
-            return await _entities.FindAsync(keyValues);
+            return await _dbSet.FindAsync(keyValues);
         }
 
         public void Remove(T entity)
         {
-            _entities.Remove(entity);
+            _dbSet.Remove(entity);
         }
 
         public void Update(T entity)
         {
-            _entities.Update(entity);
+            _dbSet.Update(entity);
         }
-
-
     }
 }

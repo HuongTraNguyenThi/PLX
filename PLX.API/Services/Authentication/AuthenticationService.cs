@@ -20,13 +20,13 @@ namespace PLX.API.Services
     {
         private readonly ILogger<AuthenticationService> _logger;
         private JwtConfig _jwtConfig;
-        private readonly IRepository<Customer> _customerRepository;
-        private readonly IRepository<OTP> _otpRepository;
-        private readonly IRepository<CustomerLog> _customerLogRespository;
+        private readonly ICustomerRepository _customerRepository;
+        private readonly IOTPRepository _otpRepository;
+        private readonly ICustomerLogRepository _customerLogRespository;
         private IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
-        public AuthenticationService(ILogger<AuthenticationService> logger, IOptions<JwtConfig> options, IRepository<Customer> customerRepository,
-        IMapper mapper, IRepository<OTP> otpRepository, IUnitOfWork unitOfWork, IRepository<CustomerLog> customerLogRespository)
+        public AuthenticationService(ILogger<AuthenticationService> logger, IOptions<JwtConfig> options, ICustomerRepository customerRepository,
+        IMapper mapper, IOTPRepository otpRepository, IUnitOfWork unitOfWork, ICustomerLogRepository customerLogRespository)
         {
             _logger = logger;
             _jwtConfig = options.Value;
@@ -45,7 +45,7 @@ namespace PLX.API.Services
             if (!isValidPhone)
                 return ErrorResponse(ResultCodeConstants.ErrorInvalidPhone);
 
-            var customer = await _customerRepository.FindCustomerByPhone(authRequest.Phone);
+            var customer = await _customerRepository.FindByPhone(authRequest.Phone);
             if (customer == null || !BC.Verify(authRequest.Password, customer.Password))
                 return ErrorResponse(ResultCodeConstants.ErrorAuthenticate);
 
@@ -83,7 +83,7 @@ namespace PLX.API.Services
                 return ErrorResponse(ResultCodeConstants.ErrorInvalidPhone);
 
             string otp = new Random().Next(100000, 999999).ToString();
-            var otpRecord = await _otpRepository.FindOTPByPhoneAndActive(oTPRequest.Phone);
+            var otpRecord = await _otpRepository.ListByPhone(oTPRequest.Phone);
             foreach (var item in otpRecord)
             {
                 item.Active = false;

@@ -14,25 +14,24 @@ namespace PLX.API.Services
 {
     public class CustomerService : BaseService, ICustomerService
     {
-        private readonly IRepository<Customer> _customerRepository;
-        private readonly IRepository<Vehicle> _vehicleRepository;
-        private readonly IRepository<LinkedCard> _linkedCardRepository;
-        private readonly IRepository<CustomerQuestion> _customerQuestionsRepository;
-        private readonly IRepository<Province> _provinceRepository;
-        private readonly IRepository<District> _districtRepository;
-        private readonly IRepository<Ward> _wardRepository;
-        private readonly IRepository<Question> _questionsRepository;
+        private readonly ICustomerRepository _customerRepository;
+        private readonly IVehicleRepository _vehicleRepository;
+        private readonly ILinkedCardRepository _linkedCardRepository;
+        private readonly ICustomerQuestionRepository _customerQuestionsRepository;
+        private readonly IProvinceRepository _provinceRepository;
+        private readonly IDistrictRepository _districtRepository;
+        private readonly IWardRepository _wardRepository;
+        private readonly IQuestionRepository _questionsRepository;
         private readonly IResultMessageService _iResultMessageService;
-
         private readonly IUnitOfWork _unitOfWork;
         private IMapper _mapper;
 
 
         public CustomerService(IUnitOfWork unitOfWork, IMapper mapper,
-            IRepository<Customer> customerRepository, IRepository<Vehicle> vehicleRepository,
-            IRepository<LinkedCard> linkedCardRepository, IRepository<CustomerQuestion> customerQuestionsRepository,
-            IRepository<Question> questionsRepository, IRepository<Province> provinceRepository,
-            IRepository<District> districtRepository, IRepository<Ward> wardRepository, IResultMessageService iResultMessageService)
+            ICustomerRepository customerRepository, IVehicleRepository vehicleRepository,
+            ILinkedCardRepository linkedCardRepository, ICustomerQuestionRepository customerQuestionsRepository,
+            IQuestionRepository questionsRepository, IProvinceRepository provinceRepository,
+            IDistrictRepository districtRepository, IWardRepository wardRepository, IResultMessageService iResultMessageService)
         {
             _customerRepository = customerRepository;
             _unitOfWork = unitOfWork;
@@ -201,7 +200,7 @@ namespace PLX.API.Services
 
         public async Task<APIResponse> UpdateCustomer(int id, CustomerUpdateRequest customerUpdateRequest)
         {
-            var customer = await _customerRepository.FindAsync(id);
+            var customer = await _customerRepository.FindById(id);
             if (!Validation.IsNullOrEmpty(customerUpdateRequest.Customer.Name))
             {
                 customer.Name = customerUpdateRequest.Customer.Name;
@@ -247,60 +246,60 @@ namespace PLX.API.Services
             }
             var savedQuestions = customer.Questions.ToDictionary(x => x.QuestionId, x => x);
 
-            foreach (var question in customerUpdateRequest.Questions)
-            {
-                CustomerQuestion savedQuestion = null;
-                var exist = savedQuestions.TryGetValue(question.Id, out savedQuestion);
+            // foreach (var question in customerUpdateRequest.Questions)
+            // {
+            //     CustomerQuestion savedQuestion = null;
+            //     var exist = savedQuestions.TryGetValue(question.Id, out savedQuestion);
 
-                if (!exist && question.RecordType == RecordTypes.NewRecord)
-                {
-                    var newQuestion = _mapper.Map<QuestionRequest, CustomerQuestion>(question);
-                    await _customerQuestionsRepository.AddAsync(newQuestion);
-                }
+            //     if (!exist && question.RecordType == RecordTypes.NewRecord)
+            //     {
+            //         var newQuestion = _mapper.Map<QuestionRequest, CustomerQuestion>(question);
+            //         await _customerQuestionsRepository.AddAsync(newQuestion);
+            //     }
 
-                if (exist && question.RecordType == RecordTypes.ExistRecord && !Validation.IsNullOrEmpty(question.Answer))
-                {
-                    savedQuestion.Answer = question.Answer;
-                }
-            }
+            //     if (exist && question.RecordType == RecordTypes.ExistRecord && !Validation.IsNullOrEmpty(question.Answer))
+            //     {
+            //         savedQuestion.Answer = question.Answer;
+            //     }
+            // }
 
-            var savedVehicles = customer.Vehicles.ToDictionary(x => x.Id, x => x);
-            foreach (var vehicle in customerUpdateRequest.Vehicles)
-            {
-                Vehicle savedVehicle = null;
-                var exist = savedVehicles.TryGetValue(vehicle.Id, out savedVehicle);
+            // var savedVehicles = customer.Vehicles.ToDictionary(x => x.Id, x => x);
+            // foreach (var vehicle in customerUpdateRequest.Vehicles)
+            // {
+            //     Vehicle savedVehicle = null;
+            //     var exist = savedVehicles.TryGetValue(vehicle.Id, out savedVehicle);
 
-                if (!exist && vehicle.RecordType == RecordTypes.NewRecord)
-                {
-                    var newVehicle = _mapper.Map<VehicleRequest, Vehicle>(vehicle);
-                    await _vehicleRepository.AddAsync(newVehicle);
-                }
+            //     if (!exist && vehicle.RecordType == RecordTypes.NewRecord)
+            //     {
+            //         var newVehicle = _mapper.Map<VehicleRequest, Vehicle>(vehicle);
+            //         await _vehicleRepository.AddAsync(newVehicle);
+            //     }
 
-                if (exist && vehicle.RecordType == RecordTypes.ExistRecord && !Validation.IsNullOrEmpty(vehicle.Name) && !Validation.IsNullOrEmpty(vehicle.LicensePlate) && !Validation.IsEqualOrLessThanZero(vehicle.VehicleTypeId))
-                {
-                    savedVehicle.Name = vehicle.Name;
-                    savedVehicle.LicensePlate = vehicle.LicensePlate;
-                    savedVehicle.VehicleTypeId = vehicle.VehicleTypeId;
-                }
-            }
-            var savedLinkedCards = customer.LinkedCards.ToDictionary(x => x.Id, x => x);
-            foreach (var linkedCard in customerUpdateRequest.LinkedCards)
-            {
-                Vehicle savedLinkedCard = null;
-                var exist = savedVehicles.TryGetValue(linkedCard.Id, out savedLinkedCard);
+            //     if (exist && vehicle.RecordType == RecordTypes.ExistRecord && !Validation.IsNullOrEmpty(vehicle.Name) && !Validation.IsNullOrEmpty(vehicle.LicensePlate) && !Validation.IsEqualOrLessThanZero(vehicle.VehicleTypeId))
+            //     {
+            //         savedVehicle.Name = vehicle.Name;
+            //         savedVehicle.LicensePlate = vehicle.LicensePlate;
+            //         savedVehicle.VehicleTypeId = vehicle.VehicleTypeId;
+            //     }
+            // }
+            // var savedLinkedCards = customer.LinkedCards.ToDictionary(x => x.Id, x => x);
+            // foreach (var linkedCard in customerUpdateRequest.LinkedCards)
+            // {
+            //     Vehicle savedLinkedCard = null;
+            //     var exist = savedVehicles.TryGetValue(linkedCard.Id, out savedLinkedCard);
 
-                if (!exist && linkedCard.RecordType == RecordTypes.NewRecord)
-                {
-                    var newLinkedCard = _mapper.Map<LinkedCardRequest, LinkedCard>(linkedCard);
-                    await _linkedCardRepository.AddAsync(newLinkedCard);
-                }
+            //     if (!exist && linkedCard.RecordType == RecordTypes.NewRecord)
+            //     {
+            //         var newLinkedCard = _mapper.Map<LinkedCardRequest, LinkedCard>(linkedCard);
+            //         await _linkedCardRepository.AddAsync(newLinkedCard);
+            //     }
 
-                if (exist && linkedCard.RecordType == RecordTypes.ExistRecord && !Validation.IsNullOrEmpty(linkedCard.Name) && !Validation.IsNullOrEmpty(linkedCard.CardNumber))
-                {
-                    savedLinkedCard.Name = linkedCard.Name;
-                    savedLinkedCard.LicensePlate = linkedCard.CardNumber;
-                }
-            }
+            //     if (exist && linkedCard.RecordType == RecordTypes.ExistRecord && !Validation.IsNullOrEmpty(linkedCard.Name) && !Validation.IsNullOrEmpty(linkedCard.CardNumber))
+            //     {
+            //         savedLinkedCard.Name = linkedCard.Name;
+            //         savedLinkedCard.LicensePlate = linkedCard.CardNumber;
+            //     }
+            // }
 
             await this._unitOfWork.CompleteAsync();
             var customerUpdateResponse = _mapper.Map<Customer, CustomerUpdateResponse>(customer);
