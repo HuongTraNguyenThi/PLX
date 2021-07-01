@@ -8,33 +8,25 @@ namespace PLX.API.Helpers
 {
     public static class Validation
     {
-        public static bool CheckPhone(string phone)
+        public static bool IsValidPhone(string phone)
         {
             Regex regex = new Regex(@"^[0-9]{10}$");
             bool isValid = regex.IsMatch(phone ?? "");
-            if (!isValid)
-                return false;
-            return true;
+            return isValid;
         }
-        public static bool CheckDate(string date)
+        public static bool IsValidDate(string date)
         {
             DateTime dt;
             bool isValid = DateTime.TryParseExact(date, "dd/MM/yyyy", new CultureInfo("en-GB"), DateTimeStyles.None, out dt);
-            if (!isValid)
-                return false;
-            return true;
+            return isValid;
         }
         public static bool IsNullOrEmpty(string text)
         {
-            if (text == "" || text == null)
-                return false;
-            return true;
+            return string.IsNullOrEmpty(text);
         }
-        public static bool IsNullOrEmpty(int x)
+        public static bool IsNonZero(int x)
         {
-            if (x == 0)
-                return false;
-            return true;
+            return x != 0;
         }
 
     }

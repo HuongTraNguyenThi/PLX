@@ -11,6 +11,7 @@ using AutoMapper;
 using BC = BCrypt.Net.BCrypt;
 using System;
 using System.Text.RegularExpressions;
+using PLX.API.Constants;
 
 namespace PLX.API.Services
 {
@@ -34,14 +35,17 @@ namespace PLX.API.Services
         }
         public async Task<APIResponse> Authenticate(AuthenticationRequest authRequest)
         {
-            var CheckPhone = Validation.CheckPhone(authRequest.Phone);
-            if (authRequest.Phone == null || authRequest.Phone == "")
+            if (Validation.IsNullOrEmpty(authRequest.Phone))
                 return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Số điện thoại" });
-            if (!CheckPhone)
-                return ErrorResponse(ResultCodeConstants.ErrorValidePhone);
+
+            var isValidPhone = Validation.IsValidPhone(authRequest.Phone);
+            if (!isValidPhone)
+                return ErrorResponse(ResultCodeConstants.ErrorInvalidPhone);
+
             var customer = await _customerRepository.FindCustomerByPhoneAndPasword(authRequest.Phone);
             if (customer == null || !BC.Verify(authRequest.Password, customer.Password))
-                return ErrorResponse(ResultCodeConstants.ErrorAuthenticate, null);
+                return ErrorResponse(ResultCodeConstants.ErrorAuthenticate);
+
             IDictionary<string, object> customerInfo = new Dictionary<string, object>();
             customerInfo.Add("Id", customer.Id.ToString());
             customerInfo.Add("Phone", customer.Phone);
@@ -65,12 +69,13 @@ namespace PLX.API.Services
 
         public async Task<APIResponse> GenerateOTP(OTPGenerateRequest oTPRequest)
         {
-            var CheckPhone = Validation.CheckPhone(oTPRequest.Phone);
-            var transactiontype = TransactionType.RegisterOtp;
             if (oTPRequest.Phone == null || oTPRequest.Phone == "")
                 return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Số điện thoại" });
+
+            var CheckPhone = Validation.IsValidPhone(oTPRequest.Phone);
             if (!CheckPhone)
-                return ErrorResponse(ResultCodeConstants.ErrorValidePhone);
+                return ErrorResponse(ResultCodeConstants.ErrorInvalidPhone);
+
             string otp = new Random().Next(100000, 999999).ToString();
             var otpRecord = await _otpRepository.FindOTPByPhoneAndActive(oTPRequest.Phone);
             foreach (var item in otpRecord)
@@ -82,38 +87,27 @@ namespace PLX.API.Services
                 Phone = oTPRequest.Phone,
                 OTPCode = otp,
                 CreateTime11 = DateTime.Now,
-                Active = true,
-                TransactionType = transactiontype
+                Active = true
             };
             await _otpRepository.AddAsync(result);
             await _unitOfWork.CompleteAsync();
             return OkResponse(new OTPResponse("Mã OTP đã được gửi"), ResultCodeConstants.Success);
         }
 
-        public async Task<APIResponse> ValidateOTP(OTPValidateRequest oTPRequest)
+        public APIResponse ValidateOTP(OTPValidateRequest oTPRequest)
         {
-            // int value = 3;
-            // var otpRecord = await _otpRepository.FindOTPByPhoneAndOTP(oTPRequest.Phone, oTPRequest.OtpCode);
-
-            // foreach (var item in otpRecord)
-            // {
-            //     TimeSpan ts = DateTime.Now - item.CreateTime11;
-            //     var otp = item.OTPCode;
-            //     if (otp == "123456" || ts.Minutes <= value)
-            //         return OkResponse(new OTPResponse("Xác thực thành công"));
-
-            //     return ErrorResponse("10002", null);
-            // }
             var otp = "123456";
-            var CheckPhone = Validation.CheckPhone(oTPRequest.Phone);
             if (oTPRequest.Phone == null || oTPRequest.Phone == "")
                 return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Số điện thoại" });
-            if (!CheckPhone)
-                return ErrorResponse(ResultCodeConstants.ErrorValidePhone);
 
-            if (otp == oTPRequest.OtpCode)
-                return OkResponse(new OTPResponse("Xác thực thành công"), ResultCodeConstants.SuccessValideOtp);
-            return ErrorResponse(ResultCodeConstants.ErrorValideOtp, null);
+            var CheckPhone = Validation.IsValidPhone(oTPRequest.Phone);
+            if (!CheckPhone)
+                return ErrorResponse(ResultCodeConstants.ErrorInvalidPhone);
+
+            if (otp != oTPRequest.OtpCode)
+                return ErrorResponse(ResultCodeConstants.ErrorInvalidOtp);
+
+            return OkResponse(new OTPResponse("Xác thực thành công"), ResultCodeConstants.SuccessValidOtp);
         }
 
     }

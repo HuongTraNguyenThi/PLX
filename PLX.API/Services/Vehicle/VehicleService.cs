@@ -58,27 +58,5 @@ namespace PLX.API.Services
             };
             return new ApiOkResponse(list, "11002");
         }
-        // public async Task<APIResponse> AddAsync(VehicleDTO vehicleDTO)
-        // {
-        //     var vehicle = _mapper.Map<VehicleDTO, Vehicle>(vehicleDTO);
-        //     await _vehicleRepository.AddAsync(vehicle);
-        //     await _unitOfWork.CompleteAsync();
-        //     return new APIResponse(vehicleDTO);
-        // }
-        // public async Task<APIResponse> UpdateAsync(int id, VehicleDTO vehicleDTO)
-        // {
-        //     var vehicle = _mapper.Map<VehicleDTO, Vehicle>(vehicleDTO);
-        //     _vehicleRepository.Update(vehicle);
-        //     await _unitOfWork.CompleteAsync();
-        //     return new APIResponse(vehicleDTO);
-        // }
-        // public async Task<APIResponse> DeleteAsync(int id)
-        // {
-        //     var vehicle = await _vehicleRepository.FindAsync(id);
-        //     var vehicleDTO = _mapper.Map<Vehicle, VehicleDTO>(vehicle);
-        //     _vehicleRepository.Remove(vehicle);
-        //     await _unitOfWork.CompleteAsync();
-        //     return new APIResponse(vehicleDTO);
-        // }
     }
 }

@@ -17,13 +17,8 @@ namespace PLX.API.Controllers
     [Route("api")]
     public class VehicleController : ControllerBase
     {
-
         private readonly ILogger<VehicleController> _logger;
-
         private IVehicleService _iVehicleService;
-
-
-
         public VehicleController(ILogger<VehicleController> logger, IVehicleService iVehicleService)
         {
             _logger = logger;

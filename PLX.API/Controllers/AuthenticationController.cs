@@ -25,7 +25,7 @@ namespace PLX.API.Controllers
 
         [AllowAnonymous]
         [ProducesResponseType(typeof(AuthenticationResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ErrorMessageResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorMessageResponse), StatusCodes.Status401Unauthorized)]
         [HttpPost("authenticate")]
         public async Task<IActionResult> Authenticate(AuthenticationRequest authRequest)
         {
@@ -34,7 +34,7 @@ namespace PLX.API.Controllers
             {
                 return Ok(response);
             }
-            return BadRequest(response);
+            return Unauthorized(response);
         }
         [AllowAnonymous]
         [ProducesResponseType(typeof(OTPResponse), StatusCodes.Status200OK)]
@@ -53,9 +53,9 @@ namespace PLX.API.Controllers
         [ProducesResponseType(typeof(OTPResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorMessageResponse), StatusCodes.Status400BadRequest)]
         [HttpPost("validateotp")]
-        public async Task<IActionResult> ValidateOtp(OTPValidateRequest oTPRequest)
+        public IActionResult ValidateOtp(OTPValidateRequest oTPRequest)
         {
-            var response = await _authenticationService.ValidateOTP(oTPRequest);
+            var response = _authenticationService.ValidateOTP(oTPRequest);
             if (response.Result.Success)
             {
                 return Ok(response);

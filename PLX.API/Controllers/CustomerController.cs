@@ -119,7 +119,5 @@ namespace PLX.API.Controllers
             var response = await _iCustomerService.GetListWards(id);
             return Ok(response);
         }
-
-
     }
 }

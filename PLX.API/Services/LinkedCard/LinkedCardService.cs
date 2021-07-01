@@ -9,7 +9,7 @@ using PLX.API.Data.DTO.Customer;
 namespace PLX.API.Services
 {
 
-    public class LinkedCardService
+    public class LinkedCardService : ILinkedCardService
     {
         private readonly IRepository<LinkedCard> _linkedCardRepository;
         private readonly IUnitOfWork _unitOfWork;
@@ -31,27 +31,5 @@ namespace PLX.API.Services
             var linkedCard = await _linkedCardRepository.FindAsync(id);
             return linkedCard;
         }
-        // public  Task<APIResponse> AddAsync(LinkedCardDTO linkedCardDTO)
-        // {
-        //     // var linkedCard = _mapper.Map<LinkedCardDTO, LinkedCard>(linkedCardDTO);
-        //     // await _linkedCardRepository.AddAsync(linkedCard);
-        //     // await _unitOfWork.CompleteAsync();
-        //     // return new APIResponse(linkedCardDTO);
-        // }
-        // public async Task<APIResponse> UpdateAsync(int id, LinkedCardDTO linkedCardDTO)
-        // {
-        //     var linkedCard = _mapper.Map<LinkedCardDTO, LinkedCard>(linkedCardDTO);
-        //     _linkedCardRepository.Update(linkedCard);
-        //     await _unitOfWork.CompleteAsync();
-        //     return new APIResponse(linkedCardDTO);
-        // }
-        // public async Task<APIResponse> DeleteAsync(int id)
-        // {
-        //     var linkedCard = await _linkedCardRepository.FindAsync(id);
-        //     var linkedCardDTO = _mapper.Map<LinkedCard, LinkedCardDTO>(linkedCard);
-        //     _linkedCardRepository.Remove(linkedCard);
-        //     await _unitOfWork.CompleteAsync();
-        //     return new APIResponse(linkedCardDTO);
-        // }
     }
 }
