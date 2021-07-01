@@ -104,11 +104,8 @@ namespace PLX.API.Services
             await _customerQuestionsRepository.AddRangeAsync(questions);
 
             await _unitOfWork.CompleteAsync();
-            var result = OkResponse(new CustomerResponse()
-            {
-                IdCustomer = customer.Id
-            }, ResultCodeConstants.SuccessRegister);
-            return result;
+
+            return OkResponse(_mapper.Map<Customer, CustomerRegisterResponse>(customer), ResultCodeConstants.SuccessRegister);
         }
 
         public async Task<APIResponse> GetLists(BaseRequest baseRequest)

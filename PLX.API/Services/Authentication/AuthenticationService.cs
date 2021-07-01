@@ -53,7 +53,7 @@ namespace PLX.API.Services
             customerInfo.Add("Id", customer.Id.ToString());
             customerInfo.Add("Phone", customer.Phone);
             string token = JwtHelper.GenerateToken(_jwtConfig, customerInfo);
-            var customerDto = _mapper.Map<Customer, CustomerDTO>(customer);
+            var customerDto = _mapper.Map<Customer, CustomerResponse>(customer);
 
             AuthenticationResponse authResponse = new AuthenticationResponse()
             {

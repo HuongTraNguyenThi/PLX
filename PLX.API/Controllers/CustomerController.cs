@@ -31,7 +31,7 @@ namespace PLX.API.Controllers
         }
         [AllowAnonymous]
         [HttpPost]
-        [ProducesResponseType(typeof(CustomerResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CustomerRegisterResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorMessageResponse), StatusCodes.Status400BadRequest)]
         [Route("register")]
         public async Task<IActionResult> Register(CustomerRegister dto)
