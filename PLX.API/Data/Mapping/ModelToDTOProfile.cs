@@ -14,7 +14,7 @@ namespace PLX.API.Data.Mapping
         {
             CreateMap<Customer, CustomerResponse>();
             CreateMap<Customer, CustomerDTO>()
-            .ForMember(customerDto => customerDto.Date, opt => opt.MapFrom(customer => DateTimeConvert.ToString(customer.Date)));
+            .ForMember(customerDto => customerDto.Date, opt => opt.MapFrom(customer => DateTimeConvert.DateToString(customer.Date)));
             CreateMap<Question, ListItem>()
             .ForMember(listItem => listItem.Value, opt => opt.MapFrom(question => question.Id))
             .ForMember(listItem => listItem.Display, opt => opt.MapFrom(question => question.Content));

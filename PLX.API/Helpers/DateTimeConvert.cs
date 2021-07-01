@@ -16,6 +16,10 @@ namespace PLX.API.Helpers
         {
             return value.ToString("dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
         }
+        public static string DateToString(DateTime value)
+        {
+            return value.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
+        }
         public static DateTime ToDate(string date)
         {
             return DateTime.ParseExact(date, "dd/MM/yyyy", CultureInfo.InvariantCulture);
