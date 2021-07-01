@@ -21,10 +21,11 @@ namespace PLX.API.Services
         private JwtConfig _jwtConfig;
         private readonly IRepository<Customer> _customerRepository;
         private readonly IRepository<OTP> _otpRepository;
+        private readonly IRepository<CustomerLog> _customerLogRespository;
         private IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
         public AuthenticationService(ILogger<AuthenticationService> logger, IOptions<JwtConfig> options, IRepository<Customer> customerRepository,
-        IMapper mapper, IRepository<OTP> otpRepository, IUnitOfWork unitOfWork)
+        IMapper mapper, IRepository<OTP> otpRepository, IUnitOfWork unitOfWork, IRepository<CustomerLog> customerLogRespository)
         {
             _logger = logger;
             _jwtConfig = options.Value;
@@ -32,6 +33,7 @@ namespace PLX.API.Services
             _mapper = mapper;
             _otpRepository = otpRepository;
             _unitOfWork = unitOfWork;
+            _customerLogRespository = customerLogRespository;
         }
         public async Task<APIResponse> Authenticate(AuthenticationRequest authRequest)
         {
@@ -57,7 +59,14 @@ namespace PLX.API.Services
                 Token = token,
                 Customer = customerDto
             };
+
+            var customerLog = new CustomerLog()
+            {
+                CustomerId = customer.CustomerTypeId,
+                Time = DateTime.Now
+            };
             var response = OkResponse(authResponse, ResultCodeConstants.SuccessAuthenticate);
+            await _customerLogRespository.AddAsync(customerLog);
             return response;
         }
         public async Task<APIResponse> FindUserById(int id)
