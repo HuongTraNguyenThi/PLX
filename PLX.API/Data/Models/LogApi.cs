@@ -15,6 +15,8 @@ namespace PLX.API.Data.Models
         public DateTime ResponseTime { get; set; }
         public string ResultCode { get; set; }
         public string ResultMessage { get; set; }
+        public string Device { get; set; }
+        public string Channel { get; set; }
 
     }
 }

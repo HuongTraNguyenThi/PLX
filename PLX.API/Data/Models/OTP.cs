@@ -15,5 +15,6 @@ namespace PLX.API.Data.Models
         [Column("CreateTime")]
         public DateTime CreateTime11 { get; set; }
         public bool Active { get; set; }
+        public string TransactionType { get; set; }
     }
 }

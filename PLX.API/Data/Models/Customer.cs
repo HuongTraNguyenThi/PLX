@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Collections.Generic;
 using System;
 using NpgsqlTypes;
-
+using System.ComponentModel;
 
 namespace PLX.API.Data.Models
 {
@@ -74,6 +74,9 @@ namespace PLX.API.Data.Models
         public int CustomerTypeId { get; set; }
         [ForeignKey("CustomerTypeId")]
         public CustomerType CustomerType { get; set; }
+        [Column("Active")]
+        [DefaultValue(true)]
+        public bool Active { get; set; }
 
     }
 }

@@ -40,7 +40,7 @@ namespace PLX.API.Services
             if (!CheckPhone)
                 return ErrorResponse(ResultCodeConstants.ErrorValidePhone);
             var customer = await _customerRepository.FindCustomerByPhoneAndPasword(authRequest.Phone);
-            if (authRequest.Password != customer.Password)
+            if (customer == null || !BC.Verify(authRequest.Password, customer.Password))
                 return ErrorResponse(ResultCodeConstants.ErrorAuthenticate, null);
             IDictionary<string, object> customerInfo = new Dictionary<string, object>();
             customerInfo.Add("Id", customer.Id.ToString());

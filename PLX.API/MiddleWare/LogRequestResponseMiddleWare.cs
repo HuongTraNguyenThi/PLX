@@ -59,7 +59,7 @@ namespace PLX.API.MiddleWare
             var requestId = baseRequest.RequestId;
             var requestTime = DateTimeConvert.ToDateTime(baseRequest.RequestTime);
             var requestUri = context.Request.Path;
-
+            var device = context.Request.Headers["User-Agent"].ToString();
 
             // Get app services
             var services = context.RequestServices;
@@ -78,6 +78,7 @@ namespace PLX.API.MiddleWare
             var resultMessage = await resultMessageService.GetMessage(resultCode as string, resultArgs);
             var responseDateTime = DateTime.Now;
             var responseTimeStr = DateTimeConvert.ToString(responseDateTime);
+
 
             // Update response data
             apiResponseData.ResponseId = requestId;
@@ -103,7 +104,9 @@ namespace PLX.API.MiddleWare
                 ContentRequest = requestBodyText,
                 ResultCode = resultCode,
                 ResultMessage = resultMessage,
-                ResponseTime = responseDateTime
+                ResponseTime = responseDateTime,
+                Device = device,
+                Channel = "ac"
             };
 
             await logApiRepository.AddAsync(logApi);
