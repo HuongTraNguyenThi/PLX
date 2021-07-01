@@ -78,7 +78,7 @@ namespace PLX.API.Services
 
         public async Task<APIResponse> GenerateOTP(OTPGenerateRequest oTPRequest)
         {
-            if (oTPRequest.Phone == null || oTPRequest.Phone == "")
+            if (Validation.IsNullOrEmpty(oTPRequest.Phone))
                 return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Số điện thoại" });
 
             var CheckPhone = Validation.IsValidPhone(oTPRequest.Phone);
@@ -96,7 +96,8 @@ namespace PLX.API.Services
                 Phone = oTPRequest.Phone,
                 OTPCode = otp,
                 CreateTime11 = DateTime.Now,
-                Active = true
+                Active = true,
+                TransactionType = oTPRequest.TransactionType
             };
             await _otpRepository.AddAsync(result);
             await _unitOfWork.CompleteAsync();
