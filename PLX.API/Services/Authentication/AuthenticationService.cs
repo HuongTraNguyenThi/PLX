@@ -40,6 +40,8 @@ namespace PLX.API.Services
             if (!CheckPhone)
                 return ErrorResponse(ResultCodeConstants.ErrorValidePhone);
             var customer = await _customerRepository.FindCustomerByPhoneAndPasword(authRequest.Phone);
+            if (authRequest.Password != customer.Password)
+                return ErrorResponse(ResultCodeConstants.ErrorAuthenticate, null);
             IDictionary<string, object> customerInfo = new Dictionary<string, object>();
             customerInfo.Add("Id", customer.Id.ToString());
             customerInfo.Add("Phone", customer.Phone);
@@ -64,6 +66,7 @@ namespace PLX.API.Services
         public async Task<APIResponse> GenerateOTP(OTPGenerateRequest oTPRequest)
         {
             var CheckPhone = Validation.CheckPhone(oTPRequest.Phone);
+            var transactiontype = TransactionType.RegisterOtp;
             if (oTPRequest.Phone == null || oTPRequest.Phone == "")
                 return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Số điện thoại" });
             if (!CheckPhone)
@@ -79,7 +82,8 @@ namespace PLX.API.Services
                 Phone = oTPRequest.Phone,
                 OTPCode = otp,
                 CreateTime11 = DateTime.Now,
-                Active = true
+                Active = true,
+                TransactionType = transactiontype
             };
             await _otpRepository.AddAsync(result);
             await _unitOfWork.CompleteAsync();
