@@ -208,14 +208,65 @@ namespace PLX.API.Services
                 customer.Name = customerUpdateRequest.Customer.Name;
             }
 
+            if (!Validation.IsNullOrEmpty(customerUpdateRequest.Customer.Phone))
+            {
+                customer.Phone = customerUpdateRequest.Customer.Phone;
+            }
+
+            if (!Validation.IsNullOrEmpty(customerUpdateRequest.Customer.CardId))
+            {
+                customer.CardID = customerUpdateRequest.Customer.CardId;
+            }
+
+            if (!Validation.IsNullOrEmpty(customerUpdateRequest.Customer.Date))
+            {
+                customer.Date = DateTimeConvert.ToDate(customerUpdateRequest.Customer.Date);
+            }
+
+            if (!Validation.IsNullOrEmpty(customerUpdateRequest.Customer.Gender))
+            {
+                customer.Gender = customerUpdateRequest.Customer.Gender;
+            }
+            if (!Validation.IsEqualOrLessThanZero(customerUpdateRequest.Customer.ProvinceId))
+            {
+                customer.ProvinceId = customerUpdateRequest.Customer.ProvinceId;
+            }
+
+            if (!Validation.IsEqualOrLessThanZero(customerUpdateRequest.Customer.DistrictId))
+            {
+                customer.DistrictId = customerUpdateRequest.Customer.DistrictId;
+            }
+
+            if (!Validation.IsEqualOrLessThanZero(customerUpdateRequest.Customer.WardId))
+            {
+                customer.WardId = customerUpdateRequest.Customer.WardId;
+            }
+
             if (!Validation.IsNullOrEmpty(customerUpdateRequest.Customer.Address))
             {
                 customer.Address = customerUpdateRequest.Customer.Address;
             }
 
+            // foreach (var item in customerUpdateRequest.Customer.Questions)
+            // {
+            //     if (!Validation.IsEqualOrLessThanZero(item.QuestionId))
+            //     {
+            //         customer.Questions = customerUpdateRequest.Customer.Questions;
+            //     }
+            // }
+
+
             await this._unitOfWork.CompleteAsync();
-            var customerDto = _mapper.Map<Customer, CustomerDTO>(customer);
-            return OkResponse(new CustomerUpdateResponse() { Customer = customerDto });
+            var customerDto = _mapper.Map<Customer, CustomerUpdates>(customer);
+            var vehicles = _mapper.Map<ICollection<Vehicle>, ICollection<VehicleDTO>>(customer.ListVehicles);
+            var linkedCards = _mapper.Map<ICollection<LinkedCard>, ICollection<LinkedCardDTO>>(customer.ListLinkedCards);
+            var questions = _mapper.Map<ICollection<CustomerQuestion>, ICollection<QuestionDTO>>(customer.Questions);
+            return OkResponse(new CustomerUpdateResponse()
+            {
+                Customer = customerDto,
+                Vehicles = vehicles,
+                LinkedCards = linkedCards
+            });
         }
 
         private ApiErrorResponse validateCustomer(CustomerInfo customerInfo)
@@ -312,5 +363,7 @@ namespace PLX.API.Services
 
             return null;
         }
+
+
     }
 }
