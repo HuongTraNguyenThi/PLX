@@ -59,7 +59,8 @@ namespace PLX.API.MiddleWare
             var requestId = baseRequest.RequestId;
             var requestTime = DateTimeConvert.ToDateTime(baseRequest.RequestTime);
             var requestUri = context.Request.Path;
-            var device = context.Request.Headers["User-Agent"].ToString();
+            var device = baseRequest.DeviceName;
+            var channel = baseRequest.Channel;
 
             // Get app services
             var services = context.RequestServices;
@@ -106,7 +107,7 @@ namespace PLX.API.MiddleWare
                 ResultMessage = resultMessage,
                 ResponseTime = responseDateTime,
                 Device = device,
-                Channel = "ac"
+                Channel = channel
             };
 
             await logApiRepository.AddAsync(logApi);
