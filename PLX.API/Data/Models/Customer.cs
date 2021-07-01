@@ -68,14 +68,13 @@ namespace PLX.API.Data.Models
         [Required]
         [Column("Address")]
         public string Address { get; set; }
-        public ICollection<LinkedCard> ListLinkedCards { get; set; }
-        public ICollection<Vehicle> ListVehicles { get; set; }
+        public ICollection<LinkedCard> LinkedCards { get; set; }
+        public ICollection<Vehicle> Vehicles { get; set; }
         public virtual ICollection<CustomerQuestion> Questions { get; set; }
         public int CustomerTypeId { get; set; }
         [ForeignKey("CustomerTypeId")]
         public CustomerType CustomerType { get; set; }
         [Column("Active")]
-        //[DefaultValue(true)]
         public bool? Active { get; set; }
     }
 }
