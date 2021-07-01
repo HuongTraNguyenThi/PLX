@@ -12,7 +12,6 @@ using PLX.API.Helpers;
 
 namespace PLX.API.Services
 {
-
     public class CustomerService : BaseService, ICustomerService
     {
         private readonly IRepository<Customer> _customerRepository;
@@ -87,9 +86,9 @@ namespace PLX.API.Services
             if (error != null) return error;
 
             var customer = _mapper.Map<CustomerRegister, Customer>(customerRegister);
-            var vehicles = _mapper.Map<List<VehicleRequest>, List<Vehicle>>(customerRegister.Vehicles);
+            var vehicles = _mapper.Map<List<VehicleDTO>, List<Vehicle>>(customerRegister.Vehicles);
             vehicles.ForEach(vehicle => vehicle.Customer = customer);
-            var linkedCards = _mapper.Map<List<LinkedCardRequest>, List<LinkedCard>>(customerRegister.LinkedCards);
+            var linkedCards = _mapper.Map<List<LinkedCardDTO>, List<LinkedCard>>(customerRegister.LinkedCards);
             linkedCards.ForEach(linkedCard => linkedCard.Customer = customer);
 
             var questions = _mapper.Map<List<QuestionDTO>, List<CustomerQuestion>>(customerRegister.CustomerInfo.CustomerBasic.Questions);
@@ -246,27 +245,66 @@ namespace PLX.API.Services
             {
                 customer.Address = customerUpdateRequest.Customer.Address;
             }
+            var savedQuestions = customer.Questions.ToDictionary(x => x.QuestionId, x => x);
 
-            // foreach (var item in customerUpdateRequest.Customer.Questions)
-            // {
-            //     if (!Validation.IsEqualOrLessThanZero(item.QuestionId))
-            //     {
-            //         customer.Questions = customerUpdateRequest.Customer.Questions;
-            //     }
-            // }
+            foreach (var question in customerUpdateRequest.Questions)
+            {
+                CustomerQuestion savedQuestion = null;
+                var exist = savedQuestions.TryGetValue(question.Id, out savedQuestion);
 
+                if (!exist && question.RecordType == RecordTypes.NewRecord)
+                {
+                    var newQuestion = _mapper.Map<QuestionRequest, CustomerQuestion>(question);
+                    await _customerQuestionsRepository.AddAsync(newQuestion);
+                }
+
+                if (exist && question.RecordType == RecordTypes.ExistRecord && !Validation.IsNullOrEmpty(question.Answer))
+                {
+                    savedQuestion.Answer = question.Answer;
+                }
+            }
+
+            var savedVehicles = customer.Vehicles.ToDictionary(x => x.Id, x => x);
+            foreach (var vehicle in customerUpdateRequest.Vehicles)
+            {
+                Vehicle savedVehicle = null;
+                var exist = savedVehicles.TryGetValue(vehicle.Id, out savedVehicle);
+
+                if (!exist && vehicle.RecordType == RecordTypes.NewRecord)
+                {
+                    var newVehicle = _mapper.Map<VehicleRequest, Vehicle>(vehicle);
+                    await _vehicleRepository.AddAsync(newVehicle);
+                }
+
+                if (exist && vehicle.RecordType == RecordTypes.ExistRecord && !Validation.IsNullOrEmpty(vehicle.Name) && !Validation.IsNullOrEmpty(vehicle.LicensePlate) && !Validation.IsEqualOrLessThanZero(vehicle.VehicleTypeId))
+                {
+                    savedVehicle.Name = vehicle.Name;
+                    savedVehicle.LicensePlate = vehicle.LicensePlate;
+                    savedVehicle.VehicleTypeId = vehicle.VehicleTypeId;
+                }
+            }
+            var savedLinkedCards = customer.LinkedCards.ToDictionary(x => x.Id, x => x);
+            foreach (var linkedCard in customerUpdateRequest.LinkedCards)
+            {
+                Vehicle savedLinkedCard = null;
+                var exist = savedVehicles.TryGetValue(linkedCard.Id, out savedLinkedCard);
+
+                if (!exist && linkedCard.RecordType == RecordTypes.NewRecord)
+                {
+                    var newLinkedCard = _mapper.Map<LinkedCardRequest, LinkedCard>(linkedCard);
+                    await _linkedCardRepository.AddAsync(newLinkedCard);
+                }
+
+                if (exist && linkedCard.RecordType == RecordTypes.ExistRecord && !Validation.IsNullOrEmpty(linkedCard.Name) && !Validation.IsNullOrEmpty(linkedCard.CardNumber))
+                {
+                    savedLinkedCard.Name = linkedCard.Name;
+                    savedLinkedCard.LicensePlate = linkedCard.CardNumber;
+                }
+            }
 
             await this._unitOfWork.CompleteAsync();
-            var customerDto = _mapper.Map<Customer, CustomerUpdates>(customer);
-            var vehicles = _mapper.Map<ICollection<Vehicle>, ICollection<VehicleDTO>>(customer.ListVehicles);
-            var linkedCards = _mapper.Map<ICollection<LinkedCard>, ICollection<LinkedCardDTO>>(customer.ListLinkedCards);
-            var questions = _mapper.Map<ICollection<CustomerQuestion>, ICollection<QuestionDTO>>(customer.Questions);
-            return OkResponse(new CustomerUpdateResponse()
-            {
-                Customer = customerDto,
-                Vehicles = vehicles,
-                LinkedCards = linkedCards
-            });
+            var customerUpdateResponse = _mapper.Map<Customer, CustomerUpdateResponse>(customer);
+            return OkResponse(customerUpdateResponse);
         }
 
         private ApiErrorResponse validateCustomer(CustomerInfo customerInfo)

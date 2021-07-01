@@ -126,7 +126,6 @@ namespace PLX.API.Controllers
         [Route("customer/update/{customerId?}")]
         public async Task<IActionResult> UpdateCustomer(int customerId, CustomerUpdateRequest customerUpdateRequest)
         {
-
             var response = await _customerService.UpdateCustomer(customerId, customerUpdateRequest);
             return Ok(response);
         }

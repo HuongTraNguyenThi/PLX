@@ -6,8 +6,9 @@ namespace PLX.API.Data.DTO.Customer
 {
     public class CustomerUpdateResponse : BaseResponse
     {
-        public CustomerUpdates Customer { get; set; }
-        public ICollection<VehicleDTO> Vehicles { get; set; }
-        public ICollection<LinkedCardDTO> LinkedCards { get; set; }
+        public CustomerResponse Customer { get; set; }
+        public ICollection<VehicleResponse> Vehicles { get; set; }
+        public ICollection<LinkedCardResponse> LinkedCards { get; set; }
+        public ICollection<QuestionResponse> Questions { get; set; }
     }
 }

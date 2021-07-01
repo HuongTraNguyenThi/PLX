@@ -42,12 +42,12 @@ namespace PLX.API.Data.Repositories
 
         public void Remove(T entity)
         {
-            throw new System.NotImplementedException();
+            _entities.Remove(entity);
         }
 
         public void Update(T entity)
         {
-            throw new System.NotImplementedException();
+            _entities.Update(entity);
         }
 
 

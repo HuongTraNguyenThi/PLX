@@ -8,7 +8,7 @@ namespace PLX.API.Data.DTO.Customer
     {
 
         public CustomerInfo CustomerInfo { get; set; }
-        public List<VehicleRequest> Vehicles { get; set; }
-        public List<LinkedCardRequest> LinkedCards { get; set; }
+        public List<VehicleDTO> Vehicles { get; set; }
+        public List<LinkedCardDTO> LinkedCards { get; set; }
     }
 }

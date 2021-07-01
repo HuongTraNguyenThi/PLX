@@ -15,6 +15,5 @@ namespace PLX.API.Data.DTO.Customer
         public int DistrictId { get; set; }
         public int WardId { get; set; }
         public string Address { get; set; }
-        public List<QuestionDTO> Questions { get; set; }
     }
 }
