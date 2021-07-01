@@ -10,7 +10,7 @@ namespace PLX.API.Data.Repositories
     {
         public static async Task<Customer> FindCustomerByPhoneAndPasword(this IRepository<Customer> customerRepository, string phone)
         {
-            var customer = await customerRepository.Entities.Where(user => user.Phone == phone).FirstOrDefaultAsync();
+            var customer = await customerRepository.Entities.Where(user => user.Phone == phone && user.Active == true).FirstOrDefaultAsync();
             return customer;
         }
 

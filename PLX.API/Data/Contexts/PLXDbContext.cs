@@ -14,7 +14,7 @@ namespace PLX.API.Data.Contexts
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<Customer>();
+            modelBuilder.Entity<Customer>().Property("Active").HasDefaultValue(true);
             modelBuilder.Entity<Vehicle>();
             modelBuilder.Entity<LinkedCard>();
             modelBuilder.Entity<Question>();
