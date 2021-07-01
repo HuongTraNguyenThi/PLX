@@ -75,8 +75,7 @@ namespace PLX.API.Data.Models
         [ForeignKey("CustomerTypeId")]
         public CustomerType CustomerType { get; set; }
         [Column("Active")]
-        [DefaultValue(true)]
-        public bool Active { get; set; }
-
+        //[DefaultValue(true)]
+        public bool? Active { get; set; }
     }
 }
