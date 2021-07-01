@@ -1,4 +1,4 @@
-namespace PLX.API.Data.DTO
+namespace PLX.API.Data.DTO.Authentication
 {
     public class OTPGenerateRequest : BaseRequest
     {

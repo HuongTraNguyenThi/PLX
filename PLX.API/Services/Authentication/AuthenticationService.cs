@@ -5,13 +5,14 @@ using Microsoft.Extensions.Options;
 using PLX.API.Data.Models;
 using PLX.API.Data.Repositories;
 using PLX.API.Data.DTO;
+using PLX.API.Data.DTO.Authentication;
 using PLX.API.Helpers;
-using PLX.API.Data.DTO.Customer;
 using AutoMapper;
 using BC = BCrypt.Net.BCrypt;
 using System;
 using System.Text.RegularExpressions;
 using PLX.API.Constants;
+using PLX.API.Data.DTO.Customer;
 
 namespace PLX.API.Services
 {
@@ -96,7 +97,7 @@ namespace PLX.API.Services
                 Phone = oTPRequest.Phone,
                 OTPCode = otp,
                 CreateTime11 = DateTime.Now,
-				TransactionType = oTPRequest.TransactionType
+                TransactionType = oTPRequest.TransactionType
             };
             await _otpRepository.AddAsync(result);
             await _unitOfWork.CompleteAsync();

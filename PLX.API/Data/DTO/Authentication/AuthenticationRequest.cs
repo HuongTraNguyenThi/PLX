@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace PLX.API.Data.DTO.Customer
+namespace PLX.API.Data.DTO.Authentication
 {
     public class AuthenticationRequest : BaseRequest
     {

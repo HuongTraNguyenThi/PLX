@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PLX.API.Data.DTO;
+using PLX.API.Data.DTO.Authentication;
 using PLX.API.Data.DTO.Customer;
 using PLX.API.Services;
 

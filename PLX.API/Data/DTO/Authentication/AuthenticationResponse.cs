@@ -1,6 +1,7 @@
 using System;
+using PLX.API.Data.DTO.Customer;
 
-namespace PLX.API.Data.DTO.Customer
+namespace PLX.API.Data.DTO.Authentication
 {
     public class AuthenticationResponse : BaseResponse
     {
