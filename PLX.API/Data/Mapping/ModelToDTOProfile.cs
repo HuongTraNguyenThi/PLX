@@ -5,6 +5,7 @@ using PLX.API.Data.Models;
 using PLX.API.Data.DTO;
 using PLX.API.Data.DTO.Customer;
 using PLX.API.Helpers;
+using PLX.API.Data.DTO.Authentication;
 
 namespace PLX.API.Data.Mapping
 {
@@ -33,6 +34,12 @@ namespace PLX.API.Data.Mapping
             .ForMember(listitem => listitem.Value, opt => opt.MapFrom(vehicleType => vehicleType.Id))
             .ForMember(listitem => listitem.Display, opt => opt.MapFrom(vehicleType => vehicleType.Name));
 
+            CreateMap<Vehicle, VehicleResponse>();
+            CreateMap<LinkedCard, LinkedCardResponse>();
+            CreateMap<Customer, CustomerResponse>();
+            CreateMap<CustomerQuestion, QuestionResponse>();
+            CreateMap<Customer, AuthenticationResponse>()
+                .ForMember(auth => auth.Customer, opt => opt.MapFrom(customer => customer));
         }
     }
 }

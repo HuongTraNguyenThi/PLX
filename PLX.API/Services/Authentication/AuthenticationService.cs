@@ -45,7 +45,7 @@ namespace PLX.API.Services
             if (!isValidPhone)
                 return ErrorResponse(ResultCodeConstants.ErrorInvalidPhone);
 
-            var customer = await _customerRepository.FindCustomerByPhoneAndPasword(authRequest.Phone);
+            var customer = await _customerRepository.FindCustomerByPhone(authRequest.Phone);
             if (customer == null || !BC.Verify(authRequest.Password, customer.Password))
                 return ErrorResponse(ResultCodeConstants.ErrorAuthenticate);
 
@@ -53,13 +53,9 @@ namespace PLX.API.Services
             customerInfo.Add("Id", customer.Id.ToString());
             customerInfo.Add("Phone", customer.Phone);
             string token = JwtHelper.GenerateToken(_jwtConfig, customerInfo);
-            var customerDto = _mapper.Map<Customer, CustomerResponse>(customer);
 
-            AuthenticationResponse authResponse = new AuthenticationResponse()
-            {
-                Token = token,
-                Customer = customerDto
-            };
+            AuthenticationResponse authResponse = _mapper.Map<Customer, AuthenticationResponse>(customer);
+            authResponse.Token = token;
 
             var customerLog = new CustomerLog()
             {
