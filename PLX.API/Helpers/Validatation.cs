@@ -24,10 +24,9 @@ namespace PLX.API.Helpers
         {
             return string.IsNullOrEmpty(text);
         }
-        public static bool IsNonZero(int x)
+        public static bool IsEqualOrLessThanZero(int x)
         {
-            return x != 0;
+            return x <= 0;
         }
-
     }
 }
