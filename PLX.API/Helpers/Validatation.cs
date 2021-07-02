@@ -28,5 +28,9 @@ namespace PLX.API.Helpers
         {
             return x <= 0;
         }
+        public static bool Equals(string a, string b)
+        {
+            return string.Equals(a, b);
+        }
     }
 }

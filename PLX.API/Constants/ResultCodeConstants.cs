@@ -21,6 +21,8 @@ namespace PLX.API.Constants
         public const string AuthEWrongUserOrPassword = "11002";
         public const string AuthValidOTP = "11003";
         public const string AuthSuccessLogin = "11004";
+        public const string AuthUnsupportedOTPType = "11005";
+
         #endregion
 
         #region Register Result Codes

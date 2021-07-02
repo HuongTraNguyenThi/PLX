@@ -71,26 +71,23 @@ namespace PLX.API.Services
             return OkResponse(cusDTO);
         }
 
-        public async Task<APIResponse> GenerateOTP(OTPGenerateRequest oTPRequest)
+        public async Task<APIResponse> GenerateOTP(OTPGenerateRequest otpRequest)
         {
-            if (Validation.IsNullOrEmpty(oTPRequest.Phone))
-                return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { "Số điện thoại" });
-
-            if (!Validation.IsValidPhone(oTPRequest.Phone))
-                return ErrorResponse(ResultCodeConstants.EInvalidPhoneFormat);
+            var error = _validateOTPRequest(otpRequest);
+            if (error == null) return error;
 
             string otp = new Random().Next(100000, 999999).ToString();
-            var otpRecord = await _otpRepository.ListByPhone(oTPRequest.Phone);
+            var otpRecord = await _otpRepository.ListByPhone(otpRequest.Phone);
             foreach (var item in otpRecord)
             {
                 item.Active = false;
             }
             var result = new OTP()
             {
-                Phone = oTPRequest.Phone,
+                Phone = otpRequest.Phone,
                 OTPCode = otp,
                 CreateTime11 = DateTime.Now,
-                TransactionType = oTPRequest.TransactionType
+                TransactionType = otpRequest.TransactionType
             };
             await _otpRepository.AddAsync(result);
             await _unitOfWork.CompleteAsync();
@@ -112,5 +109,26 @@ namespace PLX.API.Services
             return OkResponse(new OTPResponse("Xác thực thành công"), ResultCodeConstants.AuthValidOTP);
         }
 
+        private ApiErrorResponse _validateOTPRequest(OTPGenerateRequest otpRequest)
+        {
+            if (!Validation.IsNullOrEmpty(otpRequest.TransactionType))
+            {
+                return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { "Loại giao dịch" });
+            }
+
+            if (!Validation.Equals(TransactionTypes.Register, otpRequest.TransactionType) &&
+                !Validation.Equals(TransactionTypes.Register, otpRequest.TransactionType))
+            {
+                return ErrorResponse(ResultCodeConstants.AuthUnsupportedOTPType, new object[] { otpRequest.TransactionType });
+            }
+
+            if (Validation.IsNullOrEmpty(otpRequest.Phone))
+                return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { "Số điện thoại" });
+
+            if (!Validation.IsValidPhone(otpRequest.Phone))
+                return ErrorResponse(ResultCodeConstants.EInvalidPhoneFormat);
+
+            return null;
+        }
     }
 }
