@@ -34,9 +34,9 @@ namespace Supermarket.API.Data.Mapping
             CreateMap<QuestionDTO, CustomerQuestion>();
 
             CreateMap<VehicleDTO, Vehicle>();
-            CreateMap<VehicleRequest, Vehicle>();
+            // CreateMap<VehicleRequest, Vehicle>();
             CreateMap<LinkedCardDTO, LinkedCard>();
-            CreateMap<LinkedCardRequest, LinkedCard>();
+            //CreateMap<LinkedCardRequest, LinkedCard>();
 
             CreateMap<OTPDTO, OTP>();
 

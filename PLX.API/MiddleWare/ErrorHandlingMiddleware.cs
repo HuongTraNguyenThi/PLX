@@ -34,7 +34,9 @@ namespace PLX.API.MiddleWare
                         break;
                 }
 
-                var result = JsonSerializer.Serialize(new { message = error?.Message });
+                // var result = JsonSerializer.Serialize(new { message = error?.Message });
+                //var apiResponse = JsonConvert.DeserializeObject<APIResponse>(error?.Message);
+                var result = JsonSerializer.Serialize(new ApiErrorResponse(ResultCodeConstants.Error, null));
                 await response.WriteAsync(result);
             }
         }

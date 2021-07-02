@@ -1,6 +1,6 @@
 using System;
 
-namespace PLX.API.Data.DTO
+namespace PLX.API.Data.DTO.Vehicle
 {
     public class VehicleRequest
     {
