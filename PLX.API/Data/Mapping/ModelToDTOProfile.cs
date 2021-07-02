@@ -6,6 +6,8 @@ using PLX.API.Data.DTO;
 using PLX.API.Data.DTO.Customer;
 using PLX.API.Helpers;
 using PLX.API.Data.DTO.Authentication;
+using PLX.API.Data.DTO.Vehicle;
+using PLX.API.Data.DTO.LinkedCard;
 
 namespace PLX.API.Data.Mapping
 {
