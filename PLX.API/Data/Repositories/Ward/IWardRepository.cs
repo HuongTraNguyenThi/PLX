@@ -4,7 +4,7 @@ using PLX.API.Data.Models;
 
 namespace PLX.API.Data.Repositories
 {
-    public interface IWardRepository : IBaseRepository<Ward>
+    public interface IWardRepository : IRepository<Ward>
     {
     }
 }

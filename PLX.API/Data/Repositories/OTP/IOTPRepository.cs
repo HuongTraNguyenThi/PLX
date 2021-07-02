@@ -5,7 +5,7 @@ using PLX.API.Data.Models;
 
 namespace PLX.API.Data.Repositories
 {
-    public interface IOTPRepository : IBaseRepository<OTP>
+    public interface IOTPRepository : IRepository<OTP>
     {
         Task<OTP> FindByPhone(string phone, bool active = true);
         Task<List<OTP>> ListByPhone(string phone, bool active = true);

@@ -4,7 +4,7 @@ using PLX.API.Data.Models;
 
 namespace PLX.API.Data.Repositories
 {
-    public interface IApiResultRepository : IBaseRepository<Result>
+    public interface IApiResultRepository : IRepository<Result>
     {
         Task<Result> FindByCode(string code);
     }

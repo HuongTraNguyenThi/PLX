@@ -4,7 +4,7 @@ using PLX.API.Data.Models;
 
 namespace PLX.API.Data.Repositories
 {
-    public interface ILogAPIRepository : IBaseRepository<LogAPI>
+    public interface ILogAPIRepository : IRepository<LogAPI>
     {
     }
 }

@@ -4,7 +4,7 @@ using PLX.API.Data.Models;
 
 namespace PLX.API.Data.Repositories
 {
-    public interface IVehicleTypeRepository : IBaseRepository<VehicleType>
+    public interface IVehicleTypeRepository : IRepository<VehicleType>
     {
     }
 }
