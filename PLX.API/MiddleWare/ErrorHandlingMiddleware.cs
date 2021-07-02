@@ -36,7 +36,7 @@ namespace PLX.API.MiddleWare
                         response.StatusCode = (int)HttpStatusCode.InternalServerError;
                         break;
                 }
-                var errorResponse = new ApiErrorResponse(ResultCodeConstants.Error, null);
+                var errorResponse = new ApiErrorResponse(ResultCodeConstants.EInternalServerError, null);
                 await response.WriteAsync(errorResponse.ToJson());
             }
         }

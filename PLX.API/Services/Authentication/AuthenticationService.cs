@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -9,8 +10,6 @@ using PLX.API.Data.DTO.Authentication;
 using PLX.API.Helpers;
 using AutoMapper;
 using BC = BCrypt.Net.BCrypt;
-using System;
-using System.Text.RegularExpressions;
 using PLX.API.Constants;
 using PLX.API.Data.DTO.Customer;
 
@@ -39,15 +38,14 @@ namespace PLX.API.Services
         public async Task<APIResponse> Authenticate(AuthenticationRequest authRequest)
         {
             if (Validation.IsNullOrEmpty(authRequest.Phone))
-                return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Số điện thoại" });
+                return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { "Số điện thoại" });
 
-            var isValidPhone = Validation.IsValidPhone(authRequest.Phone);
-            if (!isValidPhone)
-                return ErrorResponse(ResultCodeConstants.ErrorInvalidPhone);
+            if (!Validation.IsValidPhone(authRequest.Phone))
+                return ErrorResponse(ResultCodeConstants.EInvalidPhoneFormat);
 
             var customer = await _customerRepository.FindByPhone(authRequest.Phone);
             if (customer == null || !BC.Verify(authRequest.Password, customer.Password))
-                return ErrorResponse(ResultCodeConstants.ErrorAuthenticate);
+                return ErrorResponse(ResultCodeConstants.AuthEWrongUserOrPassword);
 
             IDictionary<string, object> customerInfo = new Dictionary<string, object>();
             customerInfo.Add("Id", customer.Id.ToString());
@@ -62,7 +60,7 @@ namespace PLX.API.Services
                 CustomerId = customer.CustomerTypeId,
                 Time = DateTime.Now
             };
-            var response = OkResponse(authResponse, ResultCodeConstants.SuccessAuthenticate);
+            var response = OkResponse(authResponse, ResultCodeConstants.AuthSuccessLogin);
             await _customerLogRespository.AddAsync(customerLog);
             return response;
         }
@@ -76,11 +74,10 @@ namespace PLX.API.Services
         public async Task<APIResponse> GenerateOTP(OTPGenerateRequest oTPRequest)
         {
             if (Validation.IsNullOrEmpty(oTPRequest.Phone))
-                return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Số điện thoại" });
+                return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { "Số điện thoại" });
 
-            var CheckPhone = Validation.IsValidPhone(oTPRequest.Phone);
-            if (!CheckPhone)
-                return ErrorResponse(ResultCodeConstants.ErrorInvalidPhone);
+            if (!Validation.IsValidPhone(oTPRequest.Phone))
+                return ErrorResponse(ResultCodeConstants.EInvalidPhoneFormat);
 
             string otp = new Random().Next(100000, 999999).ToString();
             var otpRecord = await _otpRepository.ListByPhone(oTPRequest.Phone);
@@ -104,16 +101,15 @@ namespace PLX.API.Services
         {
             var otp = "123456";
             if (oTPRequest.Phone == null || oTPRequest.Phone == "")
-                return ErrorResponse(ResultCodeConstants.ErrorRegister, new object[] { "Số điện thoại" });
+                return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { "Số điện thoại" });
 
-            var CheckPhone = Validation.IsValidPhone(oTPRequest.Phone);
-            if (!CheckPhone)
-                return ErrorResponse(ResultCodeConstants.ErrorInvalidPhone);
+            if (!Validation.IsValidPhone(oTPRequest.Phone))
+                return ErrorResponse(ResultCodeConstants.EInvalidPhoneFormat);
 
             if (otp != oTPRequest.OtpCode)
-                return ErrorResponse(ResultCodeConstants.ErrorInvalidOtp);
+                return ErrorResponse(ResultCodeConstants.AuthEInvalidOTP);
 
-            return OkResponse(new OTPResponse("Xác thực thành công"), ResultCodeConstants.SuccessValidOtp);
+            return OkResponse(new OTPResponse("Xác thực thành công"), ResultCodeConstants.AuthValidOTP);
         }
 
     }

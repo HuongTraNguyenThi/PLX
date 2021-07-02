@@ -5,15 +5,26 @@ namespace PLX.API.Constants
 {
     public static class ResultCodeConstants
     {
-        public const string ErrorRegister = "10001";
-        public const string ErrorInvalidOtp = "10002";
-        public const string ErrorAuthenticate = "10004";
-        public const string ErrorInvalidDate = "10005";
-        public const string ErrorInvalidPhone = "10006";
-        public const string Error = "10007";
-        public const string Success = "11002";
-        public const string SuccessValidOtp = "11003";
-        public const string SuccessAuthenticate = "11004";
-        public const string SuccessRegister = "11005";
+        #region Common result codes
+        public const string EInternalServerError = "10001";
+        public const string ENullOrEmptyValue = "10002";
+        public const string EInvalidDateFormat = "10003";
+        public const string EInvalidPhoneFormat = "10004";
+        public const string Success = "10005";
+        public const string EUnauthorized = "10006";
+
+
+        #endregion
+
+        #region Authentication Result Codes
+        public const string AuthEInvalidOTP = "11001";
+        public const string AuthEWrongUserOrPassword = "11002";
+        public const string AuthValidOTP = "11003";
+        public const string AuthSuccessLogin = "11004";
+        #endregion
+
+        #region Register Result Codes
+        public const string RegisterSuccess = "12001";
+        #endregion
     }
 }
