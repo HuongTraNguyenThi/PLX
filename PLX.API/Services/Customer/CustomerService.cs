@@ -249,60 +249,60 @@ namespace PLX.API.Services
             }
             var savedQuestions = customer.Questions.ToDictionary(x => x.QuestionId, x => x);
 
-            // foreach (var question in customerUpdateRequest.Questions)
-            // {
-            //     CustomerQuestion savedQuestion = null;
-            //     var exist = savedQuestions.TryGetValue(question.Id, out savedQuestion);
+            foreach (var question in customerUpdateRequest.Questions)
+            {
+                CustomerQuestion savedQuestion = null;
+                var exist = savedQuestions.TryGetValue(question.Id, out savedQuestion);
 
-            //     if (!exist && question.RecordType == RecordTypes.NewRecord)
-            //     {
-            //         var newQuestion = _mapper.Map<QuestionRequest, CustomerQuestion>(question);
-            //         await _customerQuestionsRepository.AddAsync(newQuestion);
-            //     }
+                if (!exist && question.RecordType == RecordTypes.NewRecord)
+                {
+                    var newQuestion = _mapper.Map<QuestionRequest, CustomerQuestion>(question);
+                    await _customerQuestionsRepository.AddAsync(newQuestion);
+                }
 
-            //     if (exist && question.RecordType == RecordTypes.ExistRecord && !Validation.IsNullOrEmpty(question.Answer))
-            //     {
-            //         savedQuestion.Answer = question.Answer;
-            //     }
-            // }
+                if (exist && question.RecordType == RecordTypes.ExistRecord && !Validation.IsNullOrEmpty(question.Answer))
+                {
+                    savedQuestion.Answer = question.Answer;
+                }
+            }
 
-            // var savedVehicles = customer.Vehicles.ToDictionary(x => x.Id, x => x);
-            // foreach (var vehicle in customerUpdateRequest.Vehicles)
-            // {
-            //     Vehicle savedVehicle = null;
-            //     var exist = savedVehicles.TryGetValue(vehicle.Id, out savedVehicle);
+            var savedVehicles = customer.Vehicles.ToDictionary(x => x.Id, x => x);
+            foreach (var vehicle in customerUpdateRequest.Vehicles)
+            {
+                Vehicle savedVehicle = null;
+                var exist = savedVehicles.TryGetValue(vehicle.Id, out savedVehicle);
 
-            //     if (!exist && vehicle.RecordType == RecordTypes.NewRecord)
-            //     {
-            //         var newVehicle = _mapper.Map<VehicleRequest, Vehicle>(vehicle);
-            //         await _vehicleRepository.AddAsync(newVehicle);
-            //     }
+                if (!exist && vehicle.RecordType == RecordTypes.NewRecord)
+                {
+                    var newVehicle = _mapper.Map<VehicleRequest, Vehicle>(vehicle);
+                    await _vehicleRepository.AddAsync(newVehicle);
+                }
 
-            //     if (exist && vehicle.RecordType == RecordTypes.ExistRecord && !Validation.IsNullOrEmpty(vehicle.Name) && !Validation.IsNullOrEmpty(vehicle.LicensePlate) && !Validation.IsEqualOrLessThanZero(vehicle.VehicleTypeId))
-            //     {
-            //         savedVehicle.Name = vehicle.Name;
-            //         savedVehicle.LicensePlate = vehicle.LicensePlate;
-            //         savedVehicle.VehicleTypeId = vehicle.VehicleTypeId;
-            //     }
-            // }
-            // var savedLinkedCards = customer.LinkedCards.ToDictionary(x => x.Id, x => x);
-            // foreach (var linkedCard in customerUpdateRequest.LinkedCards)
-            // {
-            //     Vehicle savedLinkedCard = null;
-            //     var exist = savedVehicles.TryGetValue(linkedCard.Id, out savedLinkedCard);
+                if (exist && vehicle.RecordType == RecordTypes.ExistRecord && !Validation.IsNullOrEmpty(vehicle.Name) && !Validation.IsNullOrEmpty(vehicle.LicensePlate) && !Validation.IsEqualOrLessThanZero(vehicle.VehicleTypeId))
+                {
+                    savedVehicle.Name = vehicle.Name;
+                    savedVehicle.LicensePlate = vehicle.LicensePlate;
+                    savedVehicle.VehicleTypeId = vehicle.VehicleTypeId;
+                }
+            }
+            var savedLinkedCards = customer.LinkedCards.ToDictionary(x => x.Id, x => x);
+            foreach (var linkedCard in customerUpdateRequest.LinkedCards)
+            {
+                Vehicle savedLinkedCard = null;
+                var exist = savedVehicles.TryGetValue(linkedCard.Id, out savedLinkedCard);
 
-            //     if (!exist && linkedCard.RecordType == RecordTypes.NewRecord)
-            //     {
-            //         var newLinkedCard = _mapper.Map<LinkedCardRequest, LinkedCard>(linkedCard);
-            //         await _linkedCardRepository.AddAsync(newLinkedCard);
-            //     }
+                if (!exist && linkedCard.RecordType == RecordTypes.NewRecord)
+                {
+                    var newLinkedCard = _mapper.Map<LinkedCardRequest, LinkedCard>(linkedCard);
+                    await _linkedCardRepository.AddAsync(newLinkedCard);
+                }
 
-            //     if (exist && linkedCard.RecordType == RecordTypes.ExistRecord && !Validation.IsNullOrEmpty(linkedCard.Name) && !Validation.IsNullOrEmpty(linkedCard.CardNumber))
-            //     {
-            //         savedLinkedCard.Name = linkedCard.Name;
-            //         savedLinkedCard.LicensePlate = linkedCard.CardNumber;
-            //     }
-            // }
+                if (exist && linkedCard.RecordType == RecordTypes.ExistRecord && !Validation.IsNullOrEmpty(linkedCard.Name) && !Validation.IsNullOrEmpty(linkedCard.CardNumber))
+                {
+                    savedLinkedCard.Name = linkedCard.Name;
+                    savedLinkedCard.LicensePlate = linkedCard.CardNumber;
+                }
+            }
 
             await this._unitOfWork.CompleteAsync();
             var customerUpdateResponse = _mapper.Map<Customer, CustomerUpdateResponse>(customer);
