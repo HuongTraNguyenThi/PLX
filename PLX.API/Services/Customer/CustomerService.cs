@@ -87,24 +87,8 @@ namespace PLX.API.Services
             if (error != null) return error;
 
             var customer = _mapper.Map<CustomerRegister, Customer>(customerRegister);
-            var vehicles = _mapper.Map<List<VehicleDTO>, List<Vehicle>>(customerRegister.Vehicles);
-            vehicles.ForEach(vehicle => vehicle.Customer = customer);
-            var linkedCards = _mapper.Map<List<LinkedCardDTO>, List<LinkedCard>>(customerRegister.LinkedCards);
-            linkedCards.ForEach(linkedCard => linkedCard.Customer = customer);
-
-            var questions = _mapper.Map<List<QuestionDTO>, List<CustomerQuestion>>(customerRegister.CustomerInfo.CustomerBasic.Questions);
-            questions.ForEach(questions => questions.Customer = customer);
-
             await _customerRepository.AddAsync(customer);
-
-            await _vehicleRepository.AddRangeAsync(vehicles);
-
-            await _linkedCardRepository.AddRangeAsync(linkedCards);
-
-            await _customerQuestionsRepository.AddRangeAsync(questions);
-
             await _unitOfWork.CompleteAsync();
-
 
             return OkResponse(_mapper.Map<Customer, CustomerRegisterResponse>(customer), ResultCodeConstants.SuccessRegister);
         }

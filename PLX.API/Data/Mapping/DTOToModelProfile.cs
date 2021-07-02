@@ -12,7 +12,9 @@ namespace Supermarket.API.Data.Mapping
     {
         public DTOToModelProfile()
         {
-
+            CreateMap<QuestionDTO, CustomerQuestion>();
+            CreateMap<VehicleDTO, Vehicle>();
+            CreateMap<LinkedCardDTO, LinkedCard>();
 
             CreateMap<CustomerRegister, Customer>()
             .ForMember(customer => customer.Name, opt => opt.MapFrom(custReg => custReg.CustomerInfo.CustomerBasic.Name))
@@ -29,17 +31,13 @@ namespace Supermarket.API.Data.Mapping
             .ForMember(customer => customer.DistrictId, opt => opt.MapFrom(custReg => custReg.CustomerInfo.CustomerCard.DistrictId))
             .ForMember(customer => customer.WardId, opt => opt.MapFrom(custReg => custReg.CustomerInfo.CustomerCard.WardId))
             .ForMember(customer => customer.Address, opt => opt.MapFrom(custReg => custReg.CustomerInfo.CustomerCard.Address))
-            .ForMember(customer => customer.CustomerTypeId, opt => opt.MapFrom(custReg => custReg.CustomerInfo.CustomerBasic.CustomerTypeId));
+            .ForMember(customer => customer.CustomerTypeId, opt => opt.MapFrom(custReg => custReg.CustomerInfo.CustomerBasic.CustomerTypeId))
+            .ForMember(customer => customer.Questions, opt => opt.MapFrom(custReg => custReg.CustomerInfo.CustomerBasic.Questions));
 
-            CreateMap<QuestionDTO, CustomerQuestion>();
-
-            CreateMap<VehicleDTO, Vehicle>();
             // CreateMap<VehicleRequest, Vehicle>();
-            CreateMap<LinkedCardDTO, LinkedCard>();
             //CreateMap<LinkedCardRequest, LinkedCard>();
 
             CreateMap<OTPDTO, OTP>();
-
         }
     }
 }
