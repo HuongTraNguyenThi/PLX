@@ -74,7 +74,7 @@ namespace PLX.API.Services
         public async Task<APIResponse> GenerateOTP(OTPGenerateRequest otpRequest)
         {
             var error = _validateOTPRequest(otpRequest);
-            if (error == null) return error;
+            if (error != null) return error;
 
             string otp = new Random().Next(100000, 999999).ToString();
             var otpRecord = await _otpRepository.ListByPhone(otpRequest.Phone);
@@ -111,7 +111,7 @@ namespace PLX.API.Services
 
         private ApiErrorResponse _validateOTPRequest(OTPGenerateRequest otpRequest)
         {
-            if (!Validation.IsNullOrEmpty(otpRequest.TransactionType))
+            if (Validation.IsNullOrEmpty(otpRequest.TransactionType))
             {
                 return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { "Loại giao dịch" });
             }
