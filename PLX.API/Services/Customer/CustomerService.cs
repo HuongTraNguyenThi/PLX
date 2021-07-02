@@ -78,23 +78,14 @@ namespace PLX.API.Services
         public async Task<APIResponse> GetDistrictsByProvinceId(int provinceId)
         {
             var districts = await _districtRepository.FindByProvinceId(provinceId);
-            var districtList = _mapper.Map<List<District>, List<ListItem>>(districts);
-            var result = new DistrictDTO
-            {
-                Districts = districtList
-            };
+            var result = new DistrictDTO(_mapper.Map<List<District>, List<ListItem>>(districts));
             return new ApiOkResponse(result, ResultCodeConstants.Success);
         }
 
         public async Task<APIResponse> GetWardsByDistrictId(int districtId)
         {
-            var all = await _wardRepository.ListAsync();
-            var wards = all.Where(x => x.DistrictId == districtId).ToList();
-            var wardList = _mapper.Map<List<Ward>, List<ListItem>>(wards);
-            var result = new WardDTO
-            {
-                Wards = wardList
-            };
+            var wards = await _wardRepository.FindByDistrictId(districtId);
+            var result = new WardDTO(_mapper.Map<List<Ward>, List<ListItem>>(wards));
             return new ApiOkResponse(result, ResultCodeConstants.Success);
         }
 

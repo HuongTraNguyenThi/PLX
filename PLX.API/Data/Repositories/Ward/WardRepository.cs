@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,10 @@ namespace PLX.API.Data.Repositories
     {
         public WardRepository(PLXDbContext context) : base(context)
         {
+        }
+        public async Task<List<Ward>> FindByDistrictId(int districtId)
+        {
+            return await this._dbSet.Where(ward => ward.DistrictId == districtId).ToListAsync();
         }
     }
 }
