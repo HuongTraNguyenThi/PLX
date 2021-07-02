@@ -16,25 +16,24 @@ namespace PLX.API.Services
 {
     public class CustomerService : BaseService, ICustomerService
     {
-        private readonly IRepository<Customer> _customerRepository;
-        private readonly IRepository<Vehicle> _vehicleRepository;
-        private readonly IRepository<LinkedCard> _linkedCardRepository;
-        private readonly IRepository<CustomerQuestion> _customerQuestionsRepository;
-        private readonly IRepository<Province> _provinceRepository;
-        private readonly IRepository<District> _districtRepository;
-        private readonly IRepository<Ward> _wardRepository;
-        private readonly IRepository<Question> _questionsRepository;
+        private readonly ICustomerRepository _customerRepository;
+        private readonly IVehicleRepository _vehicleRepository;
+        private readonly ILinkedCardRepository _linkedCardRepository;
+        private readonly ICustomerQuestionRepository _customerQuestionsRepository;
+        private readonly IProvinceRepository _provinceRepository;
+        private readonly IDistrictRepository _districtRepository;
+        private readonly IWardRepository _wardRepository;
+        private readonly IQuestionRepository _questionsRepository;
         private readonly IResultMessageService _iResultMessageService;
-
         private readonly IUnitOfWork _unitOfWork;
         private IMapper _mapper;
 
 
         public CustomerService(IUnitOfWork unitOfWork, IMapper mapper,
-            IRepository<Customer> customerRepository, IRepository<Vehicle> vehicleRepository,
-            IRepository<LinkedCard> linkedCardRepository, IRepository<CustomerQuestion> customerQuestionsRepository,
-            IRepository<Question> questionsRepository, IRepository<Province> provinceRepository,
-            IRepository<District> districtRepository, IRepository<Ward> wardRepository, IResultMessageService iResultMessageService)
+            ICustomerRepository customerRepository, IVehicleRepository vehicleRepository,
+            ILinkedCardRepository linkedCardRepository, ICustomerQuestionRepository customerQuestionsRepository,
+            IQuestionRepository questionsRepository, IProvinceRepository provinceRepository,
+            IDistrictRepository districtRepository, IWardRepository wardRepository, IResultMessageService iResultMessageService)
         {
             _customerRepository = customerRepository;
             _unitOfWork = unitOfWork;
@@ -188,7 +187,7 @@ namespace PLX.API.Services
 
         public async Task<APIResponse> UpdateCustomer(int id, CustomerUpdateRequest customerUpdateRequest)
         {
-            var customer = await _customerRepository.FindAsync(id);
+            var customer = await _customerRepository.FindById(id);
             if (!Validation.IsNullOrEmpty(customerUpdateRequest.Customer.Name))
             {
                 customer.Name = customerUpdateRequest.Customer.Name;

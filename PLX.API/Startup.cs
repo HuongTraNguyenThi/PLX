@@ -45,9 +45,9 @@ namespace PLX.API
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "PLX.API", Version = "v1" });
             });
+            services.AddRepositories();
             services.AddScoped<ICustomerService, CustomerService>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
-            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IVehicleService, VehicleService>();
 

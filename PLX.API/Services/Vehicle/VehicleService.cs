@@ -11,12 +11,12 @@ namespace PLX.API.Services
 
     public class VehicleService : IVehicleService
     {
-        private readonly IRepository<Vehicle> _vehicleRepository;
-        private readonly IRepository<VehicleType> _vehicleTypeReponsitry;
+        private readonly IVehicleRepository _vehicleRepository;
+        private readonly IVehicleTypeRepository _vehicleTypeReponsitry;
         private readonly IUnitOfWork _unitOfWork;
         private IMapper _mapper;
-        public VehicleService(IRepository<Vehicle> vehicleRepository, IUnitOfWork unitOfWork,
-        IMapper mapper, IRepository<VehicleType> vehicleTypeReponsitry)
+        public VehicleService(IVehicleRepository vehicleRepository, IUnitOfWork unitOfWork,
+        IMapper mapper, IVehicleTypeRepository vehicleTypeReponsitry)
         {
             _vehicleRepository = vehicleRepository;
             _unitOfWork = unitOfWork;

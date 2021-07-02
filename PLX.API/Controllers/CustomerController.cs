@@ -120,6 +120,7 @@ namespace PLX.API.Controllers
             return Ok(response);
         }
 
+        [AllowAnonymous]
         [HttpPost]
         [ProducesResponseType(typeof(CustomerUpdateResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorMessageResponse), StatusCodes.Status400BadRequest)]

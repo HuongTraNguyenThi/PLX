@@ -65,7 +65,7 @@ namespace PLX.API.MiddleWare
             // Get app services
             var services = context.RequestServices;
             var unitOfWork = services.GetService(typeof(IUnitOfWork)) as IUnitOfWork;
-            var logApiRepository = services.GetService(typeof(IRepository<LogAPI>)) as IRepository<LogAPI>;
+            var logApiRepository = services.GetService(typeof(ILogAPIRepository)) as ILogAPIRepository;
             var resultMessageService = services.GetService(typeof(IResultMessageService)) as IResultMessageService;
 
             // Response information

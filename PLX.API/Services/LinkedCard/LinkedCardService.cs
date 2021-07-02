@@ -11,10 +11,10 @@ namespace PLX.API.Services
 
     public class LinkedCardService : ILinkedCardService
     {
-        private readonly IRepository<LinkedCard> _linkedCardRepository;
+        private readonly ILinkedCardRepository _linkedCardRepository;
         private readonly IUnitOfWork _unitOfWork;
         private IMapper _mapper;
-        public LinkedCardService(IRepository<LinkedCard> linkedCardRepository, IUnitOfWork unitOfWork,
+        public LinkedCardService(ILinkedCardRepository linkedCardRepository, IUnitOfWork unitOfWork,
         IMapper mapper)
         {
             _linkedCardRepository = linkedCardRepository;
