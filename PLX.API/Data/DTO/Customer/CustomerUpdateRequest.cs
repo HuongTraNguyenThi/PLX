@@ -10,8 +10,8 @@ namespace PLX.API.Data.DTO.Customer
     public class CustomerUpdateRequest : BaseRequest
     {
         public CustomerUpdates Customer { get; set; }
-        public List<QuestionRequest> Questions { get; set; }
-        public List<VehicleRequest> Vehicles { get; set; }
-        public List<LinkedCardRequest> LinkedCards { get; set; }
+        public List<QuestionRequest> Questions { get; set; } = new List<QuestionRequest>();
+        public List<VehicleRequest> Vehicles { get; set; } = new List<VehicleRequest>();
+        public List<LinkedCardRequest> LinkedCards { get; set; } = new List<LinkedCardRequest>();
     }
 }
