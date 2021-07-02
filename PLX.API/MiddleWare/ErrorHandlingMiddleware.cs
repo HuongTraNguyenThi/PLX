@@ -3,6 +3,9 @@ using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using PLX.API.Constants;
+using PLX.API.Data.DTO;
+using PLX.API.Extensions;
 
 namespace PLX.API.MiddleWare
 {
@@ -33,11 +36,8 @@ namespace PLX.API.MiddleWare
                         response.StatusCode = (int)HttpStatusCode.InternalServerError;
                         break;
                 }
-
-                // var result = JsonSerializer.Serialize(new { message = error?.Message });
-                //var apiResponse = JsonConvert.DeserializeObject<APIResponse>(error?.Message);
-                var result = JsonSerializer.Serialize(new ApiErrorResponse(ResultCodeConstants.Error, null));
-                await response.WriteAsync(result);
+                var errorResponse = new ApiErrorResponse(ResultCodeConstants.Error, null);
+                await response.WriteAsync(errorResponse.ToJson());
             }
         }
     }
