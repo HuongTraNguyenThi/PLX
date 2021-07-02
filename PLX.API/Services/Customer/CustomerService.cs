@@ -24,11 +24,8 @@ namespace PLX.API.Services
         private readonly IDistrictRepository _districtRepository;
         private readonly IWardRepository _wardRepository;
         private readonly IQuestionRepository _questionsRepository;
-        private readonly IResultMessageService _iResultMessageService;
         private readonly IUnitOfWork _unitOfWork;
         private IMapper _mapper;
-
-
         public CustomerService(IUnitOfWork unitOfWork, IMapper mapper,
             ICustomerRepository customerRepository, IVehicleRepository vehicleRepository,
             ILinkedCardRepository linkedCardRepository, ICustomerQuestionRepository customerQuestionsRepository,
@@ -45,42 +42,8 @@ namespace PLX.API.Services
             _provinceRepository = provinceRepository;
             _districtRepository = districtRepository;
             _wardRepository = wardRepository;
-            _iResultMessageService = iResultMessageService;
         }
 
-        public async Task<List<Customer>> ListAsync()
-        {
-            var customerList = await _customerRepository.ListAsync();
-            return customerList;
-        }
-        public async Task<Customer> FindById(int id)
-        {
-            var customer = await _customerRepository.FindAsync(id);
-            return customer;
-        }
-        public async Task<APIResponse> AddAsync(CustomerDTO customerDTO)
-        {
-            var cus = _mapper.Map<CustomerDTO, Customer>(customerDTO);
-            await _customerRepository.AddAsync(cus);
-            await _unitOfWork.CompleteAsync();
-            return OkResponse(customerDTO);
-        }
-        public async Task<APIResponse> UpdateAsync(int id, CustomerDTO customerDTO)
-        {
-            var cus = _mapper.Map<CustomerDTO, Customer>(customerDTO);
-            _customerRepository.Update(cus);
-            await _unitOfWork.CompleteAsync();
-            return OkResponse(customerDTO);
-        }
-        public async Task<APIResponse> DeleteAsync(int id)
-        {
-
-            var customer = await _customerRepository.FindAsync(id);
-            var cus = _mapper.Map<Customer, CustomerDTO>(customer);
-            _customerRepository.Remove(customer);
-            await _unitOfWork.CompleteAsync();
-            return OkResponse(cus);
-        }
         public async Task<APIResponse> RegisterAsync(CustomerRegister customerRegister)
         {
             var error = validateCustomer(customerRegister.CustomerInfo);
@@ -93,7 +56,7 @@ namespace PLX.API.Services
             return OkResponse(_mapper.Map<Customer, CustomerRegisterResponse>(customer), ResultCodeConstants.SuccessRegister);
         }
 
-        public async Task<APIResponse> GetLists(BaseRequest baseRequest)
+        public async Task<APIResponse> GetStaticLists()
         {
             var questions = await _questionsRepository.ListAsync();
             var provinces = await _provinceRepository.ListAsync();
@@ -111,10 +74,10 @@ namespace PLX.API.Services
             };
             return new ApiOkResponse(customerStaticList, ResultCodeConstants.Success);
         }
-        public async Task<APIResponse> GetListDistricts(BaseRequest baseRequest, int provinceId)
+
+        public async Task<APIResponse> GetDistrictsByProvinceId(int provinceId)
         {
-            var all = await _districtRepository.ListAsync();
-            var districts = all.Where(x => x.ProvinceId == provinceId).ToList();
+            var districts = await _districtRepository.FindByProvinceId(provinceId);
             var districtList = _mapper.Map<List<District>, List<ListItem>>(districts);
             var result = new DistrictDTO
             {
@@ -123,50 +86,7 @@ namespace PLX.API.Services
             return new ApiOkResponse(result, ResultCodeConstants.Success);
         }
 
-        public async Task<APIResponse> GetListWards(BaseRequest baseRequest, int districtId)
-        {
-            var all = await _wardRepository.ListAsync();
-            var wards = all.Where(x => x.DistrictId == districtId).ToList();
-            var wardList = _mapper.Map<List<Ward>, List<ListItem>>(wards);
-            var result = new WardDTO
-            {
-                Wards = wardList
-            };
-            return new ApiOkResponse(result, ResultCodeConstants.Success);
-        }
-
-        public async Task<APIResponse> GetLists()
-        {
-
-            var questions = await _questionsRepository.ListAsync();
-            var provinces = await _provinceRepository.ListAsync();
-            var questionList = _mapper.Map<List<Question>, List<ListItem>>(questions);
-            var provinceList = _mapper.Map<List<Province>, List<ListItem>>(provinces);
-            var genderList = new List<ListItem>();
-            genderList.Add(new ListItem("male", "Nam"));
-            genderList.Add(new ListItem("female", "Nữ"));
-            genderList.Add(new ListItem("other", "Khác")); ;
-            var customerStaticList = new CustomerStaticList
-            {
-                Questions = questionList,
-                Provinces = provinceList,
-                Genders = genderList
-            };
-            return new ApiOkResponse(customerStaticList, ResultCodeConstants.Success);
-        }
-        public async Task<APIResponse> GetListDistricts(int provinceId)
-        {
-            var all = await _districtRepository.ListAsync();
-            var districts = all.Where(x => x.ProvinceId == provinceId).ToList();
-            var districtList = _mapper.Map<List<District>, List<ListItem>>(districts);
-            var result = new DistrictDTO
-            {
-                Districts = districtList
-            };
-            return new ApiOkResponse(result, ResultCodeConstants.Success);
-        }
-
-        public async Task<APIResponse> GetListWards(int districtId)
+        public async Task<APIResponse> GetWardsByDistrictId(int districtId)
         {
             var all = await _wardRepository.ListAsync();
             var wards = all.Where(x => x.DistrictId == districtId).ToList();
@@ -387,7 +307,5 @@ namespace PLX.API.Services
 
             return null;
         }
-
-
     }
 }
