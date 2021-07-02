@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
+using PLX.API.Constants;
+using PLX.API.Data.DTO;
 using PLX.API.Exceptions;
 using PLX.API.Helpers;
 
@@ -47,7 +49,9 @@ namespace PLX.API.MiddleWare
                         break;
                 }
 
-                var result = JsonSerializer.Serialize(new { message = error?.Message });
+                // var result = JsonSerializer.Serialize(new { message = error?.Message });
+                //var apiResponse = JsonConvert.DeserializeObject<APIResponse>(error?.Message);
+                var result = JsonSerializer.Serialize(new ApiErrorResponse(ResultCodeConstants.Error, null));
                 await response.WriteAsync(result);
             }
         }

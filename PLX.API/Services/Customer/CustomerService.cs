@@ -5,6 +5,8 @@ using AutoMapper;
 using PLX.API.Constants;
 using PLX.API.Data.DTO;
 using PLX.API.Data.DTO.Customer;
+using PLX.API.Data.DTO.LinkedCard;
+using PLX.API.Data.DTO.Vehicle;
 using PLX.API.Data.Models;
 using PLX.API.Data.Repositories;
 using PLX.API.Helpers;
@@ -103,6 +105,7 @@ namespace PLX.API.Services
             await _customerQuestionsRepository.AddRangeAsync(questions);
 
             await _unitOfWork.CompleteAsync();
+
 
             return OkResponse(_mapper.Map<Customer, CustomerRegisterResponse>(customer), ResultCodeConstants.SuccessRegister);
         }
