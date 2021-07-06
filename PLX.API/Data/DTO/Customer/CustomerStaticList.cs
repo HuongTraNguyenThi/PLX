@@ -4,7 +4,8 @@ namespace PLX.API.Data.DTO.Customer
 {
     public class CustomerStaticList : BaseResponse
     {
-        public List<ListItem> Questions { get; set; }
+        public List<ListItem> QuestionsOne { get; set; }
+        public List<ListItem> QuestionsTwo { get; set; }
         public List<ListItem> Genders { get; set; }
         public List<ListItem> Provinces { get; set; }
     }

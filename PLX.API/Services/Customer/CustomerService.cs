@@ -60,9 +60,12 @@ namespace PLX.API.Services
 
         public async Task<APIResponse> GetStaticLists()
         {
-            var questions = await _questionsRepository.ListAsync();
+            var question1 = await _questionsRepository.ListQuestionOne();
+            var question2 = await _questionsRepository.ListQuestionTwo();
             var provinces = await _provinceRepository.ListAsync();
-            var questionList = _mapper.Map<List<Question>, List<ListItem>>(questions);
+            // var questionList = _mapper.Map<List<Question>, List<ListItem>>(questions);
+            var questionList1 = _mapper.Map<List<Question>, List<ListItem>>(question1);
+            var questionList2 = _mapper.Map<List<Question>, List<ListItem>>(question2);
             var provinceList = _mapper.Map<List<Province>, List<ListItem>>(provinces);
             var genderList = new List<ListItem>();
             genderList.Add(new ListItem("male", "Nam"));
@@ -70,7 +73,8 @@ namespace PLX.API.Services
             genderList.Add(new ListItem("other", "Khác"));
             var customerStaticList = new CustomerStaticList
             {
-                Questions = questionList,
+                QuestionsOne = questionList1,
+                QuestionsTwo = questionList2,
                 Provinces = provinceList,
                 Genders = genderList
             };
