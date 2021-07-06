@@ -12,6 +12,7 @@ namespace PLX.API.Constants
         public const string EInvalidPhoneFormat = "10004";
         public const string Success = "10005";
         public const string EUnauthorized = "10006";
+        public const string ValidationExist = "10007";
 
 
         #endregion
@@ -27,6 +28,7 @@ namespace PLX.API.Constants
 
         #region Register Result Codes
         public const string RegisterSuccess = "12001";
+        public const string RegisterError = "12002";
         #endregion
     }
 }

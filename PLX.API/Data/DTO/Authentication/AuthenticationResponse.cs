@@ -8,8 +8,6 @@ namespace PLX.API.Data.DTO.Authentication
     {
         public string Token { get; set; }
         public CustomerResponse Customer { get; set; }
-        public List<QuestionResponse> Questions { get; set; }
-        public List<VehicleResponse> Vehicles { get; set; }
-        public List<LinkedCardResponse> LinkedCards { get; set; }
+
     }
 }

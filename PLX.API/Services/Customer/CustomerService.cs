@@ -48,7 +48,9 @@ namespace PLX.API.Services
         {
             var error = validateCustomer(customerRegister.CustomerInfo);
             if (error != null) return error;
-
+            var exist = await _customerRepository.FindByPhone(customerRegister.CustomerInfo.CustomerBasic.Phone);
+            if (exist != null)
+                return ErrorResponse(ResultCodeConstants.RegisterError);
             var customer = _mapper.Map<CustomerRegister, Customer>(customerRegister);
             await _customerRepository.AddAsync(customer);
             await _unitOfWork.CompleteAsync();
@@ -91,14 +93,19 @@ namespace PLX.API.Services
 
         public async Task<APIResponse> GetCustomerById(BaseRequest baseRequest, int id)
         {
-            var all = await _customerRepository.FindAsync(id);
-            var customerDto = _mapper.Map<Customer, CustomerDTO>(all);
+            var customer = await _customerRepository.FindById(id);
+            if (customer == null)
+                return ErrorResponse(ResultCodeConstants.ValidationExist);
+            var customerDto = _mapper.Map<Customer, CustomerDTO>(customer);
             return new ApiOkResponse(customerDto, ResultCodeConstants.Success);
         }
 
         public async Task<APIResponse> UpdateCustomer(int id, CustomerUpdateRequest customerUpdateRequest)
         {
             var customer = await _customerRepository.FindById(id);
+            //kiem tra ton tai customer
+            if (customer == null)
+                return ErrorResponse(ResultCodeConstants.ValidationExist);
             if (!Validation.IsNullOrEmpty(customerUpdateRequest.Customer.Name))
             {
                 customer.Name = customerUpdateRequest.Customer.Name;
