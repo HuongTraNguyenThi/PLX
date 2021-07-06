@@ -30,5 +30,9 @@ namespace PLX.API.Constants
         public const string RegisterSuccess = "12001";
         public const string RegisterError = "12002";
         #endregion
+
+        #region Update Result Codes
+        public const string UpdateSuccess = "13001";
+        #endregion
     }
 }

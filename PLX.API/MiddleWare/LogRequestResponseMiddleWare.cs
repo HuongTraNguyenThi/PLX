@@ -92,6 +92,12 @@ namespace PLX.API.MiddleWare
                 var errorMessageData = apiResponseData as ErrorMessageResponse;
                 errorMessageData.ErrorMessage = resultMessage;
             }
+            else
+            {
+                var resultMessageData = apiResponseData as ResultMessageResponse;
+                resultMessageData.ResultCode = resultCode;
+                resultMessageData.ResultMessage = resultMessage;
+            }
 
             // Send final response data
             byte[] byteArray = Encoding.UTF8.GetBytes(apiResponseData.ToJson());

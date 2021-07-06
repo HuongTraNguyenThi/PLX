@@ -21,10 +21,7 @@ namespace PLX.API.Data.Repositories
                 .Include(x => x.Questions);
             return await queryable.FirstOrDefaultAsync();
         }
-        public async Task<Customer> FindByPhone(string phone)
-        {
-            return await this._dbSet.Where(x => x.Phone == phone).FirstOrDefaultAsync();
-        }
+
         public async Task<Customer> FindById(int id, bool active = true)
         {
             var queryable = this._dbSet.Where(customer => customer.Id == id && customer.Active == active)
@@ -32,6 +29,8 @@ namespace PLX.API.Data.Repositories
                 .Include(x => x.LinkedCards)
                 .Include(x => x.Questions);
             return await queryable.FirstOrDefaultAsync();
+
+
         }
     }
 }

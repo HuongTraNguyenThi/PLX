@@ -75,7 +75,7 @@ namespace PLX.API.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(CustomerDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(GetCustomerResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorMessageResponse), StatusCodes.Status404NotFound)]
         [Route("getcustomer/{id?}")]
         public async Task<IActionResult> GetCustomerById(BaseRequest baseRequest, int id)
