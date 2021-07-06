@@ -1,5 +1,7 @@
 using System;
 using Microsoft.Extensions.DependencyInjection;
+using PLX.Persistence.EF.Repository;
+using PLX.Persistence.Repository;
 
 namespace PLX.API.Data.Repositories
 {

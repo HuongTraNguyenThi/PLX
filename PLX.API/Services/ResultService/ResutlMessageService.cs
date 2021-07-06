@@ -2,12 +2,12 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using PLX.API.Data.Models;
 using PLX.API.Data.Repositories;
 using PLX.API.Helpers;
 using AutoMapper;
 
 using System;
+using PLX.Persistence.Repository;
 
 namespace PLX.API.Services
 {

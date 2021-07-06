@@ -11,11 +11,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using PLX.API.Data.Contexts;
 using PLX.API.Data.Repositories;
 using PLX.API.Helpers;
 using PLX.API.MiddleWare;
 using PLX.API.Services;
+using PLX.Persistence.EF.Context;
+using PLX.Persistence.EF.Repository;
+using PLX.Persistence.Repository;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace PLX.API

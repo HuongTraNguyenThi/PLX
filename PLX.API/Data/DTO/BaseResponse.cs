@@ -1,5 +1,4 @@
-using System.ComponentModel.DataAnnotations;
-using PLX.API.Data.Models;
+using System;
 
 namespace PLX.API.Data.DTO
 {

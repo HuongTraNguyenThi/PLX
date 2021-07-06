@@ -7,10 +7,10 @@ using PLX.API.Data.DTO;
 using PLX.API.Data.DTO.Customer;
 using PLX.API.Data.DTO.LinkedCard;
 using PLX.API.Data.DTO.Vehicle;
-using PLX.API.Data.Models;
 using PLX.API.Data.Repositories;
 using PLX.API.Helpers;
-
+using PLX.Persistence.Model;
+using PLX.Persistence.Repository;
 
 namespace PLX.API.Services
 {

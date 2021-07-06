@@ -1,10 +1,10 @@
 
 using AutoMapper;
-using PLX.API.Data.Models;
 using PLX.API.Data.DTO;
 using PLX.API.Data.DTO.Customer;
 using BC = BCrypt.Net.BCrypt;
 using PLX.API.Helpers;
+using PLX.Persistence.Model;
 
 namespace Supermarket.API.Data.Mapping
 {

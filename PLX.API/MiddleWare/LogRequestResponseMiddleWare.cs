@@ -10,11 +10,12 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PLX.API.Data.DTO;
-using PLX.API.Data.Models;
 using PLX.API.Data.Repositories;
 using PLX.API.Extensions;
 using PLX.API.Helpers;
 using PLX.API.Services;
+using PLX.Persistence.Model;
+using PLX.Persistence.Repository;
 
 namespace PLX.API.MiddleWare
 {

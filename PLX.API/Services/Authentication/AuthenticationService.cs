@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using PLX.API.Data.Models;
 using PLX.API.Data.Repositories;
 using PLX.API.Data.DTO;
 using PLX.API.Data.DTO.Authentication;
@@ -12,6 +11,8 @@ using AutoMapper;
 using BC = BCrypt.Net.BCrypt;
 using PLX.API.Constants;
 using PLX.API.Data.DTO.Customer;
+using PLX.Persistence.Repository;
+using PLX.Persistence.Model;
 
 namespace PLX.API.Services
 {

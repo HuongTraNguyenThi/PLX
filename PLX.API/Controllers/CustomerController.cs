@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PLX.API.Data.DTO;
 using PLX.API.Data.DTO.Customer;
-using PLX.API.Data.Models;
 using PLX.API.Services;
 
 namespace PLX.API.Controllers
