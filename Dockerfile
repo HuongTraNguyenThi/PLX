@@ -1,13 +1,18 @@
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build-env
 WORKDIR /app
 
-# Copy csproj and restore as distinct layers
-COPY PLX.API.csproj ./
+# Copy projects
+COPY PLX.API ./PLX.API
+COPY PLX.Persistence ./PLX.Persistence
+COPY PLX.Persistence.EF ./PLX.Persistence.EF
+
+# Restore PLX API
+WORKDIR /app/PLX.API
 RUN dotnet restore
 
-# Copy everything else and build
-COPY . .
-RUN dotnet publish -c Release -o out
+# Publish application and its dependencies
+WORKDIR /app
+RUN dotnet publish PLX.API -c Release -o out
 
 # Build runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:3.1
