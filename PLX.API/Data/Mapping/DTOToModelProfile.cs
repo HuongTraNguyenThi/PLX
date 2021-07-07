@@ -5,6 +5,8 @@ using PLX.API.Data.DTO;
 using PLX.API.Data.DTO.Customer;
 using BC = BCrypt.Net.BCrypt;
 using PLX.API.Helpers;
+using PLX.API.Data.DTO.Vehicle;
+using PLX.API.Data.DTO.LinkedCard;
 
 namespace Supermarket.API.Data.Mapping
 {
@@ -34,6 +36,10 @@ namespace Supermarket.API.Data.Mapping
             .ForMember(customer => customer.CustomerTypeId, opt => opt.MapFrom(custReg => custReg.CustomerInfo.CustomerBasic.CustomerTypeId))
             .ForMember(customer => customer.Questions, opt => opt.MapFrom(custReg => custReg.CustomerInfo.CustomerBasic.Questions));
 
+            CreateMap<Vehicle, VehicleRequest>();
+            CreateMap<LinkedCard, LinkedCardRequest>();
+            CreateMap<CustomerQuestion, QuestionRequest>()
+            .ForMember(question => question.Id, opt => opt.MapFrom(customer => customer.QuestionId));
         }
     }
 }
