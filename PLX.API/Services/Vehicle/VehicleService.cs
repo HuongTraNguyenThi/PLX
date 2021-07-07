@@ -11,7 +11,7 @@ using PLX.API.Constants;
 namespace PLX.API.Services
 {
 
-    public class VehicleService : IVehicleService
+    public class VehicleService : BaseService, IVehicleService
     {
         private readonly IVehicleRepository _vehicleRepository;
         private readonly IVehicleTypeRepository _vehicleTypeReponsitry;
@@ -46,7 +46,7 @@ namespace PLX.API.Services
             {
                 VehicleTypes = vehicleTypeList
             };
-            return new ApiOkResponse(list, ResultCodeConstants.Success);
+            return OkResponse(list, ResultCodeConstants.Success);
         }
         public async Task<APIResponse> GetListVehicleType()
         {
@@ -58,15 +58,18 @@ namespace PLX.API.Services
             {
                 VehicleTypes = vehicleTypeList
             };
-            return new ApiOkResponse(list, ResultCodeConstants.Success);
+            return OkResponse(list, ResultCodeConstants.Success);
         }
 
         public async Task<APIResponse> GetVehiclesByCustomer(BaseRequest baseRequest, int customerId)
         {
-            var vehicle = await _vehicleRepository.FindByIdCustomer(customerId);
-            var vehicleResponse = _mapper.Map<List<Vehicle>, List<VehicleListResponse>>(vehicle);
-            return new ApiOkResponse(vehicleResponse, ResultCodeConstants.Success);
-
+            var vehicles = await _vehicleRepository.FindByIdCustomer(customerId);
+            var vehicleResponses = _mapper.Map<List<Vehicle>, List<VehicleResponse>>(vehicles);
+            VehicleListResponse vehicleListResponse = new VehicleListResponse()
+            {
+                Vehicles = vehicleResponses
+            };
+            return OkResponse(vehicleListResponse, ResultCodeConstants.Success);
         }
     }
 }

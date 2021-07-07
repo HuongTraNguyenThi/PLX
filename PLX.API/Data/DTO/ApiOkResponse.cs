@@ -2,7 +2,7 @@ namespace PLX.API.Data.DTO
 {
     public class ApiOkResponse : APIResponse
     {
-        public ApiOkResponse(object data, string resultCode, object[] arguments = null)
+        public ApiOkResponse(ResultMessageResponse data, string resultCode, object[] arguments = null)
         {
             Result = new ApiResponseResult
             {

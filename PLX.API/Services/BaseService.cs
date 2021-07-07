@@ -5,7 +5,7 @@ namespace PLX.API.Services
 {
     public class BaseService
     {
-        public ApiOkResponse OkResponse(object data, string resultCode, object[] arguments = null)
+        public ApiOkResponse OkResponse(ResultMessageResponse data, string resultCode, object[] arguments = null)
         {
             return new ApiOkResponse(data, resultCode, arguments);
         }
