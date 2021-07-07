@@ -8,13 +8,10 @@ namespace PLX.API.Services
         public ApiOkResponse OkResponse(object data, string resultCode, object[] arguments = null)
         {
             return new ApiOkResponse(data, resultCode, arguments);
-
         }
         public ApiErrorResponse ErrorResponse(string resultCode, object[] arguments = null)
         {
             return new ApiErrorResponse(resultCode, arguments);
-
         }
     }
-
 }

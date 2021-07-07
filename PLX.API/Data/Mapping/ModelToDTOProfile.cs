@@ -54,7 +54,8 @@ namespace PLX.API.Data.Mapping
             CreateMap<Customer, AuthenticationResponse>()
                 .ForMember(auth => auth.Customer, opt => opt.MapFrom(customer => customer));
 
-            CreateMap<Customer, CustomerUpdates>();
+            CreateMap<Customer, CustomerUpdates>()
+             .ForMember(customerDto => customerDto.Date, opt => opt.MapFrom(customer => DateTimeConvert.DateToString(customer.Date)));
 
             CreateMap<Customer, GetCustomerResponse>()
              .ForMember(auth => auth.Customer, opt => opt.MapFrom(customer => customer));

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace PLX.API.Data.DTO.Customer
 {
-    public class DistrictDTO : BaseResponse
+    public class DistrictDTO : ResultMessageResponse
     {
         public DistrictDTO(List<ListItem> districts)
         {

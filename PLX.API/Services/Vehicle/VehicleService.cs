@@ -5,6 +5,7 @@ using PLX.API.Data.DTO;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using PLX.API.Data.DTO.Customer;
+using PLX.API.Constants;
 
 namespace PLX.API.Services
 {
@@ -44,7 +45,7 @@ namespace PLX.API.Services
             {
                 VehicleTypes = vehicleTypeList
             };
-            return new ApiOkResponse(list, "11002");
+            return new ApiOkResponse(list, ResultCodeConstants.Success);
         }
         public async Task<APIResponse> GetListVehicleType()
         {
@@ -56,7 +57,7 @@ namespace PLX.API.Services
             {
                 VehicleTypes = vehicleTypeList
             };
-            return new ApiOkResponse(list, "11002");
+            return new ApiOkResponse(list, ResultCodeConstants.Success);
         }
     }
 }
