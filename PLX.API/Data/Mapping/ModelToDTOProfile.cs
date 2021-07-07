@@ -55,6 +55,8 @@ namespace PLX.API.Data.Mapping
             CreateMap<Customer, GetCustomerResponse>()
                 .ForMember(auth => auth.Customer, opt => opt.MapFrom(customer => customer));
 
+            CreateMap<Vehicle, VehicleListResponse>();
+
         }
     }
 }

@@ -61,9 +61,12 @@ namespace PLX.API.Services
             return new ApiOkResponse(list, ResultCodeConstants.Success);
         }
 
-        public Task<APIResponse> GetVehiclesByCustomer(BaseRequest baseRequest, int id)
+        public async Task<APIResponse> GetVehiclesByCustomer(BaseRequest baseRequest, int customerId)
         {
-            throw new System.NotImplementedException();
+            var vehicle = await _vehicleRepository.FindByIdCustomer(customerId);
+            var vehicleResponse = _mapper.Map<List<Vehicle>, List<VehicleListResponse>>(vehicle);
+            return new ApiOkResponse(vehicleResponse, ResultCodeConstants.Success);
+
         }
     }
 }
