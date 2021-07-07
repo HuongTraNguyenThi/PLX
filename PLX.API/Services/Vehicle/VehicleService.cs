@@ -48,18 +48,6 @@ namespace PLX.API.Services
             };
             return OkResponse(list, ResultCodeConstants.Success);
         }
-        public async Task<APIResponse> GetListVehicleType()
-        {
-            var vehicleTypes = await _vehicleTypeReponsitry.ListAsync();
-
-            var vehicleTypeList = _mapper.Map<List<VehicleType>, List<ListItem>>(vehicleTypes);
-
-            var list = new VehicleTypeList
-            {
-                VehicleTypes = vehicleTypeList
-            };
-            return OkResponse(list, ResultCodeConstants.Success);
-        }
 
         public async Task<APIResponse> GetVehiclesByCustomer(BaseRequest baseRequest, int customerId)
         {

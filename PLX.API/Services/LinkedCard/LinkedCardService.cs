@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 using PLX.API.Data.DTO.Customer;
 using PLX.Persistence.Repository;
 using PLX.Persistence.Model;
+using PLX.API.Constants;
 
 namespace PLX.API.Services
 {
 
-    public class LinkedCardService : ILinkedCardService
+    public class LinkedCardService : BaseService, ILinkedCardService
     {
         private readonly ILinkedCardRepository _linkedCardRepository;
         private readonly IUnitOfWork _unitOfWork;
@@ -31,6 +32,17 @@ namespace PLX.API.Services
         {
             var linkedCard = await _linkedCardRepository.FindAsync(id);
             return linkedCard;
+        }
+
+        public async Task<APIResponse> GetListByIdCustomer(BaseRequest baseRequest, int customerId)
+        {
+            var linkedCards = await _linkedCardRepository.FindByIdCustomer(customerId);
+            var linkedCardResponses = _mapper.Map<List<LinkedCard>, List<LinkedCardResponse>>(linkedCards);
+            LinkedCardListResponse linkedCardResponse = new LinkedCardListResponse()
+            {
+                LinkedCards = linkedCardResponses
+            };
+            return OkResponse(linkedCardResponse, ResultCodeConstants.Success);
         }
     }
 }
