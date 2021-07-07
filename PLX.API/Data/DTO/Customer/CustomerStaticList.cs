@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace PLX.API.Data.DTO.Customer
 {
-    public class CustomerStaticList : BaseResponse
+    public class CustomerStaticList : ResultMessageResponse
     {
         public List<ListItem> QuestionsOne { get; set; }
         public List<ListItem> QuestionsTwo { get; set; }

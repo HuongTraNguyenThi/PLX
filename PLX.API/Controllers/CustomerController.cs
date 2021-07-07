@@ -84,38 +84,6 @@ namespace PLX.API.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet]
-        [ProducesResponseType(typeof(CustomerStaticList), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ErrorMessageResponse), StatusCodes.Status404NotFound)]
-        [Route("staticlist")]
-        public async Task<IActionResult> GetStaticList()
-        {
-            var response = await _customerService.GetStaticLists();
-            return Ok(response);
-        }
-        [AllowAnonymous]
-        [HttpGet]
-        [ProducesResponseType(typeof(DistrictDTO), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ErrorMessageResponse), StatusCodes.Status400BadRequest)]
-        [Route("districtlist/{id?}")]
-        public async Task<IActionResult> GetDistrict(int id)
-        {
-            var response = await _customerService.GetDistrictsByProvinceId(id);
-            return Ok(response);
-        }
-        [AllowAnonymous]
-        [HttpGet]
-        [ProducesResponseType(typeof(WardDTO), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ErrorMessageResponse), StatusCodes.Status400BadRequest)]
-        [Route("wardlist/{id?}")]
-        public async Task<IActionResult> GetWard(int id)
-        {
-
-            var response = await _customerService.GetWardsByDistrictId(id);
-            return Ok(response);
-        }
-
-        [AllowAnonymous]
         [HttpPost]
         [ProducesResponseType(typeof(CustomerUpdateResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorMessageResponse), StatusCodes.Status400BadRequest)]
