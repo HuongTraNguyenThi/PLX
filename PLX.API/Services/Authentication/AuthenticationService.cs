@@ -58,7 +58,7 @@ namespace PLX.API.Services
 
             var customerLog = new CustomerLog()
             {
-                CustomerId = customer.CustomerTypeId,
+                CustomerId = customer.Id,
                 Time = DateTime.Now
             };
             var response = OkResponse(authResponse, ResultCodeConstants.AuthSuccessLogin);
