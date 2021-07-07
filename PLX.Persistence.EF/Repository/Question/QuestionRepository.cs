@@ -17,12 +17,14 @@ namespace PLX.Persistence.EF.Repository
 
         public async Task<List<Question>> ListQuestionOne()
         {
-            return await this._dbSet.OrderBy(q => q.Id).Take(5).ToListAsync();
+
+            return await this._dbSet.Take(5).ToListAsync();
         }
 
         public async Task<List<Question>> ListQuestionTwo()
         {
-            return await this._dbSet.OrderByDescending(q => q.Id).Take(5).ToListAsync();
+
+            return await this._dbSet.Skip(Math.Max(0, this._dbSet.Count() - 5)).Take(5).ToListAsync();
         }
     }
 }

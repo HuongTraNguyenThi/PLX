@@ -62,6 +62,7 @@ namespace PLX.API.Services
                 Time = DateTime.Now
             };
             var response = OkResponse(authResponse, ResultCodeConstants.AuthSuccessLogin);
+            // var response = new ApiOkResponse(authResponse, ResultCodeConstants.AuthSuccessLogin);
             await _customerLogRespository.AddAsync(customerLog);
             return response;
         }
@@ -69,7 +70,7 @@ namespace PLX.API.Services
         {
             var customer = await _customerRepository.FindAsync(id);
             var cusDTO = _mapper.Map<Customer, CustomerDTO>(customer);
-            return OkResponse(cusDTO);
+            return OkResponse(cusDTO, "10001");
         }
 
         public async Task<APIResponse> GenerateOTP(OTPGenerateRequest otpRequest)

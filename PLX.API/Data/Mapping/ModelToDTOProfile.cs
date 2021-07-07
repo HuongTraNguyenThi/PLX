@@ -45,6 +45,7 @@ namespace PLX.API.Data.Mapping
             CreateMap<LinkedCard, LinkedCardRequest>();
             CreateMap<CustomerQuestion, QuestionRequest>()
             .ForMember(question => question.Id, opt => opt.MapFrom(customer => customer.QuestionId));
+
             CreateMap<Customer, CustomerResponse>();
 
             CreateMap<Customer, CustomerUpdateResponse>()
@@ -52,6 +53,12 @@ namespace PLX.API.Data.Mapping
 
             CreateMap<Customer, AuthenticationResponse>()
                 .ForMember(auth => auth.Customer, opt => opt.MapFrom(customer => customer));
+
+            CreateMap<Customer, CustomerUpdates>();
+
+            CreateMap<Customer, GetCustomerResponse>()
+             .ForMember(auth => auth.Customer, opt => opt.MapFrom(customer => customer));
+
         }
     }
 }

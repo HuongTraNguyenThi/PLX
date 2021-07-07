@@ -100,8 +100,8 @@ namespace PLX.API.Services
             var customer = await _customerRepository.FindById(id);
             if (customer == null)
                 return ErrorResponse(ResultCodeConstants.ValidationExist);
-            var customerDto = _mapper.Map<Customer, CustomerDTO>(customer);
-            return new ApiOkResponse(customerDto, ResultCodeConstants.Success);
+            var customerResponse = _mapper.Map<Customer, GetCustomerResponse>(customer);
+            return new ApiOkResponse(customerResponse, ResultCodeConstants.Success);
         }
 
         public async Task<APIResponse> UpdateCustomer(int id, CustomerUpdateRequest customerUpdateRequest)
@@ -212,7 +212,7 @@ namespace PLX.API.Services
 
             await this._unitOfWork.CompleteAsync();
             var customerUpdateResponse = _mapper.Map<Customer, CustomerUpdateResponse>(customer);
-            return OkResponse(customerUpdateResponse);
+            return OkResponse(customerUpdateResponse, ResultCodeConstants.UpdateSuccess);
         }
 
         private ApiErrorResponse validateCustomer(CustomerInfo customerInfo)
