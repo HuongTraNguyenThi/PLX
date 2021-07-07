@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace PLX.API.Data.DTO.Customer
 {
-    public class CustomerDTO
+    public class CustomerDTO : ResultMessageResponse
     {
         public string Name { get; set; }
         public string Phone { get; set; }
