@@ -12,5 +12,10 @@ namespace PLX.API.Data.Repositories
         public VehicleRepository(PLXDbContext context) : base(context)
         {
         }
+
+        public Task<Customer> FindByIdCustomer(int id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

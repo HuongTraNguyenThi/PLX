@@ -63,7 +63,6 @@ namespace PLX.API.Services
             var question1 = await _questionsRepository.ListQuestionOne();
             var question2 = await _questionsRepository.ListQuestionTwo();
             var provinces = await _provinceRepository.ListAsync();
-            // var questionList = _mapper.Map<List<Question>, List<ListItem>>(questions);
             var questionList1 = _mapper.Map<List<Question>, List<ListItem>>(question1);
             var questionList2 = _mapper.Map<List<Question>, List<ListItem>>(question2);
             var provinceList = _mapper.Map<List<Province>, List<ListItem>>(provinces);

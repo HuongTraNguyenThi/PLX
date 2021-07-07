@@ -34,10 +34,6 @@ namespace Supermarket.API.Data.Mapping
             .ForMember(customer => customer.CustomerTypeId, opt => opt.MapFrom(custReg => custReg.CustomerInfo.CustomerBasic.CustomerTypeId))
             .ForMember(customer => customer.Questions, opt => opt.MapFrom(custReg => custReg.CustomerInfo.CustomerBasic.Questions));
 
-            // CreateMap<VehicleRequest, Vehicle>();
-            //CreateMap<LinkedCardRequest, LinkedCard>();
-
-            CreateMap<OTPDTO, OTP>();
         }
     }
 }

@@ -59,5 +59,10 @@ namespace PLX.API.Services
             };
             return new ApiOkResponse(list, ResultCodeConstants.Success);
         }
+
+        public Task<APIResponse> GetVehiclesByCustomer(BaseRequest baseRequest, int id)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

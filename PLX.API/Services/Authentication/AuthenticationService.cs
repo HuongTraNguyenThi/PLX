@@ -61,7 +61,6 @@ namespace PLX.API.Services
                 Time = DateTime.Now
             };
             var response = OkResponse(authResponse, ResultCodeConstants.AuthSuccessLogin);
-            // var response = new ApiOkResponse(authResponse, ResultCodeConstants.AuthSuccessLogin);
             await _customerLogRespository.AddAsync(customerLog);
             return response;
         }

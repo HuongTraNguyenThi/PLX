@@ -6,5 +6,6 @@ namespace PLX.API.Data.Repositories
 {
     public interface IVehicleRepository : IRepository<Vehicle>
     {
+        Task<Customer> FindByIdCustomer(int id);
     }
 }
