@@ -55,7 +55,9 @@ namespace PLX.API
 
             services.AddScoped<IResultMessageService, ResutlMessageService>();
             services.AddAutoMapper(typeof(Startup));
-            services.AddDbContext<PLXDbContext>(options => options.UseNpgsql(Configuration.GetConnectionString("PLXConnection")));
+            services.AddDbContext<PLXDbContext>(options => options.UseNpgsql(Configuration.GetConnectionString("PLXConnection"),
+                o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
+
             services.Configure<JwtConfig>(Configuration.GetSection("Jwt"));
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
           {
