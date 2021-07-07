@@ -87,7 +87,7 @@ namespace PLX.API.Services
             {
                 Phone = otpRequest.Phone,
                 OTPCode = otp,
-                CreateTime11 = DateTime.Now,
+                CreateTime = DateTime.Now,
                 TransactionType = otpRequest.TransactionType
             };
             await _otpRepository.AddAsync(result);

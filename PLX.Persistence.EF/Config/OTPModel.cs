@@ -16,7 +16,7 @@ namespace PLX.Persistence.EF.Config
                 e.HasKey(e => e.Id);
                 e.Property(e => e.Phone).IsRequired();
                 e.Property(e => e.OTPCode).IsRequired();
-                e.Property(e => e.CreateTime11).HasColumnType("timestamp");
+                e.Property(e => e.CreateTime).HasColumnType("timestamp");
                 e.Property(e => e.Active).HasDefaultValue(true);
             });
         }
