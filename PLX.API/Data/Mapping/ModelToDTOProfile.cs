@@ -18,28 +18,28 @@ namespace PLX.API.Data.Mapping
             CreateMap<Customer, CustomerRegisterResponse>()
                 .ForMember(customerDto => customerDto.IdCustomer, opt => opt.MapFrom(customer => customer.Id));
             CreateMap<Customer, CustomerDTO>()
-            .ForMember(customerDto => customerDto.Date, opt => opt.MapFrom(customer => DateTimeConvert.DateToString(customer.Date)));
+                .ForMember(customerDto => customerDto.Date, opt => opt.MapFrom(customer => DateTimeConvert.DateToString(customer.Date)));
             CreateMap<Question, ListItem>()
-            .ForMember(listItem => listItem.Value, opt => opt.MapFrom(question => question.Id))
-            .ForMember(listItem => listItem.Display, opt => opt.MapFrom(question => question.Content));
+                .ForMember(listItem => listItem.Value, opt => opt.MapFrom(question => question.Id))
+                .ForMember(listItem => listItem.Display, opt => opt.MapFrom(question => question.Content));
 
             CreateMap<Province, ListItem>()
-            .ForMember(listItem => listItem.Value, opt => opt.MapFrom(province => province.Id))
-            .ForMember(listItem => listItem.Display, opt => opt.MapFrom(province => province.Name));
+                .ForMember(listItem => listItem.Value, opt => opt.MapFrom(province => province.Id))
+                .ForMember(listItem => listItem.Display, opt => opt.MapFrom(province => province.Name));
             CreateMap<District, ListItem>()
-            .ForMember(listItem => listItem.Value, opt => opt.MapFrom(district => district.Id))
-            .ForMember(listItem => listItem.Display, opt => opt.MapFrom(district => district.Name));
+                .ForMember(listItem => listItem.Value, opt => opt.MapFrom(district => district.Id))
+                .ForMember(listItem => listItem.Display, opt => opt.MapFrom(district => district.Name));
             CreateMap<Ward, ListItem>()
-            .ForMember(listItem => listItem.Value, opt => opt.MapFrom(ward => ward.Id))
-            .ForMember(listItem => listItem.Display, opt => opt.MapFrom(ward => ward.Name));
+                .ForMember(listItem => listItem.Value, opt => opt.MapFrom(ward => ward.Id))
+                .ForMember(listItem => listItem.Display, opt => opt.MapFrom(ward => ward.Name));
             CreateMap<VehicleType, ListItem>()
-            .ForMember(listitem => listitem.Value, opt => opt.MapFrom(vehicleType => vehicleType.Id))
-            .ForMember(listitem => listitem.Display, opt => opt.MapFrom(vehicleType => vehicleType.Name));
+                .ForMember(listitem => listitem.Value, opt => opt.MapFrom(vehicleType => vehicleType.Id))
+                .ForMember(listitem => listitem.Display, opt => opt.MapFrom(vehicleType => vehicleType.Name));
 
             CreateMap<Vehicle, VehicleResponse>();
             CreateMap<LinkedCard, LinkedCardResponse>();
             CreateMap<CustomerQuestion, QuestionResponse>()
-            .ForMember(question => question.Id, opt => opt.MapFrom(customer => customer.QuestionId));
+                .ForMember(question => question.Id, opt => opt.MapFrom(customer => customer.QuestionId));
 
             CreateMap<Customer, CustomerResponse>();
 
@@ -50,10 +50,10 @@ namespace PLX.API.Data.Mapping
                 .ForMember(auth => auth.Customer, opt => opt.MapFrom(customer => customer));
 
             CreateMap<Customer, CustomerUpdates>()
-             .ForMember(customerDto => customerDto.Date, opt => opt.MapFrom(customer => DateTimeConvert.DateToString(customer.Date)));
+                .ForMember(customerDto => customerDto.Date, opt => opt.MapFrom(customer => DateTimeConvert.DateToString(customer.Date)));
 
             CreateMap<Customer, GetCustomerResponse>()
-             .ForMember(auth => auth.Customer, opt => opt.MapFrom(customer => customer));
+                .ForMember(auth => auth.Customer, opt => opt.MapFrom(customer => customer));
 
         }
     }
