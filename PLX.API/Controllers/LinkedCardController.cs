@@ -30,7 +30,9 @@ namespace PLX.API.Controllers
         public async Task<IActionResult> GetLinkedCardList(BaseRequest baseRequest, int customerId)
         {
             var response = await _iLinkedCardService.GetListByIdCustomer(baseRequest, customerId);
-            return Ok(response);
+            if (response.Result.Success)
+                return Ok(response);
+            return NotFound(response);
         }
     }
 }

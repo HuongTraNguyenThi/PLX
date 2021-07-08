@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -77,30 +78,35 @@ namespace PLX.API.Services
                 Provinces = provinceList,
                 Genders = genderList
             };
-            return new ApiOkResponse(customerStaticList, ResultCodeConstants.Success);
+            return OkResponse(customerStaticList, ResultCodeConstants.Success);
         }
 
         public async Task<APIResponse> GetDistrictsByProvinceId(int provinceId)
         {
             var districts = await _districtRepository.FindByProvinceId(provinceId);
+            if (districts.Count == 0)
+                return ErrorResponse(ResultCodeConstants.NotFound);
             var result = new DistrictDTO(_mapper.Map<List<District>, List<ListItem>>(districts));
-            return new ApiOkResponse(result, ResultCodeConstants.Success);
+            return OkResponse(result, ResultCodeConstants.Success);
         }
 
         public async Task<APIResponse> GetWardsByDistrictId(int districtId)
         {
             var wards = await _wardRepository.FindByDistrictId(districtId);
+            if (wards.Count == 0)
+                return ErrorResponse(ResultCodeConstants.NotFound);
             var result = new WardDTO(_mapper.Map<List<Ward>, List<ListItem>>(wards));
-            return new ApiOkResponse(result, ResultCodeConstants.Success);
+            return OkResponse(result, ResultCodeConstants.Success);
         }
 
         public async Task<APIResponse> GetCustomerById(BaseRequest baseRequest, int id)
         {
+
             var customer = await _customerRepository.FindById(id);
             if (customer == null)
                 return ErrorResponse(ResultCodeConstants.ValidationExist);
             var customerResponse = _mapper.Map<Customer, GetCustomerResponse>(customer);
-            return new ApiOkResponse(customerResponse, ResultCodeConstants.Success);
+            return OkResponse(customerResponse, ResultCodeConstants.Success);
         }
 
         public async Task<APIResponse> UpdateCustomer(int id, CustomerUpdateRequest customerUpdateRequest)

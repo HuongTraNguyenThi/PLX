@@ -1,4 +1,6 @@
 
+using System;
+
 namespace PLX.API.Data.DTO
 {
     public class ErrorMessageResponse : BaseResponse

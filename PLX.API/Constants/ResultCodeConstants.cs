@@ -14,6 +14,7 @@ namespace PLX.API.Constants
         public const string EUnauthorized = "10006";
         public const string ValidationExist = "10007";
 
+        public const string NotFound = "10008";
 
         #endregion
 

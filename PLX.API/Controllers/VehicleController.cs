@@ -26,7 +26,6 @@ namespace PLX.API.Controllers
 
         [HttpPost]
         [ProducesResponseType(typeof(VehicleTypeList), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ErrorMessageResponse), StatusCodes.Status400BadRequest)]
         [Route("getvehicletypelist")]
         public async Task<IActionResult> GetVehicleTypeList(BaseRequest baseRequest)
         {
@@ -41,7 +40,9 @@ namespace PLX.API.Controllers
         public async Task<IActionResult> GetVehicleList(BaseRequest baseRequest, int customerId)
         {
             var response = await _iVehicleService.GetVehiclesByCustomer(baseRequest, customerId);
-            return Ok(response);
+            if (response.Result.Success)
+                return Ok(response);
+            return NotFound(response);
         }
     }
 }

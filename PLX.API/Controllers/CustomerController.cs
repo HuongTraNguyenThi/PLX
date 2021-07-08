@@ -42,7 +42,6 @@ namespace PLX.API.Controllers
         [AllowAnonymous]
         [HttpPost]
         [ProducesResponseType(typeof(CustomerStaticList), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ErrorMessageResponse), StatusCodes.Status404NotFound)]
         [Route("staticlist")]
         public async Task<IActionResult> GetCustomerStaticList(BaseRequest baseRequest)
         {
@@ -53,23 +52,27 @@ namespace PLX.API.Controllers
         [AllowAnonymous]
         [HttpPost]
         [ProducesResponseType(typeof(DistrictDTO), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ErrorMessageResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorMessageResponse), StatusCodes.Status404NotFound)]
         [Route("districtlist/{provinceId?}")]
         public async Task<IActionResult> GetDistrictList(int provinceId, BaseRequest baseRequest)
         {
             var response = await _customerService.GetDistrictsByProvinceId(provinceId);
-            return Ok(response);
+            if (response.Result.Success)
+                return Ok(response);
+            return NotFound(response);
         }
 
         [AllowAnonymous]
         [HttpPost]
         [ProducesResponseType(typeof(WardDTO), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ErrorMessageResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorMessageResponse), StatusCodes.Status404NotFound)]
         [Route("wardlist/{districtId?}")]
         public async Task<IActionResult> GetWardList(int districtId, BaseRequest baseRequest)
         {
 
             var response = await _customerService.GetWardsByDistrictId(districtId);
+            if (!response.Result.Success)
+                return NotFound(response);
             return Ok(response);
         }
 
@@ -80,6 +83,8 @@ namespace PLX.API.Controllers
         public async Task<IActionResult> GetCustomerById(BaseRequest baseRequest, int id)
         {
             var response = await _customerService.GetCustomerById(baseRequest, id);
+            if (!response.Result.Success)
+                return NotFound(response);
             return Ok(response);
         }
 
