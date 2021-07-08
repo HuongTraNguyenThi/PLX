@@ -115,48 +115,81 @@ namespace PLX.API.Services
             //kiem tra ton tai customer
             if (customer == null)
                 return ErrorResponse(ResultCodeConstants.ValidationExist);
-            if (!Validation.IsNullOrEmpty(customerUpdateRequest.Customer.Name))
+            if (customer.CustomerTypeId == 1)
             {
-                customer.Name = customerUpdateRequest.Customer.Name;
-            }
+                if (!Validation.IsNullOrEmpty(customerUpdateRequest.Customer.Name))
+                {
+                    customer.Name = customerUpdateRequest.Customer.Name;
+                }
+                if (!Validation.IsNullOrEmpty(customerUpdateRequest.Customer.Date))
+                {
+                    customer.Date = DateTimeConvert.ToDate(customerUpdateRequest.Customer.Date);
+                }
 
-            if (!Validation.IsNullOrEmpty(customerUpdateRequest.Customer.Phone))
-            {
-                customer.Phone = customerUpdateRequest.Customer.Phone;
-            }
+                if (!Validation.IsNullOrEmpty(customerUpdateRequest.Customer.Gender))
+                {
+                    customer.Gender = customerUpdateRequest.Customer.Gender;
+                }
 
-            if (!Validation.IsNullOrEmpty(customerUpdateRequest.Customer.CardId))
-            {
-                customer.CardID = customerUpdateRequest.Customer.CardId;
-            }
+                if (!Validation.IsNullOrEmpty(customerUpdateRequest.Customer.TaxCode))
+                {
+                    customer.TaxCode = customerUpdateRequest.Customer.TaxCode;
+                }
 
-            if (!Validation.IsNullOrEmpty(customerUpdateRequest.Customer.Date))
-            {
-                customer.Date = DateTimeConvert.ToDate(customerUpdateRequest.Customer.Date);
-            }
+                if (!Validation.IsEqualOrLessThanZero(customerUpdateRequest.Customer.ProvinceId))
+                {
+                    customer.ProvinceId = customerUpdateRequest.Customer.ProvinceId;
+                }
 
-            if (!Validation.IsNullOrEmpty(customerUpdateRequest.Customer.Gender))
-            {
-                customer.Gender = customerUpdateRequest.Customer.Gender;
-            }
-            if (!Validation.IsEqualOrLessThanZero(customerUpdateRequest.Customer.ProvinceId))
-            {
-                customer.ProvinceId = customerUpdateRequest.Customer.ProvinceId;
-            }
+                if (!Validation.IsEqualOrLessThanZero(customerUpdateRequest.Customer.DistrictId))
+                {
+                    customer.DistrictId = customerUpdateRequest.Customer.DistrictId;
+                }
 
-            if (!Validation.IsEqualOrLessThanZero(customerUpdateRequest.Customer.DistrictId))
-            {
-                customer.DistrictId = customerUpdateRequest.Customer.DistrictId;
-            }
+                if (!Validation.IsEqualOrLessThanZero(customerUpdateRequest.Customer.WardId))
+                {
+                    customer.WardId = customerUpdateRequest.Customer.WardId;
+                }
 
-            if (!Validation.IsEqualOrLessThanZero(customerUpdateRequest.Customer.WardId))
-            {
-                customer.WardId = customerUpdateRequest.Customer.WardId;
+                if (!Validation.IsNullOrEmpty(customerUpdateRequest.Customer.Address))
+                {
+                    customer.Address = customerUpdateRequest.Customer.Address;
+                }
             }
-
-            if (!Validation.IsNullOrEmpty(customerUpdateRequest.Customer.Address))
+            if (customer.CustomerTypeId == 2)
             {
-                customer.Address = customerUpdateRequest.Customer.Address;
+                if (!Validation.IsNullOrEmpty(customerUpdateRequest.Customer.Name))
+                {
+                    customer.Name = customerUpdateRequest.Customer.Name;
+                }
+                if (!Validation.IsNullOrEmpty(customerUpdateRequest.Customer.Date))
+                {
+                    customer.Date = DateTimeConvert.ToDate(customerUpdateRequest.Customer.Date);
+                }
+
+                if (!Validation.IsNullOrEmpty(customerUpdateRequest.Customer.Gender))
+                {
+                    customer.Gender = customerUpdateRequest.Customer.Gender;
+                }
+                if (!Validation.IsEqualOrLessThanZero(customerUpdateRequest.Customer.ProvinceId))
+                {
+                    customer.ProvinceId = customerUpdateRequest.Customer.ProvinceId;
+                }
+
+                if (!Validation.IsEqualOrLessThanZero(customerUpdateRequest.Customer.DistrictId))
+                {
+                    customer.DistrictId = customerUpdateRequest.Customer.DistrictId;
+                }
+
+                if (!Validation.IsEqualOrLessThanZero(customerUpdateRequest.Customer.WardId))
+                {
+                    customer.WardId = customerUpdateRequest.Customer.WardId;
+                }
+
+                if (!Validation.IsNullOrEmpty(customerUpdateRequest.Customer.Address))
+                {
+                    customer.Address = customerUpdateRequest.Customer.Address;
+                }
             }
             var savedQuestions = customer.Questions.ToDictionary(x => x.QuestionId, x => x);
 
@@ -167,7 +200,10 @@ namespace PLX.API.Services
 
                 if (!exist && question.RecordType == RecordTypes.NewRecord)
                 {
+
                     var newQuestion = _mapper.Map<QuestionRequest, CustomerQuestion>(question);
+                    newQuestion.CustomerId = customer.Id;
+
                     await _customerQuestionsRepository.AddAsync(newQuestion);
                 }
 
@@ -186,6 +222,7 @@ namespace PLX.API.Services
                 if (!exist && vehicle.RecordType == RecordTypes.NewRecord)
                 {
                     var newVehicle = _mapper.Map<VehicleRequest, Vehicle>(vehicle);
+                    newVehicle.CustomerId = customer.Id;
                     await _vehicleRepository.AddAsync(newVehicle);
                 }
 
@@ -195,24 +232,28 @@ namespace PLX.API.Services
                     savedVehicle.LicensePlate = vehicle.LicensePlate;
                     savedVehicle.VehicleTypeId = vehicle.VehicleTypeId;
                 }
+
+
             }
             var savedLinkedCards = customer.LinkedCards.ToDictionary(x => x.Id, x => x);
             foreach (var linkedCard in customerUpdateRequest.LinkedCards)
             {
-                Vehicle savedLinkedCard = null;
-                var exist = savedVehicles.TryGetValue(linkedCard.Id, out savedLinkedCard);
+                LinkedCard savedLinkedCard = null;
+                var exist = savedLinkedCards.TryGetValue(linkedCard.Id, out savedLinkedCard);
 
                 if (!exist && linkedCard.RecordType == RecordTypes.NewRecord)
                 {
                     var newLinkedCard = _mapper.Map<LinkedCardRequest, LinkedCard>(linkedCard);
+                    newLinkedCard.CustomerId = customer.Id;
                     await _linkedCardRepository.AddAsync(newLinkedCard);
                 }
 
                 if (exist && linkedCard.RecordType == RecordTypes.ExistRecord && !Validation.IsNullOrEmpty(linkedCard.Name) && !Validation.IsNullOrEmpty(linkedCard.CardNumber))
                 {
                     savedLinkedCard.Name = linkedCard.Name;
-                    savedLinkedCard.LicensePlate = linkedCard.CardNumber;
+                    savedLinkedCard.CardNumber = linkedCard.CardNumber;
                 }
+
             }
 
             await this._unitOfWork.CompleteAsync();
