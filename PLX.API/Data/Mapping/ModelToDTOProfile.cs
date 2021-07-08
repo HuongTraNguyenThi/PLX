@@ -8,6 +8,7 @@ using PLX.API.Data.DTO.Authentication;
 using PLX.API.Data.DTO.Vehicle;
 using PLX.API.Data.DTO.LinkedCard;
 using PLX.Persistence.Model;
+using System.Linq;
 
 namespace PLX.API.Data.Mapping
 {
@@ -38,6 +39,7 @@ namespace PLX.API.Data.Mapping
 
 
             CreateMap<Vehicle, VehicleResponse>();
+
             CreateMap<LinkedCard, LinkedCardResponse>();
             CreateMap<CustomerQuestion, QuestionResponse>()
                 .ForMember(question => question.Id, opt => opt.MapFrom(customer => customer.QuestionId));
@@ -45,7 +47,8 @@ namespace PLX.API.Data.Mapping
             CreateMap<Customer, CustomerResponse>();
 
             CreateMap<Customer, CustomerUpdateResponse>()
-                .ForMember(auth => auth.Customer, opt => opt.MapFrom(customer => customer));
+                .ForMember(auth => auth.Customer, opt => opt.MapFrom(customer => customer))
+                .ForMember(auth => auth.Vehicles, opt => opt.MapFrom(customer => customer.Vehicles.Where(vehicle => vehicle.Active == true)));
 
             CreateMap<Customer, CustomerUpdates>()
            .ForMember(customerDto => customerDto.Date, opt => opt.MapFrom(customer => DateTimeConvert.DateToString(customer.Date)));
@@ -57,7 +60,8 @@ namespace PLX.API.Data.Mapping
                 .ForMember(auth => auth.Customer, opt => opt.MapFrom(customer => customer));
 
             CreateMap<Customer, GetCustomerResponse>()
-                .ForMember(auth => auth.Customer, opt => opt.MapFrom(customer => customer));
+                .ForMember(auth => auth.Customer, opt => opt.MapFrom(customer => customer))
+                 .ForMember(auth => auth.Vehicles, opt => opt.MapFrom(customer => customer.Vehicles.Where(vehicle => vehicle.Active == true)));
 
             CreateMap<Vehicle, VehicleListResponse>();
             CreateMap<LinkedCard, LinkedCardListResponse>();

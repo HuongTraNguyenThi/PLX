@@ -7,7 +7,7 @@ namespace PLX.Persistence.Repository
 {
     public interface IVehicleRepository : IRepository<Vehicle>
     {
-        Task<List<Vehicle>> FindByIdCustomer(int customerId, bool active = true);
+        Task<List<Vehicle>> FindByCustomerId(int customerId, bool active = true);
 
     }
 }

@@ -8,6 +8,7 @@ namespace PLX.Persistence.Model
         public Customer()
         {
             this.Questions = new HashSet<CustomerQuestion>();
+            this.Vehicles = new List<Vehicle>();
         }
         public string Name { get; set; }
         public string Phone { get; set; }
