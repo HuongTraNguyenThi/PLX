@@ -52,6 +52,7 @@ namespace PLX.API
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IVehicleService, VehicleService>();
+            services.AddScoped<ILinkedCardService, LinkedCardService>();
 
             services.AddScoped<IResultMessageService, ResutlMessageService>();
             services.AddAutoMapper(typeof(Startup));
