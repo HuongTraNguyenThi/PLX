@@ -51,7 +51,7 @@ namespace PLX.API.Services
 
         public async Task<APIResponse> GetVehiclesByCustomer(BaseRequest baseRequest, int customerId)
         {
-            var vehicles = await _vehicleRepository.FindByIdCustomer(customerId);
+            var vehicles = await _vehicleRepository.FindByCustomerId(customerId);
             if (vehicles.Count == 0)
                 return ErrorResponse(ResultCodeConstants.ValidationExist);
             var vehicleResponses = _mapper.Map<List<Vehicle>, List<VehicleResponse>>(vehicles);

@@ -15,10 +15,15 @@ namespace PLX.Persistence.EF.Repository
         {
         }
 
-        public async Task<List<LinkedCard>> FindByIdCustomer(int id)
+        public async Task<List<LinkedCard>> FindByCustomerId(int id, bool active = true)
         {
-            var query = this._dbSet.Where(x => x.CustomerId == id);
+            var query = this._dbSet.Where(x => x.CustomerId == id & x.Active == active);
             return await query.ToListAsync();
+        }
+        public override void Remove(LinkedCard linkedCard)
+        {
+            linkedCard.Active = false;
+            _dbSet.Update(linkedCard);
         }
     }
 }

@@ -48,20 +48,22 @@ namespace PLX.API.Data.Mapping
 
             CreateMap<Customer, CustomerUpdateResponse>()
                 .ForMember(auth => auth.Customer, opt => opt.MapFrom(customer => customer))
-                .ForMember(auth => auth.Vehicles, opt => opt.MapFrom(customer => customer.Vehicles.Where(vehicle => vehicle.Active == true)));
+                .ForMember(auth => auth.Vehicles, opt => opt.MapFrom(customer => customer.Vehicles.Where(vehicle => vehicle.Active == true)))
+                .ForMember(auth => auth.LinkedCards, opt => opt.MapFrom(customer => customer.LinkedCards.Where(linkedCard => linkedCard.Active == true)));
 
             CreateMap<Customer, CustomerUpdates>()
-           .ForMember(customerDto => customerDto.Date, opt => opt.MapFrom(customer => DateTimeConvert.DateToString(customer.Date)));
+                .ForMember(customerDto => customerDto.Date, opt => opt.MapFrom(customer => DateTimeConvert.DateToString(customer.Date)));
 
             CreateMap<Customer, CustomerInfoResponse>()
-           .ForMember(customerDto => customerDto.Date, opt => opt.MapFrom(customer => DateTimeConvert.DateToString(customer.Date)));
+                .ForMember(customerDto => customerDto.Date, opt => opt.MapFrom(customer => DateTimeConvert.DateToString(customer.Date)));
 
             CreateMap<Customer, AuthenticationResponse>()
                 .ForMember(auth => auth.Customer, opt => opt.MapFrom(customer => customer));
 
             CreateMap<Customer, GetCustomerResponse>()
                 .ForMember(auth => auth.Customer, opt => opt.MapFrom(customer => customer))
-                 .ForMember(auth => auth.Vehicles, opt => opt.MapFrom(customer => customer.Vehicles.Where(vehicle => vehicle.Active == true)));
+                .ForMember(auth => auth.Vehicles, opt => opt.MapFrom(customer => customer.Vehicles.Where(vehicle => vehicle.Active == true)))
+                .ForMember(auth => auth.LinkedCards, opt => opt.MapFrom(customer => customer.LinkedCards.Where(linkedCard => linkedCard.Active == true)));
 
             CreateMap<Vehicle, VehicleListResponse>();
             CreateMap<LinkedCard, LinkedCardListResponse>();

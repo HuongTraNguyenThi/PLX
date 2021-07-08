@@ -16,6 +16,7 @@ namespace PLX.Persistence.EF.Config
                 e.HasKey(c => c.Id);
                 e.Property(c => c.Name).IsRequired().HasMaxLength(200);
                 e.Property(c => c.CardNumber).IsRequired();
+                e.Property(c => c.Active).HasDefaultValue(true);
                 e.HasOne(c => c.Customer);
             });
         }

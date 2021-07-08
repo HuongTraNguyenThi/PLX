@@ -36,7 +36,7 @@ namespace PLX.API.Services
 
         public async Task<APIResponse> GetListByIdCustomer(BaseRequest baseRequest, int customerId)
         {
-            var linkedCards = await _linkedCardRepository.FindByIdCustomer(customerId);
+            var linkedCards = await _linkedCardRepository.FindByCustomerId(customerId);
             if (linkedCards.Count == 0)
                 return ErrorResponse(ResultCodeConstants.ValidationExist);
             var linkedCardResponses = _mapper.Map<List<LinkedCard>, List<LinkedCardResponse>>(linkedCards);

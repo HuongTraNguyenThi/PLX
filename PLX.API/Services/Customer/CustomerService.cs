@@ -257,6 +257,10 @@ namespace PLX.API.Services
                     savedLinkedCard.Name = linkedCard.Name;
                     savedLinkedCard.CardNumber = linkedCard.CardNumber;
                 }
+                if (exist && linkedCard.RecordType == RecordTypes.DeleteRecord)
+                {
+                    _linkedCardRepository.Remove(savedLinkedCard);
+                }
 
             }
 
