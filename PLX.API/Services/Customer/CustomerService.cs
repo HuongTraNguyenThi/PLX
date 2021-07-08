@@ -232,6 +232,10 @@ namespace PLX.API.Services
                     savedVehicle.LicensePlate = vehicle.LicensePlate;
                     savedVehicle.VehicleTypeId = vehicle.VehicleTypeId;
                 }
+                if (exist && vehicle.RecordType == RecordTypes.DeleteRecord)
+                {
+                    _vehicleRepository.Remove(savedVehicle);
+                }
 
 
             }

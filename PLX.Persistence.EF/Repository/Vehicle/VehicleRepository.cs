@@ -15,9 +15,9 @@ namespace PLX.Persistence.EF.Repository
         {
         }
 
-        public async Task<List<Vehicle>> FindByIdCustomer(int id, bool active = true)
+        public async Task<List<Vehicle>> FindByIdCustomer(int customerId, bool active = true)
         {
-            var query = this._dbSet.Where(x => x.CustomerId == id && x.Active == true);
+            var query = this._dbSet.Where(x => x.CustomerId == customerId && x.Active == active);
             return await query.ToListAsync();
         }
 
