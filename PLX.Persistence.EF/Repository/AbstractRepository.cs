@@ -36,7 +36,7 @@ namespace PLX.Persistence.EF.Repository
             return await _dbSet.FindAsync(keyValues);
         }
 
-        public void Remove(T entity)
+        public virtual void Remove(T entity)
         {
             _dbSet.Remove(entity);
         }

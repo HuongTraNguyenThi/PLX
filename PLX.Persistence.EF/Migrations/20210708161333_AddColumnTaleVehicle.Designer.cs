@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PLX.Persistence.EF.Context;
@@ -9,9 +10,10 @@ using PLX.Persistence.EF.Context;
 namespace PLX.Persistence.EF.Migrations
 {
     [DbContext(typeof(PLXDbContext))]
-    partial class PLXDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210708161333_AddColumnTaleVehicle")]
+    partial class AddColumnTaleVehicle
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
