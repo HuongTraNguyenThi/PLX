@@ -15,7 +15,7 @@ namespace PLX.Persistence.EF.Config
             {
                 e.HasKey(e => e.Id);
                 e.Property(e => e.Name).IsRequired().HasMaxLength(200);
-                e.Property(e => e.Phone).IsRequired().HasMaxLength(10);
+                e.Property(e => e.Phone).IsRequired().HasMaxLength(12);
                 e.Property(e => e.Email).HasMaxLength(100);
                 e.Property(e => e.Password).IsRequired().HasMaxLength(200);
                 e.Property(e => e.CardID).HasMaxLength(12);
