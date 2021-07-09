@@ -40,7 +40,10 @@ namespace PLX.API.MiddleWare
             }
             catch (AutoMapperMappingException ex)
             {
-                var a = 0;
+                var error = new ApiErrorResponse(ResultCodeConstants.EInternalServerError, null);
+                response.StatusCode = (int)HttpStatusCode.InternalServerError;
+
+                await response.WriteAsync(error.ToJson());
             }
             catch (Exception error)
             {

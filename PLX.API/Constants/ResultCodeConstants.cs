@@ -17,7 +17,6 @@ namespace PLX.API.Constants
         public const string NotFound = "10008";
 
         public const string ConnectionString = "10010";
-
         #endregion
 
         #region Authentication Result Codes
