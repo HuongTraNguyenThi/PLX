@@ -52,7 +52,6 @@ namespace PLX.API.Services
             customerInfo.Add("Id", customer.Id.ToString());
             customerInfo.Add("Phone", customer.Phone);
             string token = JwtHelper.GenerateToken(_jwtConfig, customerInfo);
-
             AuthenticationResponse authResponse = _mapper.Map<Customer, AuthenticationResponse>(customer);
             authResponse.Token = token;
 
@@ -64,6 +63,7 @@ namespace PLX.API.Services
             var response = OkResponse(authResponse, ResultCodeConstants.AuthSuccessLogin);
             await _customerLogRespository.AddAsync(customerLog);
             return response;
+
         }
         public async Task<APIResponse> FindUserById(int id)
         {

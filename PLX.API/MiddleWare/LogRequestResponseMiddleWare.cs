@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using PLX.API.Constants;
 using PLX.API.Data.DTO;
 using PLX.API.Data.Repositories;
 using PLX.API.Extensions;
@@ -74,12 +75,22 @@ namespace PLX.API.MiddleWare
             var apiResult = apiResponse.Result;
             if (apiResult == null) return;
 
+            var resultMessage = "";
+
             var dataType = Type.GetType(apiResult.DataType);
             var apiResponseDataJObject = apiResponse.Data as JObject;
             var apiResponseData = apiResponseDataJObject.ToObject(dataType) as BaseResponse;
             var resultCode = apiResult.ResultCode;
             var resultArgs = apiResult.Arguments;
-            var resultMessage = await resultMessageService.GetMessage(resultCode as string, resultArgs);
+            if (resultCode == ResultCodeConstants.ConnectionString)
+            {
+                resultMessage = "Lỗi kết nối";
+            }
+            else
+            {
+                resultMessage = await resultMessageService.GetMessage(resultCode as string, resultArgs);
+            }
+
             var responseDateTime = DateTime.Now;
             var responseTimeStr = DateTimeConvert.ToString(responseDateTime);
 
@@ -99,11 +110,12 @@ namespace PLX.API.MiddleWare
                 resultMessageData.ResultCode = resultCode;
                 resultMessageData.ResultMessage = resultMessage;
             }
-
             // Send final response data
             byte[] byteArray = Encoding.UTF8.GetBytes(apiResponseData.ToJson());
             responseBodyStream = new MemoryStream(byteArray);
             await responseBodyStream.CopyToAsync(originResponseBodyStream);
+
+            if (resultCode == ResultCodeConstants.ConnectionString) return;
 
             var logApi = new LogAPI
             {

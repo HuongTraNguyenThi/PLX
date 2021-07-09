@@ -115,7 +115,7 @@ namespace PLX.API.Services
             //kiem tra ton tai customer
             if (customer == null)
                 return ErrorResponse(ResultCodeConstants.ValidationExist);
-            if (customer.CustomerTypeId == 1)
+            if (customer.CustomerTypeId == CustomerTypes.IndividualCustomer)
             {
                 if (!Validation.IsNullOrEmpty(customerUpdateRequest.Customer.Name))
                 {
@@ -156,7 +156,7 @@ namespace PLX.API.Services
                     customer.Address = customerUpdateRequest.Customer.Address;
                 }
             }
-            if (customer.CustomerTypeId == 2)
+            if (customer.CustomerTypeId == CustomerTypes.BizCustomer)
             {
                 if (!Validation.IsNullOrEmpty(customerUpdateRequest.Customer.Name))
                 {

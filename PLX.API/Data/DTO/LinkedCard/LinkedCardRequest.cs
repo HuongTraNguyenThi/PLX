@@ -1,4 +1,5 @@
 using System;
+using PLX.API.Constants;
 
 namespace PLX.API.Data.DTO.LinkedCard
 {
@@ -7,6 +8,6 @@ namespace PLX.API.Data.DTO.LinkedCard
         public int Id { get; set; }
         public string Name { get; set; }
         public string CardNumber { get; set; }
-        public int RecordType { get; set; }
+        public int RecordType { get; set; } = RecordTypes.ExistRecord;
     }
 }
