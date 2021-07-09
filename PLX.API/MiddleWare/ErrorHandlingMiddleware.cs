@@ -31,31 +31,21 @@ namespace PLX.API.MiddleWare
             {
                 await _next(context);
             }
-            catch (PostgresException pe)
-            {
-                var error = new ApiErrorResponse(ResultCodeConstants.ConnectionString, null);
 
-                await response.WriteAsync(error.ToJson());
-
-            }
-            catch (AutoMapperMappingException ex)
-            {
-                var error = new ApiErrorResponse(ResultCodeConstants.EInternalServerError, null);
-                response.StatusCode = (int)HttpStatusCode.InternalServerError;
-
-                await response.WriteAsync(error.ToJson());
-            }
             catch (Exception error)
             {
+                var statusCode = (int)HttpStatusCode.InternalServerError;
+                var serverResultCode = ResultCodeConstants.EInternalServerError;
+
                 switch (error)
                 {
-                    default:
-                        // unhandled error
-                        response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                    case PostgresException postgresException:
+                        serverResultCode = ResultCodeConstants.ConnectionString;
                         break;
                 }
+                response.StatusCode = statusCode;
                 _logger.LogError(error, "--- Fail to process {0}", context.Request.Path);
-                var errorResponse = new ApiErrorResponse(ResultCodeConstants.EInternalServerError, null);
+                var errorResponse = new ApiErrorResponse(serverResultCode, null);
                 await response.WriteAsync(errorResponse.ToJson());
             }
         }
