@@ -17,6 +17,7 @@ namespace PLX.Persistence.EF.Config
                 e.Property(e => e.Name).IsRequired().HasMaxLength(200);
                 e.Property(e => e.LicensePlate).IsRequired().HasMaxLength(11);
                 e.Property(e => e.Active).HasDefaultValue(true);
+                e.HasIndex(e => e.LicensePlate).IsUnique();
                 e.HasOne(e => e.VehicleType);
                 e.HasOne(e => e.Customer);
             });
