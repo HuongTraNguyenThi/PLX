@@ -7,6 +7,5 @@ namespace PLX.Persistence.Repository
 {
     public interface ILinkedCardRepository : IRepository<LinkedCard>
     {
-        Task<List<LinkedCard>> FindByCustomerId(int id, bool active = true);
     }
 }

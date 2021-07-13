@@ -12,6 +12,5 @@ namespace PLX.API.Services
     {
         Task<List<LinkedCard>> ListAsync();
         Task<LinkedCard> FindById(int id);
-        Task<APIResponse> GetListByIdCustomer(BaseRequest baseRequest, int customerId);
     }
 }
