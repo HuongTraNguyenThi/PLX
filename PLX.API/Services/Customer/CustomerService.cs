@@ -279,8 +279,52 @@ namespace PLX.API.Services
             var questions = customer.Questions;
             if (changePasswordRequest.Type == PasswordTypes.ChangePasswordByPhone)
             {
-                var otp = "123456";
-                if (changePasswordRequest.OtpCode == otp)
+
+                return await ChangePasswordByOTP(changePasswordRequest);
+
+            }
+            if (changePasswordRequest.Type == PasswordTypes.ChangePasswordByAnswerQuestion)
+            {
+
+                return await ChangePasswordByAnswerQuestion(changePasswordRequest);
+            }
+            return null;
+        }
+
+        public async Task<APIResponse> ChangePasswordByOTP(ChangePasswordRequest changePasswordRequest)
+        {
+            var customer = await _customerRepository.FindByPhone(changePasswordRequest.Phone);
+            var otp = "123456";
+            if (changePasswordRequest.OtpCode == otp)
+            {
+                if (!Validation.IsNullOrEmpty(changePasswordRequest.NewPassword) && !Validation.IsNullOrEmpty(changePasswordRequest.ConfirmNewPassword))
+                {
+
+                    if (changePasswordRequest.ConfirmNewPassword == changePasswordRequest.NewPassword)
+                    {
+                        customer.Password = BC.HashPassword(changePasswordRequest.NewPassword);
+                        await this._unitOfWork.CompleteAsync();
+                        return OkResponse(new ChangePasswordResponse("Thành công"), ResultCodeConstants.ChangeSuccess);
+                    }
+                    return ErrorResponse(ResultCodeConstants.PasswordWrong);
+
+                }
+                return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { "Mật khẩu" });
+            }
+            return ErrorResponse(ResultCodeConstants.AuthEInvalidOTP);
+        }
+
+        public async Task<APIResponse> ChangePasswordByAnswerQuestion(ChangePasswordRequest changePasswordRequest)
+        {
+            var customer = await _customerRepository.FindByPhone(changePasswordRequest.Phone);
+            var qId1 = customer.Questions.Where(x => x.QuestionId == changePasswordRequest.QuestionId1).FirstOrDefault();
+            var qId2 = customer.Questions.Where(x => x.QuestionId == changePasswordRequest.QuestionId2).FirstOrDefault();
+            if (!Validation.IsEqualOrLessThanZero(changePasswordRequest.QuestionId1) &&
+                !Validation.IsNullOrEmpty(changePasswordRequest.Answer1) &&
+                !Validation.IsEqualOrLessThanZero(changePasswordRequest.QuestionId2) &&
+                !Validation.IsNullOrEmpty(changePasswordRequest.Answer2))
+            {
+                if (qId1.Answer == changePasswordRequest.Answer1 && qId2.Answer == changePasswordRequest.Answer2)
                 {
                     if (!Validation.IsNullOrEmpty(changePasswordRequest.NewPassword) && !Validation.IsNullOrEmpty(changePasswordRequest.ConfirmNewPassword))
                     {
@@ -296,41 +340,11 @@ namespace PLX.API.Services
                     }
                     return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { "Mật khẩu" });
                 }
-                return ErrorResponse(ResultCodeConstants.AuthEInvalidOTP);
+                return ErrorResponse(ResultCodeConstants.AnswerWrong);
+
             }
-            if (changePasswordRequest.Type == PasswordTypes.ChangePasswordByAnswerQuestion)
-            {
-                var qId1 = customer.Questions.Where(x => x.QuestionId == changePasswordRequest.QuestionId1).FirstOrDefault();
-                var qId2 = customer.Questions.Where(x => x.QuestionId == changePasswordRequest.QuestionId2).FirstOrDefault();
-                if (!Validation.IsEqualOrLessThanZero(changePasswordRequest.QuestionId1) &&
-                    !Validation.IsNullOrEmpty(changePasswordRequest.Answer1) &&
-                    !Validation.IsEqualOrLessThanZero(changePasswordRequest.QuestionId2) &&
-                    !Validation.IsNullOrEmpty(changePasswordRequest.Answer2))
-                {
-                    if (qId1.Answer == changePasswordRequest.Answer1 && qId2.Answer == changePasswordRequest.Answer2)
-                    {
-                        if (!Validation.IsNullOrEmpty(changePasswordRequest.NewPassword) && !Validation.IsNullOrEmpty(changePasswordRequest.ConfirmNewPassword))
-                        {
-
-                            if (changePasswordRequest.ConfirmNewPassword == changePasswordRequest.NewPassword)
-                            {
-                                customer.Password = BC.HashPassword(changePasswordRequest.NewPassword);
-                                await this._unitOfWork.CompleteAsync();
-                                return OkResponse(new ChangePasswordResponse("Thành công"), ResultCodeConstants.ChangeSuccess);
-                            }
-                            return ErrorResponse(ResultCodeConstants.PasswordWrong);
-
-                        }
-                        return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { "Mật khẩu" });
-                    }
-                    return ErrorResponse(ResultCodeConstants.AnswerWrong);
-
-                }
-                return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { "Câu trả lời" });
-            }
-            return null;
+            return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { "Câu trả lời" });
         }
-
 
 
 
