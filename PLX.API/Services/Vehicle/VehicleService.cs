@@ -49,17 +49,5 @@ namespace PLX.API.Services
             return OkResponse(list, ResultCodeConstants.Success);
         }
 
-        public async Task<APIResponse> GetVehiclesByCustomer(BaseRequest baseRequest, int customerId)
-        {
-            var vehicles = await _vehicleRepository.FindByCustomerId(customerId);
-            if (vehicles.Count == 0)
-                return ErrorResponse(ResultCodeConstants.ValidationExist);
-            var vehicleResponses = _mapper.Map<List<Vehicle>, List<VehicleResponse>>(vehicles);
-            VehicleListResponse vehicleListResponse = new VehicleListResponse()
-            {
-                Vehicles = vehicleResponses
-            };
-            return OkResponse(vehicleListResponse, ResultCodeConstants.Success);
-        }
     }
 }

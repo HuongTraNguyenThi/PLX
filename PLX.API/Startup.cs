@@ -95,7 +95,7 @@ namespace PLX.API
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseMiddleware<LogRequestResponseMiddleWare>();
-            app.UseMiddleware<WhiteListMiddleWare>(Configuration["AdminSafeList"]);
+            //app.UseMiddleware<WhiteListMiddleWare>(Configuration["AdminSafeList"]);
 
             app.UseMiddleware<ErrorHandlerMiddleware>();
 

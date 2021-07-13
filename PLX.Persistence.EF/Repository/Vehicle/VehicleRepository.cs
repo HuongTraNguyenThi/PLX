@@ -14,13 +14,6 @@ namespace PLX.Persistence.EF.Repository
         public VehicleRepository(PLXDbContext context) : base(context)
         {
         }
-
-        public async Task<List<Vehicle>> FindByCustomerId(int customerId, bool active = true)
-        {
-            var query = this._dbSet.Where(x => x.CustomerId == customerId && x.Active == active);
-            return await query.ToListAsync();
-        }
-
         public override void Remove(Vehicle vehicle)
         {
             vehicle.Active = false;

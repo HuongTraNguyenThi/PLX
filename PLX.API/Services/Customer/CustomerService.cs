@@ -106,6 +106,7 @@ namespace PLX.API.Services
             if (customer == null)
                 return ErrorResponse(ResultCodeConstants.ValidationExist);
             var customerResponse = _mapper.Map<Customer, GetCustomerResponse>(customer);
+
             return OkResponse(customerResponse, ResultCodeConstants.Success);
         }
 

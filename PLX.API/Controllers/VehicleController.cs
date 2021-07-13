@@ -32,18 +32,6 @@ namespace PLX.API.Controllers
             var response = await _iVehicleService.GetListVehicleType(baseRequest);
             return Ok(response);
         }
-
-        [HttpPost]
-        [ProducesResponseType(typeof(VehicleListResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ErrorMessageResponse), StatusCodes.Status404NotFound)]
-        [Route("getvehiclelistbycustomer/{customerId?}")]
-        public async Task<IActionResult> GetVehicleList(BaseRequest baseRequest, int customerId)
-        {
-            var response = await _iVehicleService.GetVehiclesByCustomer(baseRequest, customerId);
-            if (response.Result.Success)
-                return Ok(response);
-            return NotFound(response);
-        }
     }
 }
 

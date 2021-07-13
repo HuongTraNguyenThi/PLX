@@ -9,7 +9,7 @@ namespace PLX.API.Services
     public interface IVehicleService
     {
         Task<APIResponse> GetListVehicleType(BaseRequest baseRequest);
-        Task<APIResponse> GetVehiclesByCustomer(BaseRequest baseRequest, int customerId);
+
 
     }
 }
