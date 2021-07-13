@@ -37,5 +37,10 @@ namespace PLX.API.Constants
         #region Update Result Codes
         public const string UpdateSuccess = "13001";
         #endregion
+        #region ChangePassword Result Codes
+        public const string ChangeSuccess = "14001";
+        public const string PasswordWrong = "14002";
+        public const string AnswerWrong = "14003";
+        #endregion
     }
 }

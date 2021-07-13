@@ -8,10 +8,10 @@ using PLX.API.Data.DTO;
 using PLX.API.Data.DTO.Customer;
 using PLX.API.Data.DTO.LinkedCard;
 using PLX.API.Data.DTO.Vehicle;
-using PLX.API.Data.Repositories;
 using PLX.API.Helpers;
 using PLX.Persistence.Model;
 using PLX.Persistence.Repository;
+using BC = BCrypt.Net.BCrypt;
 
 namespace PLX.API.Services
 {
@@ -269,6 +269,70 @@ namespace PLX.API.Services
             var customerUpdateResponse = _mapper.Map<Customer, CustomerUpdateResponse>(customer);
             return OkResponse(customerUpdateResponse, ResultCodeConstants.UpdateSuccess);
         }
+
+        public async Task<APIResponse> ChangePassword(ChangePasswordRequest changePasswordRequest)
+        {
+            var customer = await _customerRepository.FindByPhone(changePasswordRequest.Phone);
+            //kiem tra ton tai customer
+            if (customer == null)
+                return ErrorResponse(ResultCodeConstants.ValidationExist);
+            var questions = customer.Questions;
+            if (changePasswordRequest.Type == PasswordTypes.ChangePasswordByPhone)
+            {
+                var otp = "123456";
+                if (changePasswordRequest.OtpCode == otp)
+                {
+                    if (!Validation.IsNullOrEmpty(changePasswordRequest.NewPassword) && !Validation.IsNullOrEmpty(changePasswordRequest.ConfirmNewPassword))
+                    {
+
+                        if (changePasswordRequest.ConfirmNewPassword == changePasswordRequest.NewPassword)
+                        {
+                            customer.Password = BC.HashPassword(changePasswordRequest.NewPassword);
+                            await this._unitOfWork.CompleteAsync();
+                            return OkResponse(new ChangePasswordResponse("Thành công"), ResultCodeConstants.ChangeSuccess);
+                        }
+                        return ErrorResponse(ResultCodeConstants.PasswordWrong);
+
+                    }
+                    return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { "Mật khẩu" });
+                }
+                return ErrorResponse(ResultCodeConstants.AuthEInvalidOTP);
+            }
+            if (changePasswordRequest.Type == PasswordTypes.ChangePasswordByAnswerQuestion)
+            {
+                var qId1 = customer.Questions.Where(x => x.QuestionId == changePasswordRequest.QuestionId1).FirstOrDefault();
+                var qId2 = customer.Questions.Where(x => x.QuestionId == changePasswordRequest.QuestionId2).FirstOrDefault();
+                if (!Validation.IsEqualOrLessThanZero(changePasswordRequest.QuestionId1) &&
+                    !Validation.IsNullOrEmpty(changePasswordRequest.Answer1) &&
+                    !Validation.IsEqualOrLessThanZero(changePasswordRequest.QuestionId2) &&
+                    !Validation.IsNullOrEmpty(changePasswordRequest.Answer2))
+                {
+                    if (qId1.Answer == changePasswordRequest.Answer1 && qId2.Answer == changePasswordRequest.Answer2)
+                    {
+                        if (!Validation.IsNullOrEmpty(changePasswordRequest.NewPassword) && !Validation.IsNullOrEmpty(changePasswordRequest.ConfirmNewPassword))
+                        {
+
+                            if (changePasswordRequest.ConfirmNewPassword == changePasswordRequest.NewPassword)
+                            {
+                                customer.Password = BC.HashPassword(changePasswordRequest.NewPassword);
+                                await this._unitOfWork.CompleteAsync();
+                                return OkResponse(new ChangePasswordResponse("Thành công"), ResultCodeConstants.ChangeSuccess);
+                            }
+                            return ErrorResponse(ResultCodeConstants.PasswordWrong);
+
+                        }
+                        return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { "Mật khẩu" });
+                    }
+                    return ErrorResponse(ResultCodeConstants.AnswerWrong);
+
+                }
+                return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { "Câu trả lời" });
+            }
+            return null;
+        }
+
+
+
 
         private ApiErrorResponse validateCustomer(CustomerInfo customerInfo)
         {

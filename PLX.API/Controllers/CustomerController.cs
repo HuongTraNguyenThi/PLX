@@ -96,7 +96,26 @@ namespace PLX.API.Controllers
         public async Task<IActionResult> UpdateCustomer(int customerId, CustomerUpdateRequest customerUpdateRequest)
         {
             var response = await _customerService.UpdateCustomer(customerId, customerUpdateRequest);
-            return Ok(response);
+            if (response.Result.Success)
+                return Ok(response);
+
+            return BadRequest(response);
+        }
+
+
+        [HttpPost]
+        [ProducesResponseType(typeof(ChangePasswordResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorMessageResponse), StatusCodes.Status400BadRequest)]
+        [Route("customer/changepassword")]
+
+        public async Task<IActionResult> ChangePassword(ChangePasswordRequest changePasswordRequest)
+        {
+            var user = HttpContext.User;
+            var response = await _customerService.ChangePassword(changePasswordRequest);
+            if (response.Result.Success)
+                return Ok(response);
+
+            return BadRequest(response);
         }
     }
 }

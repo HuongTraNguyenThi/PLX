@@ -8,5 +8,6 @@ namespace PLX.Persistence.Repository
     {
         Task<Customer> FindByPhone(string phone, bool active = true);
         Task<Customer> FindById(int id, bool active = true);
+
     }
 }

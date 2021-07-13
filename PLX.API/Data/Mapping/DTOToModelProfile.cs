@@ -40,8 +40,9 @@ namespace Supermarket.API.Data.Mapping
             CreateMap<LinkedCardRequest, LinkedCard>();
 
             CreateMap<QuestionRequest, CustomerQuestion>()
+                .ForMember(cusquestion => cusquestion.QuestionId, opt => opt.MapFrom(question => question.Id));
 
-                 .ForMember(cusquestion => cusquestion.QuestionId, opt => opt.MapFrom(question => question.Id));
         }
+
     }
 }
