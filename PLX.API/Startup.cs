@@ -73,6 +73,7 @@ namespace PLX.API
                   ValidateIssuerSigningKey = true,
                   IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
               };
+
               var jwtBearerEvents = new JwtBearerEvents();
               jwtBearerEvents.OnChallenge = JwtBearerOnChallengeHandler.OnChallenge;
               options.Events = jwtBearerEvents;

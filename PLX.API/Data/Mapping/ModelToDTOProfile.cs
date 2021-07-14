@@ -69,6 +69,9 @@ namespace PLX.API.Data.Mapping
                 .ForMember(vr => vr.Vehicles, opt => opt.MapFrom(vehicle => vehicle.Active == true));
             CreateMap<LinkedCard, LinkedCardListResponse>()
                 .ForMember(lr => lr.LinkedCards, opt => opt.MapFrom(lk => lk.Active == true));
+            CreateMap<CustomerQuestion, ListItem>()
+            .ForMember(list => list.Value, opt => opt.MapFrom(cus => cus.QuestionId))
+                .ForMember(list => list.Display, opt => opt.MapFrom(cus => cus.Question.Content));
 
         }
     }

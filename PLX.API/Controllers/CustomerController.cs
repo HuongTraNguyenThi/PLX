@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PLX.API.Data.DTO;
+using PLX.API.Data.DTO.Authentication;
 using PLX.API.Data.DTO.Customer;
 using PLX.API.Services;
 
@@ -110,8 +112,64 @@ namespace PLX.API.Controllers
 
         public async Task<IActionResult> ChangePassword(ChangePasswordRequest changePasswordRequest)
         {
-            var user = HttpContext.User;
-            var response = await _customerService.ChangePassword(changePasswordRequest);
+            // var claims = ClaimsPrincipal.Current.Identities.First().Claims.ToList();
+            // var a = claims?.FirstOrDefault(x => x.Type.Equals("Id", StringComparison.OrdinalIgnoreCase))?.Value;
+
+            var userId = HttpContext.User;
+            var X = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var userIdConvert = Convert.ToInt32(userId);
+
+            var response = await _customerService.ChangePassword(userIdConvert, changePasswordRequest);
+            if (response.Result.Success)
+                return Ok(response);
+
+            return BadRequest(response);
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        [ProducesResponseType(typeof(GetQuestionResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorMessageResponse), StatusCodes.Status404NotFound)]
+        [Route("customer/getcustomerquestions")]
+
+        public async Task<IActionResult> GetCustomerQuestions(GetQuestionsRequest questionsRequest)
+        {
+
+            var response = await _customerService.GetCustomerQuestions(questionsRequest);
+            if (response.Result.Success)
+                return Ok(response);
+
+            return NotFound(response);
+        }
+
+
+
+        [AllowAnonymous]
+        [HttpPost]
+        [ProducesResponseType(typeof(ValidateAnswerResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorMessageResponse), StatusCodes.Status400BadRequest)]
+        [Route("customer/validateanswer")]
+
+        public async Task<IActionResult> ValidateAnswer(ValidateAnswerRequest answerRequest)
+        {
+
+            var response = await _customerService.ValidateAnswer(answerRequest);
+            if (response.Result.Success)
+                return Ok(response);
+
+            return BadRequest(response);
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        [ProducesResponseType(typeof(OTPValidateResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorMessageResponse), StatusCodes.Status400BadRequest)]
+        [Route("customer/validateotp")]
+
+        public async Task<IActionResult> ValidateOtp(OTPValidateRequest oTPValidate)
+        {
+
+            var response = await _customerService.ValidateOtp(oTPValidate);
             if (response.Result.Success)
                 return Ok(response);
 

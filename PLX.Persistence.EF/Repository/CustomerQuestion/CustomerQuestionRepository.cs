@@ -15,5 +15,12 @@ namespace PLX.Persistence.EF.Repository
         {
 
         }
+
+        public async Task<List<CustomerQuestion>> FindByPhone(string phone)
+        {
+            var queryable = this._dbSet.Where(customer => customer.Customer.Phone == phone).Include(x => x.Question); ;
+            return await queryable.ToListAsync();
+        }
+
     }
 }

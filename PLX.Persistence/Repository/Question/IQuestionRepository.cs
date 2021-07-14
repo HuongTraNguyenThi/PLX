@@ -9,6 +9,6 @@ namespace PLX.Persistence.Repository
     {
         Task<List<Question>> ListQuestionOne();
         Task<List<Question>> ListQuestionTwo();
-
+        Task<List<Question>> FindById(int id);
     }
 }

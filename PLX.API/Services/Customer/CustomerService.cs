@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.Extensions.Options;
 using PLX.API.Constants;
 using PLX.API.Data.DTO;
+using PLX.API.Data.DTO.Authentication;
 using PLX.API.Data.DTO.Customer;
 using PLX.API.Data.DTO.LinkedCard;
 using PLX.API.Data.DTO.Vehicle;
@@ -26,12 +28,14 @@ namespace PLX.API.Services
         private readonly IWardRepository _wardRepository;
         private readonly IQuestionRepository _questionsRepository;
         private readonly IUnitOfWork _unitOfWork;
+        private JwtConfig _jwtConfig;
         private IMapper _mapper;
         public CustomerService(IUnitOfWork unitOfWork, IMapper mapper,
             ICustomerRepository customerRepository, IVehicleRepository vehicleRepository,
             ILinkedCardRepository linkedCardRepository, ICustomerQuestionRepository customerQuestionsRepository,
             IQuestionRepository questionsRepository, IProvinceRepository provinceRepository,
-            IDistrictRepository districtRepository, IWardRepository wardRepository, IResultMessageService iResultMessageService)
+            IDistrictRepository districtRepository, IWardRepository wardRepository, IOptions<JwtConfig> options,
+            IResultMessageService iResultMessageService)
         {
             _customerRepository = customerRepository;
             _unitOfWork = unitOfWork;
@@ -43,6 +47,7 @@ namespace PLX.API.Services
             _provinceRepository = provinceRepository;
             _districtRepository = districtRepository;
             _wardRepository = wardRepository;
+            _jwtConfig = options.Value;
         }
 
         public async Task<APIResponse> RegisterAsync(CustomerRegister customerRegister)
@@ -270,75 +275,49 @@ namespace PLX.API.Services
             return OkResponse(customerUpdateResponse, ResultCodeConstants.UpdateSuccess);
         }
 
-        public async Task<APIResponse> ChangePassword(ChangePasswordRequest changePasswordRequest)
+        public async Task<APIResponse> ChangePassword(int id, ChangePasswordRequest changePasswordRequest)
         {
-            var customer = await _customerRepository.FindByPhone(changePasswordRequest.Phone);
+            var customer = await _customerRepository.FindById(id);
             //kiem tra ton tai customer
             if (customer == null)
                 return ErrorResponse(ResultCodeConstants.ValidationExist);
-            var questions = customer.Questions;
-            if (changePasswordRequest.Type == PasswordTypes.ChangePasswordByPhone)
+            if (!Validation.IsNullOrEmpty(changePasswordRequest.NewPassword) && !Validation.IsNullOrEmpty(changePasswordRequest.ConfirmNewPassword))
             {
 
-                return await ChangePasswordByOTP(changePasswordRequest);
-
-            }
-            if (changePasswordRequest.Type == PasswordTypes.ChangePasswordByAnswerQuestion)
-            {
-
-                return await ChangePasswordByAnswerQuestion(changePasswordRequest);
-            }
-            return null;
-        }
-
-        public async Task<APIResponse> ChangePasswordByOTP(ChangePasswordRequest changePasswordRequest)
-        {
-            var customer = await _customerRepository.FindByPhone(changePasswordRequest.Phone);
-            var otp = "123456";
-            if (changePasswordRequest.OtpCode == otp)
-            {
-                if (!Validation.IsNullOrEmpty(changePasswordRequest.NewPassword) && !Validation.IsNullOrEmpty(changePasswordRequest.ConfirmNewPassword))
+                if (changePasswordRequest.ConfirmNewPassword == changePasswordRequest.NewPassword)
                 {
-
-                    if (changePasswordRequest.ConfirmNewPassword == changePasswordRequest.NewPassword)
-                    {
-                        customer.Password = BC.HashPassword(changePasswordRequest.NewPassword);
-                        await this._unitOfWork.CompleteAsync();
-                        return OkResponse(new ChangePasswordResponse("Thành công"), ResultCodeConstants.ChangeSuccess);
-                    }
-                    return ErrorResponse(ResultCodeConstants.PasswordWrong);
-
+                    customer.Password = BC.HashPassword(changePasswordRequest.NewPassword);
+                    await this._unitOfWork.CompleteAsync();
+                    return OkResponse(new ChangePasswordResponse("Thành công"), ResultCodeConstants.ChangeSuccess);
                 }
-                return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { "Mật khẩu" });
+                return ErrorResponse(ResultCodeConstants.PasswordWrong);
+
             }
-            return ErrorResponse(ResultCodeConstants.AuthEInvalidOTP);
+            return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { "Mật khẩu" });
+
         }
 
-        public async Task<APIResponse> ChangePasswordByAnswerQuestion(ChangePasswordRequest changePasswordRequest)
+
+        public async Task<APIResponse> ValidateAnswer(ValidateAnswerRequest answerRequest)
         {
-            var customer = await _customerRepository.FindByPhone(changePasswordRequest.Phone);
-            var qId1 = customer.Questions.Where(x => x.QuestionId == changePasswordRequest.QuestionId1).FirstOrDefault();
-            var qId2 = customer.Questions.Where(x => x.QuestionId == changePasswordRequest.QuestionId2).FirstOrDefault();
-            if (!Validation.IsEqualOrLessThanZero(changePasswordRequest.QuestionId1) &&
-                !Validation.IsNullOrEmpty(changePasswordRequest.Answer1) &&
-                !Validation.IsEqualOrLessThanZero(changePasswordRequest.QuestionId2) &&
-                !Validation.IsNullOrEmpty(changePasswordRequest.Answer2))
+            var customer = await _customerRepository.FindByPhone(answerRequest.Phone);
+            var qId1 = customer.Questions.Where(x => x.QuestionId == answerRequest.QuestionId1).FirstOrDefault();
+            var qId2 = customer.Questions.Where(x => x.QuestionId == answerRequest.QuestionId2).FirstOrDefault();
+            IDictionary<string, object> customerInfo = new Dictionary<string, object>();
+            customerInfo.Add("Id", customer.Id.ToString());
+            string token = JwtHelper.GenerateToken(_jwtConfig, customerInfo);
+            var response = new ValidateAnswerResponse
             {
-                if (qId1.Answer == changePasswordRequest.Answer1 && qId2.Answer == changePasswordRequest.Answer2)
+                Token = token
+            };
+            if (!Validation.IsEqualOrLessThanZero(answerRequest.QuestionId1) &&
+                !Validation.IsNullOrEmpty(answerRequest.Answer1) &&
+                !Validation.IsEqualOrLessThanZero(answerRequest.QuestionId2) &&
+                !Validation.IsNullOrEmpty(answerRequest.Answer2))
+            {
+                if (qId1.Answer == answerRequest.Answer1 && qId2.Answer == answerRequest.Answer2)
                 {
-                    if (!Validation.IsNullOrEmpty(changePasswordRequest.NewPassword) && !Validation.IsNullOrEmpty(changePasswordRequest.ConfirmNewPassword))
-                    {
-
-                        if (changePasswordRequest.ConfirmNewPassword == changePasswordRequest.NewPassword)
-                        {
-                            customer.Password = BC.HashPassword(changePasswordRequest.NewPassword);
-                            await this._unitOfWork.CompleteAsync();
-                            return OkResponse(new ChangePasswordResponse("Thành công"), ResultCodeConstants.ChangeSuccess);
-                        }
-                        return ErrorResponse(ResultCodeConstants.PasswordWrong);
-
-                    }
-                    return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { "Mật khẩu" });
+                    return OkResponse(response, ResultCodeConstants.Success);
                 }
                 return ErrorResponse(ResultCodeConstants.AnswerWrong);
 
@@ -346,7 +325,28 @@ namespace PLX.API.Services
             return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { "Câu trả lời" });
         }
 
+        public async Task<APIResponse> ValidateOtp(OTPValidateRequest oTPValidate)
+        {
+            var otp = "123456";
+            var customer = await _customerRepository.FindByPhone(oTPValidate.Phone);
+            IDictionary<string, object> customerInfo = new Dictionary<string, object>();
+            customerInfo.Add("Id", customer.Id.ToString());
+            string token = JwtHelper.GenerateToken(_jwtConfig, customerInfo);
+            var response = new ValidateAnswerResponse
+            {
+                Token = token
+            };
+            if (oTPValidate.Phone == null || oTPValidate.Phone == "")
+                return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { "Số điện thoại" });
 
+            if (!Validation.IsValidPhone(oTPValidate.Phone))
+                return ErrorResponse(ResultCodeConstants.EInvalidPhoneFormat);
+
+            if (otp != oTPValidate.OtpCode)
+                return ErrorResponse(ResultCodeConstants.AuthEInvalidOTP);
+
+            return OkResponse(response, ResultCodeConstants.AuthValidOTP);
+        }
 
         private ApiErrorResponse validateCustomer(CustomerInfo customerInfo)
         {
@@ -442,5 +442,17 @@ namespace PLX.API.Services
 
             return null;
         }
+
+        public async Task<APIResponse> GetCustomerQuestions(GetQuestionsRequest questionsRequest)
+        {
+            var customerQuestions = await _customerQuestionsRepository.FindByPhone(questionsRequest.Phone);
+            if (customerQuestions.Count == 0)
+                return ErrorResponse(ResultCodeConstants.NotFound);
+            var questions = customerQuestions.Select(x => x.Question).ToList();
+            var result = new GetQuestionResponse(_mapper.Map<List<Question>, List<ListItem>>(questions));
+            return OkResponse(result, ResultCodeConstants.Success);
+        }
+
+
     }
 }

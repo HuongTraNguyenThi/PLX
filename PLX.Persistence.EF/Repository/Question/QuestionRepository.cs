@@ -26,5 +26,10 @@ namespace PLX.Persistence.EF.Repository
 
             return await this._dbSet.Skip(Math.Max(0, this._dbSet.Count() - 5)).Take(5).ToListAsync();
         }
+        public async Task<List<Question>> FindById(int id)
+        {
+            var queryable = this._dbSet.Where(customer => customer.Id == id);
+            return await queryable.ToListAsync();
+        }
     }
 }
