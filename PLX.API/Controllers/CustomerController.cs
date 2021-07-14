@@ -112,17 +112,11 @@ namespace PLX.API.Controllers
 
         public async Task<IActionResult> ChangePassword(ChangePasswordRequest changePasswordRequest)
         {
-            // var claims = ClaimsPrincipal.Current.Identities.First().Claims.ToList();
-            // var a = claims?.FirstOrDefault(x => x.Type.Equals("Id", StringComparison.OrdinalIgnoreCase))?.Value;
-
-            var userId = HttpContext.User;
-            var X = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var userIdConvert = Convert.ToInt32(userId);
-
+            var userId = HttpContext.User.FindFirst("Id").Value;
+            var userIdConvert = Int32.Parse(userId);
             var response = await _customerService.ChangePassword(userIdConvert, changePasswordRequest);
             if (response.Result.Success)
                 return Ok(response);
-
             return BadRequest(response);
         }
 
