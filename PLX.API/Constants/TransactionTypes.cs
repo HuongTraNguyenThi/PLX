@@ -7,5 +7,6 @@ namespace PLX.API.Helpers
     {
         public const string Register = "REGISTER";
         public const string ChangePassword = "CHANGE_PASSWORD";
+        public const string Update = "UPDATE";
     }
 }
