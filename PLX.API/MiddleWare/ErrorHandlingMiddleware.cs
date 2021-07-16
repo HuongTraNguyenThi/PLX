@@ -37,11 +37,13 @@ namespace PLX.API.MiddleWare
                 var statusCode = (int)HttpStatusCode.InternalServerError;
                 var serverResultCode = ResultCodeConstants.EInternalServerError;
 
+
                 switch (error)
                 {
                     case PostgresException postgresException:
                         serverResultCode = ResultCodeConstants.ConnectionString;
                         break;
+                    default: break;
                 }
                 response.StatusCode = statusCode;
                 _logger.LogError(error, "--- Fail to process {0}", context.Request.Path);
