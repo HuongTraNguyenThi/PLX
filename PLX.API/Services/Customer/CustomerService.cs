@@ -224,6 +224,7 @@ namespace PLX.API.Services
             {
                 Vehicle savedVehicle = null;
                 var exist = savedVehicles.TryGetValue(vehicle.Id, out savedVehicle);
+                var checkNullOrEmpty = Validation.CheckNullOrEmptyVehicle(vehicle);
 
                 if (!exist && vehicle.RecordType == RecordTypes.NewRecord)
                 {
@@ -232,7 +233,7 @@ namespace PLX.API.Services
                     await _vehicleRepository.AddAsync(newVehicle);
                 }
 
-                if (exist && vehicle.RecordType == RecordTypes.ExistRecord && !Validation.IsNullOrEmpty(vehicle.Name) && !Validation.IsNullOrEmpty(vehicle.LicensePlate) && !Validation.IsEqualOrLessThanZero(vehicle.VehicleTypeId))
+                if (exist && vehicle.RecordType == RecordTypes.ExistRecord && !checkNullOrEmpty)
                 {
                     savedVehicle.Name = vehicle.Name;
                     savedVehicle.LicensePlate = vehicle.LicensePlate;
@@ -249,6 +250,7 @@ namespace PLX.API.Services
             foreach (var linkedCard in customerUpdateRequest.LinkedCards)
             {
                 LinkedCard savedLinkedCard = null;
+                var checkNullOrEmpty = Validation.CheckNullOrEmptyLinkedCard(linkedCard);
                 var exist = savedLinkedCards.TryGetValue(linkedCard.Id, out savedLinkedCard);
 
                 if (!exist && linkedCard.RecordType == RecordTypes.NewRecord)
@@ -258,7 +260,7 @@ namespace PLX.API.Services
                     await _linkedCardRepository.AddAsync(newLinkedCard);
                 }
 
-                if (exist && linkedCard.RecordType == RecordTypes.ExistRecord && !Validation.IsNullOrEmpty(linkedCard.Name) && !Validation.IsNullOrEmpty(linkedCard.CardNumber))
+                if (exist && linkedCard.RecordType == RecordTypes.ExistRecord && !checkNullOrEmpty)
                 {
                     savedLinkedCard.Name = linkedCard.Name;
                     savedLinkedCard.CardNumber = linkedCard.CardNumber;
@@ -269,83 +271,9 @@ namespace PLX.API.Services
                 }
 
             }
-
             await this._unitOfWork.CompleteAsync();
             var customerUpdateResponse = _mapper.Map<Customer, CustomerUpdateResponse>(customer);
             return OkResponse(customerUpdateResponse, ResultCodeConstants.UpdateSuccess);
-        }
-
-        public async Task<APIResponse> ChangePassword(int id, ChangePasswordRequest changePasswordRequest)
-        {
-            var customer = await _customerRepository.FindById(id);
-            //kiem tra ton tai customer
-            if (customer == null)
-                return ErrorResponse(ResultCodeConstants.ValidationExist);
-            if (!Validation.IsNullOrEmpty(changePasswordRequest.NewPassword) && !Validation.IsNullOrEmpty(changePasswordRequest.ConfirmNewPassword))
-            {
-
-                if (changePasswordRequest.ConfirmNewPassword == changePasswordRequest.NewPassword)
-                {
-                    customer.Password = BC.HashPassword(changePasswordRequest.NewPassword);
-                    await this._unitOfWork.CompleteAsync();
-                    return OkResponse(new ChangePasswordResponse("Thành công"), ResultCodeConstants.ChangeSuccess);
-                }
-                return ErrorResponse(ResultCodeConstants.PasswordWrong);
-
-            }
-            return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { "Mật khẩu" });
-
-        }
-
-
-        public async Task<APIResponse> ValidateAnswer(ValidateAnswerRequest answerRequest)
-        {
-            var customer = await _customerRepository.FindByPhone(answerRequest.Phone);
-            var qId1 = customer.Questions.Where(x => x.QuestionId == answerRequest.QuestionId1).FirstOrDefault();
-            var qId2 = customer.Questions.Where(x => x.QuestionId == answerRequest.QuestionId2).FirstOrDefault();
-            IDictionary<string, object> customerInfo = new Dictionary<string, object>();
-            customerInfo.Add("Id", customer.Id.ToString());
-            string token = JwtHelper.GenerateToken(_jwtConfig, customerInfo);
-            var response = new ValidateAnswerResponse
-            {
-                Token = token
-            };
-            if (!Validation.IsEqualOrLessThanZero(answerRequest.QuestionId1) &&
-                !Validation.IsNullOrEmpty(answerRequest.Answer1) &&
-                !Validation.IsEqualOrLessThanZero(answerRequest.QuestionId2) &&
-                !Validation.IsNullOrEmpty(answerRequest.Answer2))
-            {
-                if (qId1.Answer == answerRequest.Answer1 && qId2.Answer == answerRequest.Answer2)
-                {
-                    return OkResponse(response, ResultCodeConstants.Success);
-                }
-                return ErrorResponse(ResultCodeConstants.AnswerWrong);
-
-            }
-            return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { "Câu trả lời" });
-        }
-
-        public async Task<APIResponse> ValidateOtp(OTPValidateRequest oTPValidate)
-        {
-            var otp = "123456";
-            var customer = await _customerRepository.FindByPhone(oTPValidate.Phone);
-            IDictionary<string, object> customerInfo = new Dictionary<string, object>();
-            customerInfo.Add("Id", customer.Id.ToString());
-            string token = JwtHelper.GenerateToken(_jwtConfig, customerInfo);
-            var response = new ValidateAnswerResponse
-            {
-                Token = token
-            };
-            if (oTPValidate.Phone == null || oTPValidate.Phone == "")
-                return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { "Số điện thoại" });
-
-            if (!Validation.IsValidPhone(oTPValidate.Phone))
-                return ErrorResponse(ResultCodeConstants.EInvalidPhoneFormat);
-
-            if (otp != oTPValidate.OtpCode)
-                return ErrorResponse(ResultCodeConstants.AuthEInvalidOTP);
-
-            return OkResponse(response, ResultCodeConstants.AuthValidOTP);
         }
 
         private ApiErrorResponse validateCustomer(CustomerInfo customerInfo)
@@ -452,7 +380,77 @@ namespace PLX.API.Services
             var result = new GetQuestionResponse(_mapper.Map<List<Question>, List<ListItem>>(questions));
             return OkResponse(result, ResultCodeConstants.Success);
         }
+        public async Task<APIResponse> ChangePassword(int id, ChangePasswordRequest changePasswordRequest)
+        {
+            var customer = await _customerRepository.FindById(id);
+            //kiem tra ton tai customer
+            if (customer == null)
+                return ErrorResponse(ResultCodeConstants.ValidationExist);
+            if (!Validation.IsNullOrEmpty(changePasswordRequest.NewPassword) && !Validation.IsNullOrEmpty(changePasswordRequest.ConfirmNewPassword))
+            {
+
+                if (changePasswordRequest.ConfirmNewPassword == changePasswordRequest.NewPassword)
+                {
+                    customer.Password = BC.HashPassword(changePasswordRequest.NewPassword);
+                    await this._unitOfWork.CompleteAsync();
+                    return OkResponse(new ChangePasswordResponse("Thành công"), ResultCodeConstants.ChangeSuccess);
+                }
+                return ErrorResponse(ResultCodeConstants.PasswordWrong);
+
+            }
+            return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { "Mật khẩu" });
+
+        }
 
 
+        public async Task<APIResponse> ValidateAnswer(ValidateAnswerRequest answerRequest)
+        {
+            var customer = await _customerRepository.FindByPhone(answerRequest.Phone);
+            var qId1 = customer.Questions.Where(x => x.QuestionId == answerRequest.QuestionId1).FirstOrDefault();
+            var qId2 = customer.Questions.Where(x => x.QuestionId == answerRequest.QuestionId2).FirstOrDefault();
+            IDictionary<string, object> customerInfo = new Dictionary<string, object>();
+            customerInfo.Add("Id", customer.Id.ToString());
+            string token = JwtHelper.GenerateToken(_jwtConfig, customerInfo);
+            var response = new ValidateAnswerResponse
+            {
+                Token = token
+            };
+            if (!Validation.IsEqualOrLessThanZero(answerRequest.QuestionId1) &&
+                !Validation.IsNullOrEmpty(answerRequest.Answer1) &&
+                !Validation.IsEqualOrLessThanZero(answerRequest.QuestionId2) &&
+                !Validation.IsNullOrEmpty(answerRequest.Answer2))
+            {
+                if (qId1.Answer == answerRequest.Answer1 && qId2.Answer == answerRequest.Answer2)
+                {
+                    return OkResponse(response, ResultCodeConstants.Success);
+                }
+                return ErrorResponse(ResultCodeConstants.AnswerWrong);
+
+            }
+            return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { "Câu trả lời" });
+        }
+
+        public async Task<APIResponse> ValidateOtp(OTPValidateRequest oTPValidate)
+        {
+            var otp = "123456";
+            var customer = await _customerRepository.FindByPhone(oTPValidate.Phone);
+            IDictionary<string, object> customerInfo = new Dictionary<string, object>();
+            customerInfo.Add("Id", customer.Id.ToString());
+            string token = JwtHelper.GenerateToken(_jwtConfig, customerInfo);
+            var response = new ValidateAnswerResponse
+            {
+                Token = token
+            };
+            if (oTPValidate.Phone == null || oTPValidate.Phone == "")
+                return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { "Số điện thoại" });
+
+            if (!Validation.IsValidPhone(oTPValidate.Phone))
+                return ErrorResponse(ResultCodeConstants.EInvalidPhoneFormat);
+
+            if (otp != oTPValidate.OtpCode)
+                return ErrorResponse(ResultCodeConstants.AuthEInvalidOTP);
+
+            return OkResponse(response, ResultCodeConstants.AuthValidOTP);
+        }
     }
 }

@@ -3,6 +3,8 @@ using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
+using PLX.API.Data.DTO.LinkedCard;
+using PLX.API.Data.DTO.Vehicle;
 
 namespace PLX.API.Helpers
 {
@@ -32,5 +34,19 @@ namespace PLX.API.Helpers
         {
             return string.Equals(a, b);
         }
+        public static bool CheckNullOrEmptyLinkedCard(LinkedCardRequest linkedCard)
+        {
+            if (Validation.IsNullOrEmpty(linkedCard.Name) && !Validation.IsNullOrEmpty(linkedCard.CardNumber))
+                return false;
+            return true;
+        }
+
+        public static bool CheckNullOrEmptyVehicle(VehicleRequest vehicle)
+        {
+            if (Validation.IsNullOrEmpty(vehicle.Name) && !Validation.IsNullOrEmpty(vehicle.LicensePlate) && !Validation.IsEqualOrLessThanZero(vehicle.VehicleTypeId))
+                return false;
+            return true;
+        }
+
     }
 }
