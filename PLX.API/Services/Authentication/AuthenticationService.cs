@@ -118,7 +118,8 @@ namespace PLX.API.Services
             }
 
             if (!Validation.Equals(TransactionTypes.Register, otpRequest.TransactionType) &&
-                !Validation.Equals(TransactionTypes.Register, otpRequest.TransactionType))
+                !Validation.Equals(TransactionTypes.Update, otpRequest.TransactionType) &&
+                !Validation.Equals(TransactionTypes.ChangePassword, otpRequest.TransactionType))
             {
                 return ErrorResponse(ResultCodeConstants.AuthUnsupportedOTPType, new object[] { otpRequest.TransactionType });
             }
