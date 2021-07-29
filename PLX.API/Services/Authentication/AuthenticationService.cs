@@ -39,7 +39,7 @@ namespace PLX.API.Services
         public async Task<APIResponse> Authenticate(AuthenticationRequest authRequest)
         {
             if (Validation.IsNullOrEmpty(authRequest.Phone))
-                return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { "Số điện thoại" });
+                return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { Messages.Phone});
 
             if (!Validation.IsValidPhone(authRequest.Phone))
                 return ErrorResponse(ResultCodeConstants.EInvalidPhoneFormat);
@@ -92,14 +92,14 @@ namespace PLX.API.Services
             };
             await _otpRepository.AddAsync(result);
             await _unitOfWork.CompleteAsync();
-            return OkResponse(new OTPResponse("Mã OTP đã được gửi"), ResultCodeConstants.Success);
+            return OkResponse(new OTPResponse(Messages.OTP), ResultCodeConstants.Success);
         }
 
         public APIResponse ValidateOTP(OTPValidateRequest oTPRequest)
         {
             var otp = "123456";
             if (oTPRequest.Phone == null || oTPRequest.Phone == "")
-                return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { "Số điện thoại" });
+                return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] {Messages.Phone });
 
             if (!Validation.IsValidPhone(oTPRequest.Phone))
                 return ErrorResponse(ResultCodeConstants.EInvalidPhoneFormat);
@@ -114,7 +114,7 @@ namespace PLX.API.Services
         {
             if (Validation.IsNullOrEmpty(otpRequest.TransactionType))
             {
-                return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { "Loại giao dịch" });
+                return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { Messages.TransactionType });
             }
 
             if (!Validation.Equals(TransactionTypes.Register, otpRequest.TransactionType) &&
@@ -125,7 +125,7 @@ namespace PLX.API.Services
             }
 
             if (Validation.IsNullOrEmpty(otpRequest.Phone))
-                return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { "Số điện thoại" });
+                return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { Messages.Phone });
 
             if (!Validation.IsValidPhone(otpRequest.Phone))
                 return ErrorResponse(ResultCodeConstants.EInvalidPhoneFormat);

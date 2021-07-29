@@ -283,13 +283,13 @@ namespace PLX.API.Services
 
             if (Validation.IsNullOrEmpty(customerBasic.Name))
             {
-                var argurments = new object[] { isBizCustomer ? "Tên đơn vị" : "Tên" };
+                var argurments = new object[] { isBizCustomer ? Messages.BizCustomer: Messages.IndividualCustomer};
                 return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, argurments);
             }
 
             if (Validation.IsNullOrEmpty(customerBasic.Phone))
             {
-                return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { "Số điện thoại" });
+                return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] {Messages.Phone });
             }
 
             if (!Validation.IsValidPhone(customerBasic.Phone))
@@ -299,20 +299,20 @@ namespace PLX.API.Services
 
             if (Validation.IsNullOrEmpty(customerBasic.Password))
             {
-                return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { "Mật khẩu" });
+                return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { Messages.Password} });
             }
 
             var customerCard = customerInfo.CustomerCard;
             if (Validation.IsNullOrEmpty(customerCard.Date))
             {
-                var argurments = new object[] { isBizCustomer ? "Ngày thành lập" : "Ngày sinh" };
+                var argurments = new object[] { isBizCustomer ? Messages.BizDate : Messages.IndividualDate };
                 return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, argurments);
             }
 
             var isValidDate = Validation.IsValidDate(customerCard.Date);
             if (!isValidDate)
             {
-                var argurments = new object[] { isBizCustomer ? "Ngày thành lập" : "Ngày sinh" };
+                var argurments = new object[] { isBizCustomer ? Messages.BizDate : Messages.IndividualDate};
                 return ErrorResponse(ResultCodeConstants.EInvalidDateFormat, argurments);
             }
 
@@ -320,51 +320,51 @@ namespace PLX.API.Services
             {
                 if (Validation.IsEqualOrLessThanZero(item.QuestionId))
                 {
-                    return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { "Câu hỏi bí mật" });
+                    return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { Messages.Questions });
                 }
             }
 
             if (Validation.IsEqualOrLessThanZero(customerCard.ProvinceId))
             {
-                return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { "Tỉnh" });
+                return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { Messages.Province  });
             }
 
             if (Validation.IsEqualOrLessThanZero(customerCard.DistrictId))
             {
-                return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { "Quận/Huyện" });
+                return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { Messages.District });
             }
 
             if (Validation.IsEqualOrLessThanZero(customerCard.WardId))
             {
-                return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { "Phường/Xã" });
+                return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { Messages.Ward });
             }
 
             if (Validation.IsNullOrEmpty(customerCard.Address))
             {
-                return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { "Địa chỉ liên hệ" });
+                return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { Messages.Address });
             }
 
             if (isBizCustomer)
             {
                 if (Validation.IsNullOrEmpty(customerBasic.Email))
                 {
-                    return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { "Email" });
+                    return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { Messages.Email });
                 }
                 if (Validation.IsNullOrEmpty(customerCard.TaxCode))
                 {
-                    return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { "Mã số thuế" });
+                    return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { Messages.TaxCode});
                 }
             }
             else
             {
                 if (Validation.IsNullOrEmpty(customerCard.CardId))
                 {
-                    return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { "Số CMND/CCCD" });
+                    return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { Messages.CardId });
                 }
 
                 if (Validation.IsNullOrEmpty(customerCard.Gender))
                 {
-                    return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { "Giới tính" });
+                    return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { Messages.Gender });
                 }
             }
 
@@ -393,12 +393,12 @@ namespace PLX.API.Services
                 {
                     customer.Password = BC.HashPassword(changePasswordRequest.NewPassword);
                     await this._unitOfWork.CompleteAsync();
-                    return OkResponse(new ChangePasswordResponse("Thành công"), ResultCodeConstants.ChangeSuccess);
+                    return OkResponse(new ChangePasswordResponse(Messages.Success), ResultCodeConstants.ChangeSuccess);
                 }
                 return ErrorResponse(ResultCodeConstants.PasswordWrong);
 
             }
-            return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { "Mật khẩu" });
+            return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { Nessages.Password});
 
         }
 
@@ -427,7 +427,7 @@ namespace PLX.API.Services
                 return ErrorResponse(ResultCodeConstants.AnswerWrong);
 
             }
-            return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { "Câu trả lời" });
+            return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { Messages.Answer });
         }
 
         public async Task<APIResponse> ValidateOtp(OTPValidateRequest oTPValidate)
@@ -442,7 +442,7 @@ namespace PLX.API.Services
                 Token = token
             };
             if (oTPValidate.Phone == null || oTPValidate.Phone == "")
-                return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { "Số điện thoại" });
+                return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] {Messages.Phone });
 
             if (!Validation.IsValidPhone(oTPValidate.Phone))
                 return ErrorResponse(ResultCodeConstants.EInvalidPhoneFormat);
