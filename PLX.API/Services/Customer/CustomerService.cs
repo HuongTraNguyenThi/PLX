@@ -283,7 +283,7 @@ namespace PLX.API.Services
 
             if (Validation.IsNullOrEmpty(customerBasic.Name))
             {
-                var argurments = new object[] { isBizCustomer ? Messages.BizCustomer: Messages.IndividualCustomer};
+                var argurments = new object[] { isBizCustomer ? Messages.BizName: Messages.IndividualName};
                 return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, argurments);
             }
 
@@ -299,7 +299,7 @@ namespace PLX.API.Services
 
             if (Validation.IsNullOrEmpty(customerBasic.Password))
             {
-                return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { Messages.Password} });
+                return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { Messages.Password} );
             }
 
             var customerCard = customerInfo.CustomerCard;
@@ -398,7 +398,7 @@ namespace PLX.API.Services
                 return ErrorResponse(ResultCodeConstants.PasswordWrong);
 
             }
-            return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { Nessages.Password});
+            return ErrorResponse(ResultCodeConstants.ENullOrEmptyValue, new object[] { Messages.Password});
 
         }
 
